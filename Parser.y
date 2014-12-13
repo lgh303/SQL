@@ -2,14 +2,24 @@
 	#include <cstdio>
 	#include <cstdlib>
 	#include <iostream>
+	#include "SemValue.h"
+	#define YYSTYPE SemValue
 	void yyerror(const char*);
+	void prompt();
 	int yylex(void);
 	extern FILE* yyin;
 	bool isInterp = true;
 %}
 
-%token INTEGER
+%token INTEGER IDENTIFIER LITERAL
 %token ENDLINE QUIT
+%token CREATE DB DROP USE SHOW TB INDEX DESC
+%token NOT NUL PRIMARY FOREIGN KEY CHECK REFER
+%token INS_INTO VALUES DELETE
+%token WHERE UPDATE SET SELECT FROM LIKE
+%token AND OR SUM AVG MAX MIN GRP_BY
+%token INT CHAR VCHAR
+
 %left '+' '-'
 %left '*' '/'
 
@@ -20,29 +30,53 @@ program :
 		| /* empty */
 		;
 stmt : 
-	     QUIT ENDLINE
-	   	 {
-			exit(0);
-         }
-	   | INTEGER ';' ENDLINE
-	     {
-			std::cout << "Number : " << $1 << std::endl;
-			if (isInterp)
-			{
-				std::cout << " sql> ";
-			}
+		 ENDLINE
+		 {
+			prompt();
 		 }
-	   | error ENDLINE
-	   	 {
-			std::cout << "Syntax Error" << std::endl;
-			if (isInterp)
-			{
-				std::cout << " sql> ";
-			}
-		 }
-	   ;
+	     | QUIT ENDLINE
+	   	   {
+				exit(0);
+           }
+	   	 | CREATE DB IDENTIFIER ';' ENDLINE
+		   {
+				std::cout << "create db" << std::endl;
+				std::cout << $3.id << std::endl;
+				prompt();
+		   }
+		 | DROP DB IDENTIFIER ';' ENDLINE
+		   {
+				std::cout << "drop db" << std::endl;
+				std::cout << $3.id << std::endl;
+				prompt();
+		   }
+		 | USE IDENTIFIER ';' ENDLINE
+		   {
+				std::cout << "use db" << std::endl;
+				std::cout << $2.id << std::endl;
+				prompt();
+		   }
+		 | SHOW TB ';' ENDLINE
+		   {
+				std::cout << "show tables" << std::endl;
+				prompt();
+		   }
+	   	 | error ENDLINE
+	   	   {
+				std::cout << "Syntax Error" << std::endl;
+				prompt();
+		   }
+	   	   ;
 
 %%
+
+void prompt()
+{
+	if (isInterp)
+	{
+		std::cout << " sql> ";
+	}
+}
 
 void yyerror(const char *s)
 {
@@ -71,7 +105,7 @@ int main(int argc, char** argv)
 	if (argc == 1)
 	{
 		isInterp = true;
-		std::cout << " sql> ";
+		prompt();
 		yyparse();
 	}
 	return 0;

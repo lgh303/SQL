@@ -2,8 +2,11 @@ LEX = flex
 YACC = bison
 CC = g++
 
-main : lex.yy.o Parser.tab.o
-	$(CC) lex.yy.o Parser.tab.o -o main
+main : lex.yy.o Parser.tab.o SemValue.o
+	$(CC) lex.yy.o Parser.tab.o SemValue.o -o main
+
+SemValue.o : SemValue.cpp SemValue.h
+	$(CC) -c SemValue.cpp
 
 lex.yy.o : lex.yy.c Parser.tab.h
 	$(CC) -c lex.yy.c
