@@ -38,7 +38,8 @@
       know about them.  */
    enum yytokentype {
      INTEGER = 258,
-     QUIT = 259
+     ENDLINE = 259,
+     QUIT = 260
    };
 #endif
 

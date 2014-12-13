@@ -3,7 +3,6 @@
 	#include <iostream>
 	#include "Parser.tab.h"
 	void yyerror(const char*);
-	bool err = false;
 %}
 
 OPERATOR  ("+"|"-"|"*"|"/"|"("|")"|"="|";")
@@ -22,6 +21,7 @@ QUIT ("quit")
 {QUIT}		   { return QUIT; }
 
 {NEWLINE}  	   {
+					return ENDLINE;
 			   }
 
 {INTEGER}  {
@@ -30,20 +30,8 @@ QUIT ("quit")
 		   }
 
 . 		   {
-				if (!err)
-				{
-					std::cout << "ERROR" << std::endl;
-					err = true;
-				}
-				BEGIN(ERR);
+				return 256;
 		   }
-
-<ERR>.	   {  /* ignore */ }
-
-<ERR>{NEWLINE}	{
-					err = false;
-					BEGIN(INITIAL);
-				}
 
 %%
 
