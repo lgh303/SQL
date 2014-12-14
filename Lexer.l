@@ -33,7 +33,7 @@ PRIMARY			 ("PRIMARY"|"primary")
 FOREIGN			 ("FOREIGN"|"foreign")
 KEY				 ("KEY"|"key")
 CHECK			 ("CHECK"|"check")
-REFER			 ("REFER"|"refer")
+REFER			 ("REFERENCES"|"references")
 
 INS_INTO		 ("INSERT INTO"|"insert into")
 VALUES			 ("VALUES"|"values")

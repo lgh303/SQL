@@ -2,6 +2,7 @@
 #define __SCHEMA_ENTRY_H__
 
 #include "Condition.h"
+#include "Attr.h"
 #include <string>
 
 using std::string;
@@ -25,7 +26,9 @@ public:
 	 bool hasConstrain;
 	 EntryKind entrykind;
 	 string primaryKey;
+	 string foreignKey;
 	 Condition constrain;
+	 Attr foreignAttr;
 };
 
 #endif // __SCHEMA_ENTRY_H__

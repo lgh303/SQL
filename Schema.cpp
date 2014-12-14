@@ -16,9 +16,9 @@ void Schema::print()
 		  else
 			   cout << "YesNull ";
 		  if (entries[i].isPrimary)
-			   cout << "PRI  ";
+			   cout << "PRIMARY  ";
 		  if (entries[i].isForeign)
-			   cout << "FOR  ";
+			   cout << "FOREIGN (" << entries[i].foreignAttr.toString() << ")";
 		  cout << endl;
 	 }
 	 if (!constrain.empty())
@@ -45,6 +45,15 @@ void Schema::process(SchemaEntry& entry)
 		  break;
 	 case SchemaEntry::CHECK :
 		  constrain = entry.constrain;
+		  break;
+	 case SchemaEntry::FOREIGN :
+		  for (int i = 0; i < size(); ++i)
+			   if (entries[i].field == entry.foreignKey)
+			   {
+					entries[i].isForeign = true;
+					entries[i].foreignAttr = entry.foreignAttr;
+					break;
+			   }
 		  break;
 	 }
 }

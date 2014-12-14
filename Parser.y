@@ -180,6 +180,12 @@ AttrDefItem :
 				$$.schemaEntry.constrain = $3.condition;
 				$$.schemaEntry.entrykind = SchemaEntry::CHECK;
 		   }
+		 | FOREIGN KEY '(' IDENTIFIER ')' REFER IDENTIFIER '(' IDENTIFIER ')'
+		   {
+				$$.schemaEntry.foreignKey = $4.id;
+				$$.schemaEntry.foreignAttr = Attr($7.id, $9.id);
+				$$.schemaEntry.entrykind = SchemaEntry::FOREIGN;
+		   }
 		   ;
 
 Type :	   INT		{ $$.datatype = "int"; }
