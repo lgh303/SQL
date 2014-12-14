@@ -115,6 +115,20 @@ Stmt :
 				$7.condition.print();
 				prompt();
 		   }
+		 | CREATE INDEX IDENTIFIER '(' IDENTIFIER ')' ';' ENDLINE
+		   {
+				cout << "create index " << endl;
+				cout << "TB : " << $3.id << endl;
+				cout << "ATTR : " << $5.id << endl;
+				prompt();
+		   }
+		 | DROP INDEX IDENTIFIER '(' IDENTIFIER ')' ';' ENDLINE
+		   {
+				cout << "drop index " << endl;
+				cout << "TB : " << $3.id << endl;
+				cout << "ATTR : " << $5.id << endl;
+				prompt();
+		   }
 	   	 | error ENDLINE
 	   	   {
 				std::cout << "Syntax Error" << std::endl;
