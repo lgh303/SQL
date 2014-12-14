@@ -96,10 +96,23 @@ Stmt :
 		   }
 		 | SELECT AttrList FROM TableList WhereClause ';' ENDLINE
 		   {
-				cout << "select .. from table " << endl;
+				cout << "select from table " << endl;
 				$2.printAttrs();
 				$4.printTables();
 				$5.condition.print();
+				prompt();
+		   }
+		 | UPDATE IDENTIFIER SET IDENTIFIER '=' ValueItem WhereClause ';' ENDLINE
+		   {
+				cout << "update table " <<  endl;
+				cout << "TB : " << $2.id << endl;
+				cout << "ATTR : " << $4.id << endl;
+				cout << "VAL : ";
+				if ($6.value.type == 0)
+				   cout << $6.value.integer << endl;
+				else
+				   cout << $6.value.literal << endl;
+				$7.condition.print();
 				prompt();
 		   }
 	   	 | error ENDLINE
