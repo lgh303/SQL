@@ -94,12 +94,17 @@ Stmt :
 				$4.condition.print();
 				prompt();
 		   }
-		 | SELECT AttrList FROM TableList WhereClause ';' ENDLINE
+		 | SELECT AttrList FROM TableList WhereClause GroupClause ';' ENDLINE
 		   {
 				cout << "select from table " << endl;
+				cout << "ATTR : ";
 				$2.printAttrs();
+				cout << "TB : ";
 				$4.printTables();
+				cout << "Cond : ";
 				$5.condition.print();
+				if (!$6.id.empty())
+				   cout << "GRP_BY : " << $6.id << endl;
 				prompt();
 		   }
 		 | UPDATE IDENTIFIER SET IDENTIFIER '=' ValueItem WhereClause ';' ENDLINE
@@ -144,6 +149,17 @@ WhereClause :
 		 | WHERE CondList
 		   {	 
 		   		 $$.condition = $2.condition;
+		   }
+		 ;
+
+GroupClause :
+		   /* empty */
+		   {
+				$$.id = "";
+		   }
+		 | GRP_BY IDENTIFIER
+		   {
+				$$.id = $2.id;
 		   }
 		 ;
 

@@ -52,7 +52,7 @@ SUM				 ("SUM"|"sum")
 AVG				 ("AVG"|"avg")
 MAX				 ("MAX"|"max")
 MIN				 ("MIN"|"min")
-GRP_BY			 ("GRPOUP BY"|"group by")
+GRP_BY			 ("GROUP BY"|"group by")
 
 INT				 ("INT"|"int")
 CHAR			 ("CHAR"|"char")
