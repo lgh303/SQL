@@ -6,6 +6,10 @@
 #include "Schema.h"
 #include "SchemaEntry.h"
 #include "Value.h"
+#include "Condition.h"
+#include "CondEntry.h"
+#include "Expr.h"
+#include "Attr.h"
 
 using std::string;
 
@@ -19,9 +23,13 @@ public:
 	 int length;
 	 Schema schema;
 	 SchemaEntry schemaEntry;
+	 string primaryKey;
 	 std::vector<Value> values;
 	 Value value;
-	 string primaryKey;
+	 Condition condition;
+	 CondEntry condEntry;
+	 Expr expr;
+	 Attr attr;
 
 	 void printValues();
 	 static int keyword(int);

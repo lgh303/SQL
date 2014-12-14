@@ -56,7 +56,8 @@ INT				 ("INT"|"int")
 CHAR			 ("CHAR"|"char")
 VCHAR			 ("VARCHAR"|"varchar")
 
-%x STR
+%x SS
+%x S
 
 %%
 
@@ -122,11 +123,21 @@ VCHAR			 ("VARCHAR"|"varchar")
 
 <INITIAL>\"    {
 					str = std::string();
-					cout << "begin str" << endl;
-					BEGIN(STR);
+					BEGIN(SS);
+			   }
+<INITIAL>\'    {
+					str = std::string();
+					BEGIN(S);
 			   }
 
-<STR>\"	   	   {
+<SS>\"	   	   {
+					BEGIN(INITIAL);
+					yylval = SemValue();
+					yylval.code = LITERAL;
+					yylval.literal = str;
+					return LITERAL;
+			   }
+<S>\'		   {
 					BEGIN(INITIAL);
 					yylval = SemValue();
 					yylval.code = LITERAL;
@@ -134,10 +145,12 @@ VCHAR			 ("VARCHAR"|"varchar")
 					return LITERAL;
 			   }
 
-<STR>.		   {
+<SS>.		   {
 					str += char(*yytext);
 			   }
-
+<S>.		   {
+					str += char(*yytext);
+			   }
 . 		   	   {
 					return 256;
 		   	   }

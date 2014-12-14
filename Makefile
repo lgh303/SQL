@@ -2,9 +2,10 @@ LEX = flex
 YACC = bison
 CC = g++
 SRC = *.cpp *.c
+HEADER = *.h
 
 
-main : $(SRC)
+main : $(SRC) $(HEADER)
 	$(CC) $(SRC) -o main
 
 Parser.tab.c Parser.tab.h : Parser.y
@@ -15,4 +16,4 @@ lex.yy.c : Lexer.l
 
 clean : 
 	rm -f *.o
-	rm main
+	rm -f main

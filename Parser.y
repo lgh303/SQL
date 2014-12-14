@@ -65,17 +65,19 @@ Stmt :
 				std::cout << "show tables" << std::endl;
 				prompt();
 		   }
-		 | CREATE TB IDENTIFIER '(' AttrList ')' ';' ENDLINE
+		 | CREATE TB IDENTIFIER '(' AttrDefList ')' ';' ENDLINE
 		   {
 				std::cout << "create tb ";
 				std::cout << $3.id << std::endl;
 				std::cout << "Schema :" << std::endl;
 				$5.schema.print();
+				prompt();
 		   }
 		 | DESC IDENTIFIER ';' ENDLINE
 		   {
 				cout << "describe table ";
 				cout << $2.id << endl;
+				prompt();
 		   }
 		 | INS_INTO IDENTIFIER VALUES '(' ValueList ')' ';' ENDLINE
 		   {		
@@ -83,6 +85,14 @@ Stmt :
 				cout << $2.id << endl;
 				cout << "values : " << endl;
 				$5.printValues();
+				prompt();
+		   }
+		 | DELETE FROM IDENTIFIER WHERE CondList ';' ENDLINE
+		   {
+				cout << "delete from table ";
+				cout << $3.id << endl;
+				$5.condition.print();
+				prompt();
 		   }
 	   	 | error ENDLINE
 	   	   {
@@ -91,15 +101,15 @@ Stmt :
 		   }
 	   	   ;
 
-AttrList :
-		   AttrList ',' AttrItem
+AttrDefList :
+		   AttrDefList ',' AttrDefItem
 		   {
 				if ($3.primaryKey.empty())
 					$$.schema.add($3.schemaEntry);
 				else
 					$$.schema.setPrimary($3.primaryKey);
 		   }
-		 | AttrItem
+		 | AttrDefItem
 		   {
 				$$.schema = Schema();
 				if ($1.primaryKey.empty())
@@ -109,7 +119,7 @@ AttrList :
 		   }
 		   ;
 
-AttrItem :
+AttrDefItem :
 		   IDENTIFIER Type '(' INTEGER ')' 
 		   {
 				$$.schemaEntry = SchemaEntry($1.id, $2.datatype, $4.length, 0);
@@ -146,7 +156,66 @@ ValueList :
 ValueItem :
 		   INTEGER  { $$.value = Value(0, $1.length, ""); }
 		 | LITERAL  { $$.value = Value(1, 0, $1.literal); }
-		 ;		   
+		 ;
+
+CondList :
+		   CondList AND Cond
+		   {
+				$$.condition.add(Condition::AND, $3.condEntry);
+		   }
+		 | CondList OR Cond
+		   {
+				$$.condition.add(Condition::OR, $3.condEntry);
+		   }
+		 | Cond
+		   {
+				$$.condition = Condition($1.condEntry);
+		   }
+		 ;
+
+Cond :
+		   Expr '=' Expr
+		   {
+				$$.condEntry = CondEntry(CondEntry::EQUAL, $1.expr, $3.expr);
+		   }
+		 | Expr '>' Expr
+		   {
+				$$.condEntry = CondEntry(CondEntry::GREATER, $1.expr, $3.expr);
+		   }
+		 | Expr '<' Expr
+		   {
+				$$.condEntry = CondEntry(CondEntry::LESS, $1.expr, $3.expr);
+		   }
+		 ;
+
+Expr :
+	       Attr
+		   {
+				$$.expr = Expr(Expr::ATTR);
+				$$.expr.attr = $1.attr;
+		   }
+		 | INTEGER
+		   {
+				$$.expr = Expr(Expr::INTEGER);
+				$$.expr.integer = $1.length;
+		   }
+		 | LITERAL
+		   {
+				$$.expr = Expr(Expr::LITERAL);
+				$$.expr.literal = $1.literal;
+		   }
+		 ;
+
+Attr :
+		   IDENTIFIER
+		   {	
+		   		$$.attr = Attr("", $1.id);
+		   }
+		 | IDENTIFIER '.' IDENTIFIER
+		   {
+				$$.attr = Attr($1.id, $3.id);
+		   }
+		 ;
 
 %%
 
