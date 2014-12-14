@@ -13,6 +13,7 @@ public:
 	 void add(CondLogicOp, CondEntry&);
 	 void print();
 	 void clear();
+	 bool empty();
 private:
 	 std::vector<CondEntry> operands;
 	 std::vector<CondLogicOp> opcodes;

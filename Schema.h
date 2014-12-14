@@ -4,16 +4,16 @@
 #include <vector>
 #include <string>
 #include "SchemaEntry.h"
+#include "Condition.h"
 
 class Schema
 {
 public:
-	 void setPrimary(std::string&);
 	 void print();
-	 void add(SchemaEntry&);
+	 void process(SchemaEntry&);
 	 int size() { return entries.size(); }
-private:
 	 std::vector<SchemaEntry> entries;
+	 Condition constrain;
 };
 
 #endif //__SCHEMA_H__

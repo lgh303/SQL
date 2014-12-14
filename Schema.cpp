@@ -6,16 +6,6 @@
 
 using namespace std;
 
-void Schema::setPrimary(string& key)
-{
-	 for (int i = 0; i < size(); ++i)
-		  if (entries[i].field == key)
-		  {
-			   entries[i].keykind = 1;
-			   break;
-		  }
-}
-
 void Schema::print()
 {
 	 for (int i = 0; i < size(); ++i)
@@ -25,13 +15,36 @@ void Schema::print()
 			   cout << "NoNull ";
 		  else
 			   cout << "YesNull ";
-		  if (entries[i].keykind == 1)
-			   cout << "PRI";
+		  if (entries[i].isPrimary)
+			   cout << "PRI  ";
+		  if (entries[i].isForeign)
+			   cout << "FOR  ";
 		  cout << endl;
 	 }
+	 if (!constrain.empty())
+		  constrain.print();
 }
 
-void Schema::add(SchemaEntry& entry)
+void Schema::process(SchemaEntry& entry)
 {
-	 entries.push_back(entry);
+	 switch (entry.entrykind)
+	 {
+	 case SchemaEntry::NORMAL :
+		  entry.isPrimary = false;
+		  entry.isForeign = false;
+		  entry.hasConstrain = false;
+		  entries.push_back(entry);
+		  break;
+	 case SchemaEntry::PRIMARY :
+		  for (int i = 0; i < size(); ++i)
+			   if (entries[i].field == entry.primaryKey)
+			   {
+					entries[i].isPrimary = true;
+					break;
+			   }
+		  break;
+	 case SchemaEntry::CHECK :
+		  constrain = entry.constrain;
+		  break;
+	 }
 }

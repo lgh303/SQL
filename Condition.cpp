@@ -21,6 +21,11 @@ void Condition::clear()
 	 opcodes.clear();
 }
 
+bool Condition::empty()
+{
+	 return operands.empty();
+}
+
 void Condition::print()
 {
 	 if (operands.empty())

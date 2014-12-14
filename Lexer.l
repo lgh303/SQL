@@ -28,6 +28,7 @@ DESC			 ("DESC"|"desc")
 NOT				 ("NOT"|"not")
 IS				 ("IS"|"is")
 NUL 			 ("NULL"|"null")
+IN				 ("IN"|"in")
 PRIMARY			 ("PRIMARY"|"primary")
 FOREIGN			 ("FOREIGN"|"foreign")
 KEY				 ("KEY"|"key")
@@ -79,6 +80,7 @@ VCHAR			 ("VARCHAR"|"varchar")
 {NOT}		   { return SemValue::keyword(NOT); }
 {IS}		   { return SemValue::keyword(IS); }
 {NUL}		   { return SemValue::keyword(NUL); }
+{IN}		   { return SemValue::keyword(IN); }
 {PRIMARY}	   { return SemValue::keyword(PRIMARY); }
 {FOREIGN}	   { return SemValue::keyword(FOREIGN); }
 {KEY}		   { return SemValue::keyword(KEY); }

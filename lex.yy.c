@@ -368,8 +368,8 @@ static void yy_fatal_error (yyconst char msg[]  );
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 50
-#define YY_END_OF_BUFFER 51
+#define YY_NUM_RULES 51
+#define YY_END_OF_BUFFER 52
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -379,37 +379,37 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[283] =
     {   0,
-        0,    0,    0,    0,    0,    0,   51,   49,    1,    2,
-        2,   43,   44,   40,   42,   41,   41,   41,   41,   41,
-       41,   41,   41,   41,   41,   41,   41,   41,   41,   41,
-       41,   41,   41,   41,   41,   41,   41,   41,   41,   41,
-       41,   41,   41,   41,   41,   41,   41,   41,   41,   41,
-       41,   41,   41,   47,   50,   45,   48,   46,    1,    2,
-       42,   41,   41,   41,   41,   41,   41,   41,   41,   41,
-       41,   41,   41,   14,   41,   41,   41,   41,   41,   41,
-       31,   41,   41,   41,   41,   41,   41,   41,   41,   41,
-       41,   41,   41,   41,   41,   41,   41,   41,   41,   41,
+        0,    0,    0,    0,    0,    0,   52,   50,    1,    2,
+        2,   44,   45,   41,   43,   42,   42,   42,   42,   42,
+       42,   42,   42,   42,   42,   42,   42,   42,   42,   42,
+       42,   42,   42,   42,   42,   42,   42,   42,   42,   42,
+       42,   42,   42,   42,   42,   42,   42,   42,   42,   42,
+       42,   42,   42,   48,   51,   46,   49,   47,    1,    2,
+       43,   42,   42,   42,   42,   42,   42,   42,   42,   42,
+       42,   42,   16,   14,   42,   42,   42,   42,   42,   42,
+       32,   42,   42,   42,   42,   42,   42,   42,   42,   42,
+       42,   42,   42,   42,   42,   42,   42,   42,   42,   42,
 
-       41,   41,   41,   41,   41,   41,   41,   41,   41,   41,
-       41,   41,   41,   41,   41,   41,   41,   41,   41,   30,
-       33,   41,   41,   41,   41,   41,   41,   41,   41,   41,
-       41,   41,   41,   37,   18,   41,   34,   35,   13,   41,
-       41,   41,   41,   26,   41,   32,   41,   41,    7,   41,
-       41,   41,   41,   41,   41,   41,   41,   41,   41,   41,
-       41,   41,   41,   41,   41,   41,   41,   41,   41,   41,
-       41,   41,   41,   41,   41,   41,   38,   41,   41,   41,
-       41,   12,    6,   41,   28,   41,   41,   41,   29,   15,
-       41,   41,   41,    8,   41,   41,   41,   41,   41,   41,
+       42,   16,   42,   42,   42,   42,   42,   42,   42,   42,
+       42,   42,   42,   42,   42,   42,   42,   42,   42,   31,
+       34,   42,   42,   42,   42,   42,   42,   42,   42,   42,
+       42,   42,   42,   38,   19,   42,   35,   36,   13,   42,
+       42,   42,   42,   27,   42,   33,   42,   42,    7,   42,
+       42,   42,   42,   42,   42,   42,   42,   42,   42,   42,
+       42,   42,   42,   42,   42,   42,   42,   42,   42,   42,
+       42,   42,   42,   42,   42,   42,   39,   42,   42,   42,
+       42,   12,    6,   42,   29,   42,   42,   42,   30,   15,
+       42,   42,   42,    8,   42,   42,   42,   42,   42,   42,
 
-       41,   41,   41,   41,   41,   41,   41,   41,    3,   41,
-       41,   41,   41,   41,   41,   41,   19,   41,   41,   41,
-       41,   41,   11,   41,   41,   20,   41,    9,   41,   41,
-       41,   24,   41,   41,   41,   41,   41,   41,   41,   41,
-        9,   41,   41,   41,    4,   41,   23,   41,   41,   41,
-       41,   27,   10,   25,   22,   41,   41,   41,    0,   41,
-       41,   41,   41,   17,    0,    0,   16,   39,   41,    0,
-        0,    5,    0,    0,   36,    0,    0,    0,    0,    0,
-       21,    0
+       42,   42,   42,   42,   42,   42,   42,   42,    3,   42,
+       42,   42,   42,   42,   42,   42,   20,   42,   42,   42,
+       42,   42,   11,   42,   42,   21,   42,    9,   42,   42,
+       42,   25,   42,   42,   42,   42,   42,   42,   42,   42,
+        9,   42,   42,   42,    4,   42,   24,   42,   42,   42,
+       42,   28,   10,   26,   23,   42,   42,   42,    0,   42,
+       42,   42,   42,   18,    0,    0,   17,   40,   42,    0,
+        0,    5,    0,    0,   37,    0,    0,    0,    0,    0,
+       22,    0
     } ;
 
 static yyconst flex_int32_t yy_ec[256] =
@@ -840,7 +840,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 63 "Lexer.l"
+#line 64 "Lexer.l"
 
 
 #line 847 "lex.yy.c"
@@ -928,208 +928,213 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 65 "Lexer.l"
+#line 66 "Lexer.l"
 { /* ignore */ }
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 66 "Lexer.l"
+#line 67 "Lexer.l"
 { return ENDLINE; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 67 "Lexer.l"
+#line 68 "Lexer.l"
 { return QUIT; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 69 "Lexer.l"
+#line 70 "Lexer.l"
 { return SemValue::keyword(CREATE); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 70 "Lexer.l"
+#line 71 "Lexer.l"
 { return SemValue::keyword(DB); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 71 "Lexer.l"
+#line 72 "Lexer.l"
 { return SemValue::keyword(DROP); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 72 "Lexer.l"
+#line 73 "Lexer.l"
 { return SemValue::keyword(USE); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 73 "Lexer.l"
+#line 74 "Lexer.l"
 { return SemValue::keyword(SHOW); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 74 "Lexer.l"
+#line 75 "Lexer.l"
 { return SemValue::keyword(TB); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 75 "Lexer.l"
+#line 76 "Lexer.l"
 { return SemValue::keyword(TBS); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 76 "Lexer.l"
+#line 77 "Lexer.l"
 { return SemValue::keyword(INDEX); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 77 "Lexer.l"
+#line 78 "Lexer.l"
 { return SemValue::keyword(DESC); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 79 "Lexer.l"
+#line 80 "Lexer.l"
 { return SemValue::keyword(NOT); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 80 "Lexer.l"
+#line 81 "Lexer.l"
 { return SemValue::keyword(IS); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 81 "Lexer.l"
+#line 82 "Lexer.l"
 { return SemValue::keyword(NUL); }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 82 "Lexer.l"
-{ return SemValue::keyword(PRIMARY); }
+#line 83 "Lexer.l"
+{ return SemValue::keyword(IN); }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 83 "Lexer.l"
-{ return SemValue::keyword(FOREIGN); }
+#line 84 "Lexer.l"
+{ return SemValue::keyword(PRIMARY); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 84 "Lexer.l"
-{ return SemValue::keyword(KEY); }
+#line 85 "Lexer.l"
+{ return SemValue::keyword(FOREIGN); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 85 "Lexer.l"
-{ return SemValue::keyword(CHECK); }
+#line 86 "Lexer.l"
+{ return SemValue::keyword(KEY); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 86 "Lexer.l"
-{ return SemValue::keyword(REFER); }
+#line 87 "Lexer.l"
+{ return SemValue::keyword(CHECK); }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 88 "Lexer.l"
-{ return SemValue::keyword(INS_INTO); }
+{ return SemValue::keyword(REFER); }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 89 "Lexer.l"
-{ return SemValue::keyword(VALUES); }
+#line 90 "Lexer.l"
+{ return SemValue::keyword(INS_INTO); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 90 "Lexer.l"
-{ return SemValue::keyword(DELETE); }
+#line 91 "Lexer.l"
+{ return SemValue::keyword(VALUES); }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 91 "Lexer.l"
-{ return SemValue::keyword(WHERE); }
+#line 92 "Lexer.l"
+{ return SemValue::keyword(DELETE); }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 92 "Lexer.l"
-{ return SemValue::keyword(UPDATE); }
+#line 93 "Lexer.l"
+{ return SemValue::keyword(WHERE); }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 93 "Lexer.l"
-{ return SemValue::keyword(SET); }
+#line 94 "Lexer.l"
+{ return SemValue::keyword(UPDATE); }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 94 "Lexer.l"
-{ return SemValue::keyword(SELECT); }
+#line 95 "Lexer.l"
+{ return SemValue::keyword(SET); }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 95 "Lexer.l"
-{ return SemValue::keyword(FROM); }
+#line 96 "Lexer.l"
+{ return SemValue::keyword(SELECT); }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 96 "Lexer.l"
-{ return SemValue::keyword(LIKE); }
+#line 97 "Lexer.l"
+{ return SemValue::keyword(FROM); }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 98 "Lexer.l"
-{ return SemValue::keyword(AND); }
+{ return SemValue::keyword(LIKE); }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 99 "Lexer.l"
-{ return SemValue::keyword(OR); }
+#line 100 "Lexer.l"
+{ return SemValue::keyword(AND); }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 101 "Lexer.l"
-{ return SemValue::keyword(SUM); }
+{ return SemValue::keyword(OR); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 102 "Lexer.l"
-{ return SemValue::keyword(AVG); }
+#line 103 "Lexer.l"
+{ return SemValue::keyword(SUM); }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 103 "Lexer.l"
-{ return SemValue::keyword(MAX); }
+#line 104 "Lexer.l"
+{ return SemValue::keyword(AVG); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 104 "Lexer.l"
-{ return SemValue::keyword(MIN); }
+#line 105 "Lexer.l"
+{ return SemValue::keyword(MAX); }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 105 "Lexer.l"
-{ return SemValue::keyword(GRP_BY); }
+#line 106 "Lexer.l"
+{ return SemValue::keyword(MIN); }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 107 "Lexer.l"
-{ return SemValue::keyword(INT); }
+{ return SemValue::keyword(GRP_BY); }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 108 "Lexer.l"
-{ return SemValue::keyword(CHAR); }
+#line 109 "Lexer.l"
+{ return SemValue::keyword(INT); }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 109 "Lexer.l"
-{ return SemValue::keyword(VCHAR); }
+#line 110 "Lexer.l"
+{ return SemValue::keyword(CHAR); }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 112 "Lexer.l"
-{ return *yytext; }
+#line 111 "Lexer.l"
+{ return SemValue::keyword(VCHAR); }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 113 "Lexer.l"
+#line 114 "Lexer.l"
+{ return *yytext; }
+	YY_BREAK
+case 42:
+YY_RULE_SETUP
+#line 115 "Lexer.l"
 {
 					yylval = SemValue();
 					yylval.code = IDENTIFIER;
@@ -1137,9 +1142,9 @@ YY_RULE_SETUP
 					return IDENTIFIER;
 			   }
 	YY_BREAK
-case 42:
+case 43:
 YY_RULE_SETUP
-#line 119 "Lexer.l"
+#line 121 "Lexer.l"
 {
 					yylval = SemValue();
 					yylval.code = INTEGER;
@@ -1147,36 +1152,25 @@ YY_RULE_SETUP
 					return INTEGER;
 			   }	
 	YY_BREAK
-case 43:
+case 44:
 YY_RULE_SETUP
-#line 126 "Lexer.l"
+#line 128 "Lexer.l"
 {
 					str = std::string();
 					BEGIN(SS);
 			   }
 	YY_BREAK
-case 44:
+case 45:
 YY_RULE_SETUP
-#line 130 "Lexer.l"
+#line 132 "Lexer.l"
 {
 					str = std::string();
 					BEGIN(S);
 			   }
 	YY_BREAK
-case 45:
-YY_RULE_SETUP
-#line 135 "Lexer.l"
-{
-					BEGIN(INITIAL);
-					yylval = SemValue();
-					yylval.code = LITERAL;
-					yylval.literal = str;
-					return LITERAL;
-			   }
-	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 142 "Lexer.l"
+#line 137 "Lexer.l"
 {
 					BEGIN(INITIAL);
 					yylval = SemValue();
@@ -1187,31 +1181,42 @@ YY_RULE_SETUP
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 150 "Lexer.l"
+#line 144 "Lexer.l"
 {
-					str += char(*yytext);
+					BEGIN(INITIAL);
+					yylval = SemValue();
+					yylval.code = LITERAL;
+					yylval.literal = str;
+					return LITERAL;
 			   }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 153 "Lexer.l"
+#line 152 "Lexer.l"
 {
 					str += char(*yytext);
 			   }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 156 "Lexer.l"
+#line 155 "Lexer.l"
+{
+					str += char(*yytext);
+			   }
+	YY_BREAK
+case 50:
+YY_RULE_SETUP
+#line 158 "Lexer.l"
 {
 					return 256;
 		   	   }
 	YY_BREAK
-case 50:
+case 51:
 YY_RULE_SETUP
-#line 159 "Lexer.l"
+#line 161 "Lexer.l"
 ECHO;
 	YY_BREAK
-#line 1215 "lex.yy.c"
+#line 1220 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(SS):
 case YY_STATE_EOF(S):
@@ -2211,7 +2216,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 159 "Lexer.l"
+#line 161 "Lexer.l"
 
 
 

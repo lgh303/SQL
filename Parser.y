@@ -15,7 +15,7 @@
 %token INTEGER IDENTIFIER LITERAL
 %token ENDLINE QUIT
 %token CREATE DB DROP USE SHOW TB TBS INDEX DESC
-%token NOT IS NUL PRIMARY FOREIGN KEY CHECK REFER
+%token NOT IS NUL IN PRIMARY FOREIGN KEY CHECK REFER
 %token INS_INTO VALUES DELETE
 %token WHERE UPDATE SET SELECT FROM LIKE
 %token AND OR SUM AVG MAX MIN GRP_BY
@@ -150,18 +150,12 @@ WhereClause :
 AttrDefList :
 		   AttrDefList ',' AttrDefItem
 		   {
-				if ($3.primaryKey.empty())
-					$$.schema.add($3.schemaEntry);
-				else
-					$$.schema.setPrimary($3.primaryKey);
+				$$.schema.process($3.schemaEntry);
 		   }
 		 | AttrDefItem
 		   {
 				$$.schema = Schema();
-				if ($1.primaryKey.empty())
-					$$.schema.add($1.schemaEntry);
-				else
-					$$.schema.setPrimary($1.primaryKey);
+				$$.schema.process($1.schemaEntry);
 		   }
 		   ;
 
@@ -169,16 +163,22 @@ AttrDefItem :
 		   IDENTIFIER Type '(' INTEGER ')' 
 		   {
 				$$.schemaEntry = SchemaEntry($1.id, $2.datatype, $4.length, 0);
-				$$.primaryKey = "";
+				$$.schemaEntry.entrykind = SchemaEntry::NORMAL;
 		   }
 		 | IDENTIFIER Type '(' INTEGER ')' NOT NUL
 		   {
 				$$.schemaEntry = SchemaEntry($1.id, $2.datatype, $4.length, 1);
-				$$.primaryKey = "";
+				$$.schemaEntry.entrykind = SchemaEntry::NORMAL;
 		   }
 		 | PRIMARY KEY '(' IDENTIFIER ')'
 		   {
-				$$.primaryKey = $4.id;
+				$$.schemaEntry.primaryKey = $4.id;
+				$$.schemaEntry.entrykind = SchemaEntry::PRIMARY;
+		   }
+		 | CHECK '(' CondList ')'
+		   {
+				$$.schemaEntry.constrain = $3.condition;
+				$$.schemaEntry.entrykind = SchemaEntry::CHECK;
 		   }
 		   ;
 

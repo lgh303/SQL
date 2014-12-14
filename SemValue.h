@@ -23,7 +23,6 @@ public:
 	 int length;
 	 Schema schema;
 	 SchemaEntry schemaEntry;
-	 string primaryKey;
 	 std::vector<Value> values;
 	 Value value;
 	 Condition condition;
