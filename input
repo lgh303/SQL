@@ -6,7 +6,7 @@ SELECT cusomer.name, book.title, order.quantity FROM customer, book, order WHERE
 select sum(quantity) from orders;
 UPDATE book SET title = 'Nine Times Nine' WHERE authors = 'Anthony Boucher';
 CREATE INDEX customer(name);
-CREATE TABLE customer(id int(10) NOT NULL, name varchar(25) NOT NULL, rank int(10), check(rank > 0), primary key(id));
+CREATE TABLE customer(id int(10) NOT NULL, name varchar(25) NOT NULL, rank int(10), check(rank in (1, 2, 3)), primary key(id));
 CREATE TABLE book ( id int(10) NOT NULL, title varchar(100) NOT NULL, author varchar(200), publisher_id int(10) NOT NULL, copies int(10), PRIMARY KEY(id), FOREIGN KEY (publisher_id) REFERENCES publisher(id));
 drop index customer(name);
 SHOW TABLES;

@@ -239,18 +239,28 @@ Cond :
 		   {
 				$$.condEntry = CondEntry(CondEntry::LESS, $1.expr, $3.expr);
 		   }
-		 | Expr IS NUL
+		 | Attr IS NUL
 		   {
 				$$.condEntry = CondEntry();
 				$$.condEntry.op = CondEntry::IS;
-				$$.condEntry.left = $1.expr;
+				$$.condEntry.left = Expr(Expr::ATTR);
+				$$.condEntry.left.attr = $1.attr;
 		   }
-		 | Expr LIKE LITERAL
+		 | Attr LIKE LITERAL
 		   {
 				$$.condEntry = CondEntry();
 				$$.condEntry.op = CondEntry::LIKE;
-				$$.condEntry.left = $1.expr;
+				$$.condEntry.left = Expr(Expr::ATTR);
+				$$.condEntry.left.attr = $1.attr;
 				$$.condEntry.mode = $3.literal;		   
+		   }
+		 | Attr IN '(' ValueList ')'
+		   {
+				$$.condEntry = CondEntry();
+				$$.condEntry.op = CondEntry::IN;
+				$$.condEntry.left = Expr(Expr::ATTR);
+				$$.condEntry.left.attr = $1.attr;
+				$$.condEntry.values = $4.values;
 		   }
 		 ;
 

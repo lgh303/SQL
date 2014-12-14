@@ -2,12 +2,14 @@
 #define __COND_ENTRY_H__
 
 #include <string>
+#include <vector>
 #include "Expr.h"
+#include "Value.h"
 
 class CondEntry
 {
 public:
-	 enum CondArithOp {EQUAL, GREATER, LESS, IS, LIKE};
+	 enum CondArithOp {EQUAL, GREATER, LESS, IS, LIKE, IN};
 	 CondEntry() {}
 	 CondEntry(CondArithOp o, Expr l, Expr r)
 		  : op(o), left(l), right(r) {}
@@ -41,6 +43,13 @@ public:
 			   str += " LIKE ";
 			   str += mode;
 			   break;
+		  case IN :
+			   str += left.toString();
+			   str += " IN { ";
+			   for (int i = 0; i < values.size(); ++i)
+					str += "~ ";
+			   str += "}";
+			   break;
 		  }
 		  str += ")";
 		  return str;
@@ -48,6 +57,7 @@ public:
 	 CondArithOp op;
 	 Expr left, right;
 	 std::string mode;
+	 std::vector<Value> values;
 };
 
 #endif // __COND_ENTRY_H__
