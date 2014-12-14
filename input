@@ -3,5 +3,6 @@ use lgh;
 select * from publisher where nation = "USA";
 select title, id from book where authors is null;
 SELECT cusomer.name, book.title, order.quantity FROM customer, book, order WHERE orders.customer_id = customer.id AND orders.book_id = book.id AND orders.quantity > 9;
+select quantity from orders;
 SHOW TABLES;
 

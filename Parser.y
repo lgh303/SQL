@@ -87,19 +87,19 @@ Stmt :
 				$5.printValues();
 				prompt();
 		   }
-		 | DELETE FROM IDENTIFIER WHERE CondList ';' ENDLINE
+		 | DELETE FROM IDENTIFIER WhereClause ';' ENDLINE
 		   {
 				cout << "delete from table ";
 				cout << $3.id << endl;
-				$5.condition.print();
+				$4.condition.print();
 				prompt();
 		   }
-		 | SELECT AttrList FROM TableList WHERE CondList ';' ENDLINE
+		 | SELECT AttrList FROM TableList WhereClause ';' ENDLINE
 		   {
 				cout << "select .. from table " << endl;
 				$2.printAttrs();
 				$4.printTables();
-				$6.condition.print();
+				$5.condition.print();
 				prompt();
 		   }
 	   	 | error ENDLINE
@@ -108,6 +108,17 @@ Stmt :
 				prompt();
 		   }
 	   	   ;
+
+WhereClause :
+		   /* empty */
+		   {
+				$$.condition.clear();
+		   }
+		 | WHERE CondList
+		   {	 
+		   		 $$.condition = $2.condition;
+		   }
+		 ;
 
 AttrDefList :
 		   AttrDefList ',' AttrDefItem

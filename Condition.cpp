@@ -15,6 +15,12 @@ void Condition::add(CondLogicOp op, CondEntry& entry)
 	 opcodes.push_back(op);
 }
 
+void Condition::clear()
+{
+	 operands.clear();
+	 opcodes.clear();
+}
+
 void Condition::print()
 {
 	 if (operands.empty())
