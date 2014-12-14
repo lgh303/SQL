@@ -26,6 +26,7 @@ TB				 ("TABLE"|"table")
 INDEX			 ("INDEX"|"index")
 DESC			 ("DESC"|"desc")
 NOT				 ("NOT"|"not")
+IS				 ("IS"|"is")
 NUL 			 ("NULL"|"null")
 PRIMARY			 ("PRIMARY"|"primary")
 FOREIGN			 ("FOREIGN"|"foreign")
@@ -76,6 +77,7 @@ VCHAR			 ("VARCHAR"|"varchar")
 {DESC}		   { return SemValue::keyword(DESC); }
 
 {NOT}		   { return SemValue::keyword(NOT); }
+{IS}		   { return SemValue::keyword(IS); }
 {NUL}		   { return SemValue::keyword(NUL); }
 {PRIMARY}	   { return SemValue::keyword(PRIMARY); }
 {FOREIGN}	   { return SemValue::keyword(FOREIGN); }

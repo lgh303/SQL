@@ -15,7 +15,7 @@
 %token INTEGER IDENTIFIER LITERAL
 %token ENDLINE QUIT
 %token CREATE DB DROP USE SHOW TB TBS INDEX DESC
-%token NOT NUL PRIMARY FOREIGN KEY CHECK REFER
+%token NOT IS NUL PRIMARY FOREIGN KEY CHECK REFER
 %token INS_INTO VALUES DELETE
 %token WHERE UPDATE SET SELECT FROM LIKE
 %token AND OR SUM AVG MAX MIN GRP_BY
@@ -94,6 +94,14 @@ Stmt :
 				$5.condition.print();
 				prompt();
 		   }
+		 | SELECT AttrList FROM TableList WHERE CondList ';' ENDLINE
+		   {
+				cout << "select .. from table " << endl;
+				$2.printAttrs();
+				$4.printTables();
+				$6.condition.print();
+				prompt();
+		   }
 	   	 | error ENDLINE
 	   	   {
 				std::cout << "Syntax Error" << std::endl;
@@ -149,6 +157,7 @@ ValueList :
 		 | ValueItem
 		   {
 				cout << "ValueItem" << endl;
+				$$.values.clear();
 				$$.values.push_back($1.value);
 		   }
 		   ;
@@ -186,6 +195,19 @@ Cond :
 		   {
 				$$.condEntry = CondEntry(CondEntry::LESS, $1.expr, $3.expr);
 		   }
+		 | Expr IS NUL
+		   {
+				$$.condEntry = CondEntry();
+				$$.condEntry.op = CondEntry::IS;
+				$$.condEntry.left = $1.expr;
+		   }
+		 | Expr LIKE LITERAL
+		   {
+				$$.condEntry = CondEntry();
+				$$.condEntry.op = CondEntry::LIKE;
+				$$.condEntry.left = $1.expr;
+				$$.condEntry.mode = $3.literal;		   
+		   }
 		 ;
 
 Expr :
@@ -206,6 +228,23 @@ Expr :
 		   }
 		 ;
 
+AttrList :
+		   '*'
+		   {
+				$$.allAttrs = true;
+		   }
+		 | AttrList ',' Attr
+		   {
+				$$.allAttrs = false;
+				$$.attrList.push_back($3.attr);
+		   }
+		 | Attr
+		   {
+				$$.allAttrs = false;
+				$$.attrList.clear();
+				$$.attrList.push_back($1.attr);
+		   }
+		 ;
 Attr :
 		   IDENTIFIER
 		   {	
@@ -217,6 +256,17 @@ Attr :
 		   }
 		 ;
 
+TableList :
+		   TableList ',' IDENTIFIER
+		   {
+				$$.tableList.push_back($3.id);
+		   }
+		 | IDENTIFIER
+		   {
+				$$.tableList.clear();
+				$$.tableList.push_back($1.id);
+		   }
+
 %%
 
 void prompt()
@@ -225,6 +275,10 @@ void prompt()
 	{
 		std::cout << " sql> ";
 	}
+	else
+	{
+		cout << "--------------" << endl;
+    }
 }
 
 void yyerror(const char *s)

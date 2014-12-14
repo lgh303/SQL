@@ -14,31 +14,40 @@ public:
 	 std::string toString()
 	 {
 		  std::string str("(");
-		  str += left.toString();
 		  switch (op)
 		  {
 		  case EQUAL :
+			   str += left.toString();
 			   str += " = ";
+			   str += right.toString();
 			   break;
 		  case GREATER :
+			   str += left.toString();
 			   str += " > ";
+			   str += right.toString();
 			   break;
 		  case LESS :
+			   str += left.toString();
 			   str += " < ";
+			   str += right.toString();
 			   break;
 		  case IS :
+			   str += left.toString();
 			   str += " IS ";
+			   str += "NULL";
 			   break;
 		  case LIKE :
+			   str += left.toString();
 			   str += " LIKE ";
+			   str += mode;
 			   break;
 		  }
-		  str += right.toString();
 		  str += ")";
 		  return str;
 	 }
 	 CondArithOp op;
 	 Expr left, right;
+	 std::string mode;
 };
 
 #endif // __COND_ENTRY_H__

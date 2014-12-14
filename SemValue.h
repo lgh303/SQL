@@ -30,8 +30,13 @@ public:
 	 CondEntry condEntry;
 	 Expr expr;
 	 Attr attr;
+	 std::vector<Attr> attrList;
+	 bool allAttrs;
+	 std::vector<string> tableList;
 
 	 void printValues();
+	 void printAttrs();
+	 void printTables();
 	 static int keyword(int);
 };
 

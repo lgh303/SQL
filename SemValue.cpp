@@ -26,3 +26,25 @@ void SemValue::printValues()
 	 }
 	 cout << endl;
 }
+
+void SemValue::printAttrs()
+{
+	 cout << "ATTR : ";
+	 if (allAttrs)
+	 {
+		  cout << "All Attrs Selected" << endl;
+		  return;
+	 }
+	 for (int i = 0; i < attrList.size(); ++i)
+		  cout << attrList[i].toString() << " | ";
+	 cout << endl;
+}
+
+void SemValue::printTables()
+{
+	 cout << "TB : ";
+	 for (int i = 0; i < tableList.size(); ++i)
+		  cout << tableList[i] << " | ";
+	 cout << endl;
+}
+
