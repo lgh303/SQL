@@ -244,18 +244,44 @@ AttrList :
 		   {
 				$$.allAttrs = true;
 		   }
-		 | AttrList ',' Attr
+		 | AttrList ',' AttrAggr
 		   {
 				$$.allAttrs = false;
 				$$.attrList.push_back($3.attr);
 		   }
-		 | Attr
+		 | AttrAggr
 		   {
 				$$.allAttrs = false;
 				$$.attrList.clear();
 				$$.attrList.push_back($1.attr);
 		   }
 		 ;
+AttrAggr :
+		   Attr
+		   {
+				$$.attr = $1.attr;
+				$$.attr.aggr = Attr::NONE;
+		   }
+		 | SUM '(' Attr ')'
+		   {
+				$$.attr = $3.attr;
+				$$.attr.aggr = Attr::SUM;
+		   }
+		 | AVG '(' Attr ')'
+		   {
+				$$.attr = $3.attr;
+				$$.attr.aggr = Attr::AVG;
+		   }
+		 | MAX '(' Attr ')'
+		   {
+				$$.attr = $3.attr;
+				$$.attr.aggr = Attr::MAX;
+		   }
+		 | MIN '(' Attr ')'
+		   {
+				$$.attr = $3.attr;
+				$$.attr.aggr = Attr::MIN;
+		   }
 Attr :
 		   IDENTIFIER
 		   {	
