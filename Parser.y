@@ -73,6 +73,12 @@ Stmt :
 				$5.schema.print();
 				prompt();
 		   }
+		 | DROP TB IDENTIFIER ';' ENDLINE
+  		   {
+				std::cout << "drop tb ";
+				std::cout << $3.id << std::endl;
+				prompt();
+		   }
 		 | DESC IDENTIFIER ';' ENDLINE
 		   {
 				cout << "describe table ";
@@ -216,7 +222,6 @@ ValueList :
 		   }
 		 | ValueItem
 		   {
-				cout << "ValueItem" << endl;
 				$$.values.clear();
 				$$.values.push_back($1.value);
 		   }

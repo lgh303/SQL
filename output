@@ -1,0 +1,109 @@
+create db orderDB
+--------------
+drop db orderDB
+--------------
+use db orderDB
+--------------
+show tables
+--------------
+create tb customer
+Schema :
+id: int(10) NoNull PRIMARY  
+name: varchar(25) NoNull 
+rank: int(10) YesNull 
+--------------
+drop tb customer
+--------------
+describe table customer
+--------------
+insert into table customer
+values : 
+307001 | CHAD CABELLO | 3 | 
+--------------
+insert into table orders
+values : 
+315000 | 200001 | eight | 
+--------------
+delete from table publisher
+(.nation = USA)
+--------------
+update table 
+TB : book
+ATTR : title
+VAL : Nine Times Nine
+(.authors = Anthony Boucher)
+--------------
+select from table 
+ATTR : ATTR : All Attrs Selected
+TB : TB : publisher | 
+Cond : (.nation = USA)
+--------------
+select from table 
+ATTR : ATTR : .title | .id | 
+TB : TB : book | 
+Cond : (.authors IS NULL)
+--------------
+select from table 
+ATTR : ATTR : book.title | orders.quantity | 
+TB : TB : book | orders | 
+Cond : (orders.book_id = book.id) AND (orders.quantity > Integer)
+--------------
+create index 
+TB : customer
+ATTR : name
+--------------
+drop index 
+TB : customer
+ATTR : name
+--------------
+create tb customer
+Schema :
+id: int(10) NoNull PRIMARY  
+name: varchar(25) NoNull 
+rank: int(10) YesNull 
+(.rank IN { ~ ~ ~ })
+--------------
+create tb book
+Schema :
+id: int(10) NoNull PRIMARY  
+title: varchar(100) NoNull 
+author: varchar(200) YesNull 
+publisher_id: int(10) NoNull FOREIGN (publisher.id)
+copies: int(10) YesNull 
+--------------
+select from table 
+ATTR : ATTR : .title | .authors | 
+TB : TB : book | 
+Cond : (.authors LIKE %David%)
+--------------
+select from table 
+ATTR : ATTR : cusomer.name | book.title | order.quantity | 
+TB : TB : customer | book | order | 
+Cond : (orders.customer_id = customer.id) AND (orders.book_id = book.id) AND (orders.quantity > Integer)
+--------------
+select from table 
+ATTR : ATTR : .quantity(SUM)  | 
+TB : TB : orders | 
+Cond : Empty Condition
+--------------
+select from table 
+ATTR : ATTR : .quantity(AVG)  | 
+TB : TB : orders | 
+Cond : Empty Condition
+--------------
+select from table 
+ATTR : ATTR : .quantity(MAX)  | 
+TB : TB : orders | 
+Cond : Empty Condition
+--------------
+select from table 
+ATTR : ATTR : .quantity(MIN)  | 
+TB : TB : orders | 
+Cond : Empty Condition
+--------------
+select from table 
+ATTR : ATTR : .customer_id | .quantity(SUM)  | 
+TB : TB : orders | 
+Cond : Empty Condition
+GRP_BY : customer_id
+--------------
