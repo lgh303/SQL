@@ -1,5 +1,5 @@
 create database lgh;
-drop database lgh;
 use lgh;
+insert into customer values (307001, "CHAD CABELLO", 3);
 SHOW TABLES;
-create table customer( id int(10) NOT NULL, name varchar(25), rank int(10) NOT NULL, PRIMARY KEY(id));
+

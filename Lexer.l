@@ -6,6 +6,7 @@
 	#include "Parser.tab.h"
 	void yyerror(const char*);
 	std::string str;
+	using namespace std;
 %}
 
 OPERATOR		 (","|"."|"+"|"-"|"*"|"/"|"("|")"|"="|"<"|">"|";")
@@ -119,21 +120,22 @@ VCHAR			 ("VARCHAR"|"varchar")
 					return INTEGER;
 			   }	
 
-<INITIAL>'\"   {
+<INITIAL>\"    {
 					str = std::string();
+					cout << "begin str" << endl;
 					BEGIN(STR);
 			   }
 
-<STR>.		   {
-					str += char(*yytext);
-			   }
-
-<STR>'\"'	   {
+<STR>\"	   	   {
 					BEGIN(INITIAL);
 					yylval = SemValue();
 					yylval.code = LITERAL;
 					yylval.literal = str;
 					return LITERAL;
+			   }
+
+<STR>.		   {
+					str += char(*yytext);
 			   }
 
 . 		   	   {

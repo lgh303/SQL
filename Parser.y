@@ -72,6 +72,18 @@ Stmt :
 				std::cout << "Schema :" << std::endl;
 				$5.schema.print();
 		   }
+		 | DESC IDENTIFIER ';' ENDLINE
+		   {
+				cout << "describe table ";
+				cout << $2.id << endl;
+		   }
+		 | INS_INTO IDENTIFIER VALUES '(' ValueList ')' ';' ENDLINE
+		   {		
+		   		cout << "insert into table ";
+				cout << $2.id << endl;
+				cout << "values : " << endl;
+				$5.printValues();
+		   }
 	   	 | error ENDLINE
 	   	   {
 				std::cout << "Syntax Error" << std::endl;
@@ -118,6 +130,23 @@ Type :	   INT		{ $$.datatype = "int"; }
 		 | CHAR		{ $$.datatype = "char"; }
 		 | VCHAR 	{ $$.datatype = "varchar"; }
 		 ;
+
+ValueList :
+		   ValueList ',' ValueItem
+		   {
+				$$.values.push_back($3.value);
+		   }
+		 | ValueItem
+		   {
+				cout << "ValueItem" << endl;
+				$$.values.push_back($1.value);
+		   }
+		   ;
+
+ValueItem :
+		   INTEGER  { $$.value = Value(0, $1.length, ""); }
+		 | LITERAL  { $$.value = Value(1, 0, $1.literal); }
+		 ;		   
 
 %%
 

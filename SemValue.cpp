@@ -1,3 +1,4 @@
+#include <iostream>
 #include "SemValue.h"
 #define YYSTYPE SemValue
 #include "Parser.tab.h"
@@ -13,3 +14,15 @@ int SemValue::keyword(int code)
 	 return code;
 }
 
+void SemValue::printValues()
+{
+	 for (int i = 0; i < values.size(); ++i)
+	 {
+		  if (values[i].type == 0)
+			   cout << values[i].integer;
+		  else
+			   cout << values[i].literal;
+		  cout << " | ";
+	 }
+	 cout << endl;
+}
