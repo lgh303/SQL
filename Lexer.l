@@ -5,9 +5,10 @@
 	#define YYSTYPE SemValue
 	#include "Parser.tab.h"
 	void yyerror(const char*);
+	std::string str;
 %}
 
-OPERATOR		 ("."|"+"|"-"|"*"|"/"|"("|")"|"="|"<"|">"|";")
+OPERATOR		 (","|"."|"+"|"-"|"*"|"/"|"("|")"|"="|"<"|">"|";")
 WHITESPACE 		 ([ \t]+)
 NEWLINE  		 (\r|\n|\r\n)
 INTEGER 		 ([0-9]+)
@@ -19,7 +20,8 @@ DB				 ("DATABASE"|"database")
 DROP			 ("DROP"|"drop")
 USE				 ("USE"|"use")
 SHOW			 ("SHOW"|"show")
-TB				 ("TABLES"|"tables")
+TBS				 ("TABLES"|"tables")
+TB				 ("TABLE"|"table")
 INDEX			 ("INDEX"|"index")
 DESC			 ("DESC"|"desc")
 NOT				 ("NOT"|"not")
@@ -51,7 +53,7 @@ GRP_BY			 ("GRPOUP BY"|"group by")
 
 INT				 ("INT"|"int")
 CHAR			 ("CHAR"|"char")
-VCHAR			 ("VCHAR"|"vchar")
+VCHAR			 ("VARCHAR"|"varchar")
 
 %x STR
 
@@ -66,54 +68,72 @@ VCHAR			 ("VCHAR"|"vchar")
 {DROP}		   { return SemValue::keyword(DROP); }
 {USE} 		   { return SemValue::keyword(USE); }
 {SHOW}	   	   { return SemValue::keyword(SHOW); }
-{TB}    	   { return TB; }
-{INDEX}		   { return INDEX; }
-{DESC}		   { return DESC; }
+{TB}    	   { return SemValue::keyword(TB); }
+{TBS}    	   { return SemValue::keyword(TBS); }
+{INDEX}		   { return SemValue::keyword(INDEX); }
+{DESC}		   { return SemValue::keyword(DESC); }
 
-{NOT}		   { return NOT; }
-{NUL}		   { return NUL; }
-{PRIMARY}	   { return PRIMARY; }
-{FOREIGN}	   { return FOREIGN; }
-{KEY}		   { return KEY; }
-{CHECK}		   { return CHECK; }
-{REFER}		   { return REFER; }
+{NOT}		   { return SemValue::keyword(NOT); }
+{NUL}		   { return SemValue::keyword(NUL); }
+{PRIMARY}	   { return SemValue::keyword(PRIMARY); }
+{FOREIGN}	   { return SemValue::keyword(FOREIGN); }
+{KEY}		   { return SemValue::keyword(KEY); }
+{CHECK}		   { return SemValue::keyword(CHECK); }
+{REFER}		   { return SemValue::keyword(REFER); }
 
-{INS_INTO}	   { return INS_INTO; }
-{VALUES}	   { return VALUES; }
-{DELETE}	   { return DELETE; }
-{WHERE}		   { return WHERE; }
-{UPDATE}	   { return UPDATE; }
-{SET}		   { return SET; }
-{SELECT}	   { return SELECT; }
-{FROM}		   { return FROM; }
-{LIKE}		   { return LIKE; }
+{INS_INTO}	   { return SemValue::keyword(INS_INTO); }
+{VALUES}	   { return SemValue::keyword(VALUES); }
+{DELETE}	   { return SemValue::keyword(DELETE); }
+{WHERE}		   { return SemValue::keyword(WHERE); }
+{UPDATE}	   { return SemValue::keyword(UPDATE); }
+{SET}		   { return SemValue::keyword(SET); }
+{SELECT}	   { return SemValue::keyword(SELECT); }
+{FROM}		   { return SemValue::keyword(FROM); }
+{LIKE}		   { return SemValue::keyword(LIKE); }
 
-{AND}		   { return AND; }
-{OR}		   { return OR; }
+{AND}		   { return SemValue::keyword(AND); }
+{OR}		   { return SemValue::keyword(OR); }
 
-{SUM}		   { return SUM; }
-{AVG}		   { return AVG; }
-{MAX}		   { return MAX; }
-{MIN}		   { return MIN; }
-{GRP_BY}	   { return GRP_BY; }
+{SUM}		   { return SemValue::keyword(SUM); }
+{AVG}		   { return SemValue::keyword(AVG); }
+{MAX}		   { return SemValue::keyword(MAX); }
+{MIN}		   { return SemValue::keyword(MIN); }
+{GRP_BY}	   { return SemValue::keyword(GRP_BY); }
 
-{INT}		   { return INT; }
-{CHAR}		   { return CHAR; }
-{VCHAR}		   { return VCHAR; }
+{INT}		   { return SemValue::keyword(INT); }
+{CHAR}		   { return SemValue::keyword(CHAR); }
+{VCHAR}		   { return SemValue::keyword(VCHAR); }
 
 
 {OPERATOR}     { return *yytext; }
-{IDENTIFIER}   { return SemValue::identifier(std::string(yytext)); }
-{INTEGER}  	   {
-					return INTEGER;
+{IDENTIFIER}   {
+					yylval = SemValue();
+					yylval.code = IDENTIFIER;
+					yylval.id = std::string(yytext);
+					return IDENTIFIER;
 			   }
+{INTEGER}  	   {
+					yylval = SemValue();
+					yylval.code = INTEGER;
+					yylval.length = atoi(yytext);
+					return INTEGER;
+			   }	
 
-<INITIAL>\"	   {
+<INITIAL>'\"   {
+					str = std::string();
 					BEGIN(STR);
 			   }
+
 <STR>.		   {
+					str += char(*yytext);
 			   }
-<STR>\"		   {
+
+<STR>'\"'	   {
+					BEGIN(INITIAL);
+					yylval = SemValue();
+					yylval.code = LITERAL;
+					yylval.literal = str;
+					return LITERAL;
 			   }
 
 . 		   	   {

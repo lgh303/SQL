@@ -9,11 +9,12 @@
 	int yylex(void);
 	extern FILE* yyin;
 	bool isInterp = true;
+	using namespace std;
 %}
 
 %token INTEGER IDENTIFIER LITERAL
 %token ENDLINE QUIT
-%token CREATE DB DROP USE SHOW TB INDEX DESC
+%token CREATE DB DROP USE SHOW TB TBS INDEX DESC
 %token NOT NUL PRIMARY FOREIGN KEY CHECK REFER
 %token INS_INTO VALUES DELETE
 %token WHERE UPDATE SET SELECT FROM LIKE
@@ -25,41 +26,51 @@
 
 %%
 
-program :
-		program stmt
+Program :
+		  Program Stmt
 		| /* empty */
 		;
-stmt : 
-		 ENDLINE
-		 {
-			prompt();
-		 }
+Stmt : 
+		   ENDLINE
+		   {
+				prompt();
+		   }
 	     | QUIT ENDLINE
 	   	   {
 				exit(0);
            }
 	   	 | CREATE DB IDENTIFIER ';' ENDLINE
 		   {
-				std::cout << "create db" << std::endl;
-				std::cout << $3.id << std::endl;
+				std::string dbname = $3.id;
+				std::cout << "create db ";
+				std::cout << dbname << std::endl;
 				prompt();
 		   }
 		 | DROP DB IDENTIFIER ';' ENDLINE
 		   {
-				std::cout << "drop db" << std::endl;
-				std::cout << $3.id << std::endl;
+				std::string dbname = $3.id;
+				std::cout << "drop db ";
+				std::cout << dbname << std::endl;
 				prompt();
 		   }
 		 | USE IDENTIFIER ';' ENDLINE
 		   {
-				std::cout << "use db" << std::endl;
-				std::cout << $2.id << std::endl;
+				std::string dbname = $2.id;
+				std::cout << "use db ";
+				std::cout << dbname << std::endl;
 				prompt();
 		   }
-		 | SHOW TB ';' ENDLINE
+		 | SHOW TBS ';' ENDLINE
 		   {
 				std::cout << "show tables" << std::endl;
 				prompt();
+		   }
+		 | CREATE TB IDENTIFIER '(' AttrList ')' ';' ENDLINE
+		   {
+				std::cout << "create tb ";
+				std::cout << $3.id << std::endl;
+				std::cout << "Schema :" << std::endl;
+				$5.schema.print();
 		   }
 	   	 | error ENDLINE
 	   	   {
@@ -67,6 +78,46 @@ stmt :
 				prompt();
 		   }
 	   	   ;
+
+AttrList :
+		   AttrList ',' AttrItem
+		   {
+				if ($3.primaryKey.empty())
+					$$.schema.add($3.schemaEntry);
+				else
+					$$.schema.setPrimary($3.primaryKey);
+		   }
+		 | AttrItem
+		   {
+				$$.schema = Schema();
+				if ($1.primaryKey.empty())
+					$$.schema.add($1.schemaEntry);
+				else
+					$$.schema.setPrimary($1.primaryKey);
+		   }
+		   ;
+
+AttrItem :
+		   IDENTIFIER Type '(' INTEGER ')' 
+		   {
+				$$.schemaEntry = SchemaEntry($1.id, $2.datatype, $4.length, 0);
+				$$.primaryKey = "";
+		   }
+		 | IDENTIFIER Type '(' INTEGER ')' NOT NUL
+		   {
+				$$.schemaEntry = SchemaEntry($1.id, $2.datatype, $4.length, 1);
+				$$.primaryKey = "";
+		   }
+		 | PRIMARY KEY '(' IDENTIFIER ')'
+		   {
+				$$.primaryKey = $4.id;
+		   }
+		   ;
+
+Type :	   INT		{ $$.datatype = "int"; }
+		 | CHAR		{ $$.datatype = "char"; }
+		 | VCHAR 	{ $$.datatype = "varchar"; }
+		 ;
 
 %%
 

@@ -13,10 +13,3 @@ int SemValue::keyword(int code)
 	 return code;
 }
 
-int SemValue::identifier(string name)
-{
-	 yylval = SemValue();
-	 yylval.code = IDENTIFIER;
-	 yylval.id = name;
-	 return IDENTIFIER;
-}
