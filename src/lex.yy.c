@@ -647,8 +647,8 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "Lexer.l"
-#line 2 "Lexer.l"
+#line 1 "Parser/Lexer.l"
+#line 2 "Parser/Lexer.l"
 	#include <cstdlib>
 	#include <iostream>
 	#include "SemValue.h"
@@ -848,7 +848,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 64 "Lexer.l"
+#line 64 "Parser/Lexer.l"
 
 
 #line 855 "lex.yy.c"
@@ -936,213 +936,213 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 66 "Lexer.l"
+#line 66 "Parser/Lexer.l"
 { /* ignore */ }
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 67 "Lexer.l"
+#line 67 "Parser/Lexer.l"
 { return ENDLINE; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 68 "Lexer.l"
+#line 68 "Parser/Lexer.l"
 { return QUIT; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 70 "Lexer.l"
+#line 70 "Parser/Lexer.l"
 { return SemValue::keyword(CREATE); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 71 "Lexer.l"
+#line 71 "Parser/Lexer.l"
 { return SemValue::keyword(DB); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 72 "Lexer.l"
+#line 72 "Parser/Lexer.l"
 { return SemValue::keyword(DROP); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 73 "Lexer.l"
+#line 73 "Parser/Lexer.l"
 { return SemValue::keyword(USE); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 74 "Lexer.l"
+#line 74 "Parser/Lexer.l"
 { return SemValue::keyword(SHOW); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 75 "Lexer.l"
+#line 75 "Parser/Lexer.l"
 { return SemValue::keyword(TB); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 76 "Lexer.l"
+#line 76 "Parser/Lexer.l"
 { return SemValue::keyword(TBS); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 77 "Lexer.l"
+#line 77 "Parser/Lexer.l"
 { return SemValue::keyword(INDEX); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 78 "Lexer.l"
+#line 78 "Parser/Lexer.l"
 { return SemValue::keyword(DESC); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 80 "Lexer.l"
+#line 80 "Parser/Lexer.l"
 { return SemValue::keyword(NOT); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 81 "Lexer.l"
+#line 81 "Parser/Lexer.l"
 { return SemValue::keyword(IS); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 82 "Lexer.l"
+#line 82 "Parser/Lexer.l"
 { return SemValue::keyword(NUL); }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 83 "Lexer.l"
+#line 83 "Parser/Lexer.l"
 { return SemValue::keyword(IN); }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 84 "Lexer.l"
+#line 84 "Parser/Lexer.l"
 { return SemValue::keyword(PRIMARY); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 85 "Lexer.l"
+#line 85 "Parser/Lexer.l"
 { return SemValue::keyword(FOREIGN); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 86 "Lexer.l"
+#line 86 "Parser/Lexer.l"
 { return SemValue::keyword(KEY); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 87 "Lexer.l"
+#line 87 "Parser/Lexer.l"
 { return SemValue::keyword(CHECK); }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 88 "Lexer.l"
+#line 88 "Parser/Lexer.l"
 { return SemValue::keyword(REFER); }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 90 "Lexer.l"
+#line 90 "Parser/Lexer.l"
 { return SemValue::keyword(INS_INTO); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 91 "Lexer.l"
+#line 91 "Parser/Lexer.l"
 { return SemValue::keyword(VALUES); }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 92 "Lexer.l"
+#line 92 "Parser/Lexer.l"
 { return SemValue::keyword(DELETE); }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 93 "Lexer.l"
+#line 93 "Parser/Lexer.l"
 { return SemValue::keyword(WHERE); }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 94 "Lexer.l"
+#line 94 "Parser/Lexer.l"
 { return SemValue::keyword(UPDATE); }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 95 "Lexer.l"
+#line 95 "Parser/Lexer.l"
 { return SemValue::keyword(SET); }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 96 "Lexer.l"
+#line 96 "Parser/Lexer.l"
 { return SemValue::keyword(SELECT); }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 97 "Lexer.l"
+#line 97 "Parser/Lexer.l"
 { return SemValue::keyword(FROM); }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 98 "Lexer.l"
+#line 98 "Parser/Lexer.l"
 { return SemValue::keyword(LIKE); }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 100 "Lexer.l"
+#line 100 "Parser/Lexer.l"
 { return SemValue::keyword(AND); }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 101 "Lexer.l"
+#line 101 "Parser/Lexer.l"
 { return SemValue::keyword(OR); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 103 "Lexer.l"
+#line 103 "Parser/Lexer.l"
 { return SemValue::keyword(SUM); }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 104 "Lexer.l"
+#line 104 "Parser/Lexer.l"
 { return SemValue::keyword(AVG); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 105 "Lexer.l"
+#line 105 "Parser/Lexer.l"
 { return SemValue::keyword(MAX); }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 106 "Lexer.l"
+#line 106 "Parser/Lexer.l"
 { return SemValue::keyword(MIN); }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 107 "Lexer.l"
+#line 107 "Parser/Lexer.l"
 { return SemValue::keyword(GRP_BY); }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 109 "Lexer.l"
+#line 109 "Parser/Lexer.l"
 { return SemValue::keyword(INT); }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 110 "Lexer.l"
+#line 110 "Parser/Lexer.l"
 { return SemValue::keyword(CHAR); }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 111 "Lexer.l"
+#line 111 "Parser/Lexer.l"
 { return SemValue::keyword(VCHAR); }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 114 "Lexer.l"
+#line 114 "Parser/Lexer.l"
 { return *yytext; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 115 "Lexer.l"
+#line 115 "Parser/Lexer.l"
 {
 					yylval = SemValue();
 					yylval.code = IDENTIFIER;
@@ -1152,7 +1152,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 121 "Lexer.l"
+#line 121 "Parser/Lexer.l"
 {
 					yylval = SemValue();
 					yylval.code = INTEGER;
@@ -1162,7 +1162,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 128 "Lexer.l"
+#line 128 "Parser/Lexer.l"
 {
 					str = std::string();
 					BEGIN(SS);
@@ -1170,7 +1170,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 132 "Lexer.l"
+#line 132 "Parser/Lexer.l"
 {
 					str = std::string();
 					BEGIN(S);
@@ -1178,7 +1178,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 137 "Lexer.l"
+#line 137 "Parser/Lexer.l"
 {
 					BEGIN(INITIAL);
 					yylval = SemValue();
@@ -1189,7 +1189,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 144 "Lexer.l"
+#line 144 "Parser/Lexer.l"
 {
 					BEGIN(INITIAL);
 					yylval = SemValue();
@@ -1200,28 +1200,28 @@ YY_RULE_SETUP
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 152 "Lexer.l"
+#line 152 "Parser/Lexer.l"
 {
 					str += char(*yytext);
 			   }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 155 "Lexer.l"
+#line 155 "Parser/Lexer.l"
 {
 					str += char(*yytext);
 			   }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 158 "Lexer.l"
+#line 158 "Parser/Lexer.l"
 {
 					return 256;
 		   	   }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 161 "Lexer.l"
+#line 161 "Parser/Lexer.l"
 ECHO;
 	YY_BREAK
 #line 1228 "lex.yy.c"
@@ -2224,7 +2224,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 161 "Lexer.l"
+#line 161 "Parser/Lexer.l"
 
 
 

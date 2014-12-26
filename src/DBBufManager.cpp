@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <climits>
 #include "DBBufManager.h"
 #include "DBUtility.h"
 #include "DBFileManager.h"

@@ -1,5 +1,6 @@
 #include "DBPage.h"
 #include "DBUtility.h"
+#include <cstring>
 #include <iostream>
 using namespace std;
 

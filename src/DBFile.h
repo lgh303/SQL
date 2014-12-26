@@ -27,7 +27,7 @@ public:
 	int CreatePage();
 	char* getPage(int page);
 	char* getRecord(int page, int rid);
-	int SearchRecord(char* keyattr, char* keyword, vector< pair<int, int>>& re);
+	int SearchRecord(char* keyattr, char* keyword, vector< pair<int, int> >& re);
 	int AddRecord(char* record, int length);
 	int DeleteRecord(int pageid, int rid);
 };

@@ -2,6 +2,8 @@
 	#include <cstdio>
 	#include <cstdlib>
 	#include <iostream>
+	#include "DBFileManager.h"
+	#include "DBBufManager.h"
 	#include "SemValue.h"
 	#define YYSTYPE SemValue
 	void yyerror(const char*);
@@ -387,6 +389,9 @@ void yyerror(const char *s)
 	/* Do Nothing */
 }
 
+DBFileManager* myfilemanager = NULL;
+DBBufManager *mybufmanager = NULL;
+
 int main(int argc, char** argv)
 {
 	if (argc > 2)
@@ -394,6 +399,10 @@ int main(int argc, char** argv)
 		std::cout << "Too many arguments" << std::endl;
 		return -1;
 	}
+	
+	myfilemanager = new DBFileManager();
+	mybufmanager = new DBBufManager();
+
 	if (argc == 2)
 	{
 		FILE* pFile = fopen(argv[1], "r");

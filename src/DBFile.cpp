@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <io.h>
+#include <cstring>
 using namespace std;
 
 
@@ -79,7 +80,7 @@ char* DBFile::getRecord(int page, int rid)
 	return content + DBPAGEHEADER + page * DBPAGE + rid * (DBRECORDHEADER + ((DBFileInfo*)(fileheader.header))->recordLength);
 }
 
-int DBFile::SearchRecord(char* keyattr, char* keyword, vector< pair<int, int>>& result)
+int DBFile::SearchRecord(char* keyattr, char* keyword, vector< pair<int, int> >& result)
 {
 	//第一步：获取属性偏移量
 	DBAttribute key;

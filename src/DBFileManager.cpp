@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cstring>
 #include <io.h>
 using namespace std;
 
@@ -17,8 +18,15 @@ DBFile* bufFile[BUFFILEMAX];
 int DBFileManager::CreateFile(char* filename)
 {
 	//查找数据库中有无该文件
+	int result = -1;
+
+#ifndef __LINUX__
 	_finddata_t* newfile = new _finddata_t();
-	int result = _findfirst(filename, newfile);
+	result = _findfirst(filename, newfile);
+#else
+	// TODO
+#endif
+
 	if(result != -1)
 	{
 		DBPrintErrorPos("Create File Error");
@@ -47,8 +55,18 @@ int DBFileManager::CreateFile(char* filename)
 int DBFileManager::OpenFile(char* filename)
 {
 	//查找数据库中有无该文件
-	_finddata_t* newfile = new _finddata_t();
-	int result = _findfirst(filename, newfile);
+
+	 int result = -1;
+	 int filesize = -1;
+
+#ifndef __LINUX__
+	 _finddata_t* newfile = new _finddata_t();
+	 result = _findfirst(filename, newfile);
+	 filesize = newfile->size;
+#else
+	 // TODO
+#endif
+
 	if(result == -1)
 	{
 		DBPrintErrorPos("Open File Error");
@@ -66,10 +84,10 @@ int DBFileManager::OpenFile(char* filename)
 	int fileid = mybufmanager->AddBuf(filename);
 	bufFile[fileid] = new DBFile();
 	fin.read(bufFile[fileid]->fileheader.header, DBFILEHEADER);
-	if(newfile->size - DBFILEHEADER > 0)
+	if(filesize - DBFILEHEADER > 0)
 	{
-		bufFile[fileid]->content = new char[newfile->size - DBFILEHEADER];
-		fin.read(bufFile[fileid]->content, newfile->size - DBFILEHEADER);
+		bufFile[fileid]->content = new char[filesize - DBFILEHEADER];
+		fin.read(bufFile[fileid]->content, filesize - DBFILEHEADER);
 	}
 	fin.close();
 	mybufmanager->FixOperTime(fileid, ::GetCurrentTime());
@@ -87,8 +105,16 @@ int DBFileManager::CloseFile(char* filename)
 		return FILENOTOPEN;
 	}
 	//查找文件系统中有无该文件
+
+	int result = -1;
+
+#ifndef __LINUX__
 	_finddata_t* newfile = new _finddata_t();
-	int result = _findfirst(filename, newfile);
+	result = _findfirst(filename, newfile);
+#else
+	// TODO
+#endif
+
 	if(result == -1)
 	{
 		DBPrintErrorPos("Close File Error");
@@ -111,8 +137,16 @@ int DBFileManager::CloseFile(char* filename)
 int DBFileManager::DestroyFile(char* filename)
 {
 	//查找文件系统中有无该文件
+
+	int result = -1;
+
+#ifndef __LINUX__
 	_finddata_t* newfile = new _finddata_t();
-	int result = _findfirst(filename, newfile);
+	result = _findfirst(filename, newfile);
+#else
+	// TODO
+#endif
+
 	if(result == -1)
 	{
 		DBPrintErrorPos("Destroy File Error");
