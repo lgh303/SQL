@@ -3,7 +3,7 @@
 #include <string>
 using namespace std;
 
-static char* DB_ERROR[] = {
+static const char* DB_ERROR[] = {
 		"DB_OK",
 		"Cannot create file",
 		"File has already existed. Cannot create file.",
