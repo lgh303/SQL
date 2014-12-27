@@ -7,8 +7,8 @@
 #include "DBRecord.h"
 #include <iostream>
 #include <fstream>
-#include <io.h>
 #include <cstring>
+
 using namespace std;
 
 

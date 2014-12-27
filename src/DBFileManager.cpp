@@ -9,7 +9,14 @@
 #include <fstream>
 #include <string>
 #include <cstring>
+
+#ifndef __LINUX__
 #include <io.h>
+#else
+#include <dirent.h>
+#include <sys/stat.h>
+#endif
+
 using namespace std;
 
 class DBFileInfo;
@@ -24,7 +31,18 @@ int DBFileManager::CreateFile(char* filename)
 	_finddata_t* newfile = new _finddata_t();
 	result = _findfirst(filename, newfile);
 #else
-	// TODO
+	string dbname = "db/";
+	string dbpath = "../" + dbname;
+	DIR *dir = opendir(dbpath.c_str());
+	// need to make sure dir != NULL
+	string tbname = filename;
+	for (dirent *pDir = readdir(dir); pDir != NULL; pDir = readdir(dir))
+		 if (pDir->d_name[0] != '.' && tbname == pDir->d_name)
+		 {
+			  result = 0;
+			  break;
+		 }
+	closedir(dir);
 #endif
 
 	if(result != -1)
@@ -64,7 +82,22 @@ int DBFileManager::OpenFile(char* filename)
 	 result = _findfirst(filename, newfile);
 	 filesize = newfile->size;
 #else
-	 // TODO
+	string dbname = "db/";
+	string dbpath = "../" + dbname;
+	DIR *dir = opendir(dbpath.c_str());
+	// need to make sure dir != NULL
+	string tbname = filename;
+	for (dirent *pDir = readdir(dir); pDir != NULL; pDir = readdir(dir))
+		 if (pDir->d_name[0] != '.' && tbname == pDir->d_name)
+		 {
+			  result = 0;
+			  string tbpath = dbpath + tbname;
+			  struct stat filestat;
+			  stat(tbpath.c_str(), &filestat);
+			  filesize = filestat.st_size;
+			  break;
+		 }
+	closedir(dir);
 #endif
 
 	if(result == -1)
@@ -112,7 +145,18 @@ int DBFileManager::CloseFile(char* filename)
 	_finddata_t* newfile = new _finddata_t();
 	result = _findfirst(filename, newfile);
 #else
-	// TODO
+	string dbname = "db/";
+	string dbpath = "../" + dbname;
+	DIR *dir = opendir(dbpath.c_str());
+	// need to make sure dir != NULL
+	string tbname = filename;
+	for (dirent *pDir = readdir(dir); pDir != NULL; pDir = readdir(dir))
+		 if (pDir->d_name[0] != '.' && tbname == pDir->d_name)
+		 {
+			  result = 0;
+			  break;
+		 }
+	closedir(dir);
 #endif
 
 	if(result == -1)
@@ -144,7 +188,18 @@ int DBFileManager::DestroyFile(char* filename)
 	_finddata_t* newfile = new _finddata_t();
 	result = _findfirst(filename, newfile);
 #else
-	// TODO
+	string dbname = "db/";
+	string dbpath = "../" + dbname;
+	DIR *dir = opendir(dbpath.c_str());
+	// need to make sure dir != NULL
+	string tbname = filename;
+	for (dirent *pDir = readdir(dir); pDir != NULL; pDir = readdir(dir))
+		 if (pDir->d_name[0] != '.' && tbname == pDir->d_name)
+		 {
+			  result = 0;
+			  break;
+		 }
+	closedir(dir);
 #endif
 
 	if(result == -1)
