@@ -66,7 +66,7 @@
 /* Copy the first part of user declarations.  */
 
 /* Line 268 of yacc.c  */
-#line 1 "./Parser.y"
+#line 1 "Parser.y"
 
 	#include <cstdio>
 	#include <cstdlib>
@@ -74,6 +74,7 @@
 	#include "DBFileManager.h"
 	#include "DBBufManager.h"
 	#include "SemValue.h"
+	#include "OrderPack.h"
 	#define YYSTYPE SemValue
 	void yyerror(const char*);
 	void prompt();
@@ -84,7 +85,7 @@
 
 
 /* Line 268 of yacc.c  */
-#line 88 "Parser.tab.c"
+#line 89 "Parser.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -170,7 +171,7 @@ typedef int YYSTYPE;
 
 
 /* Line 343 of yacc.c  */
-#line 174 "Parser.tab.c"
+#line 175 "Parser.tab.c"
 
 #ifdef short
 # undef short
@@ -389,7 +390,7 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  2
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   184
+#define YYLAST   183
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  57
@@ -470,7 +471,7 @@ static const yytype_int8 yyrhs[] =
        4,    31,     4,    52,    66,    60,    49,     6,    -1,     8,
       15,     4,    50,     4,    51,    49,     6,    -1,    10,    15,
        4,    50,     4,    51,    49,     6,    -1,     1,     6,    -1,
-      -1,    29,    67,    -1,    -1,    41,     4,    -1,    62,    53,
+      -1,    29,    67,    -1,    -1,    41,    72,    -1,    62,    53,
       63,    -1,    63,    -1,     4,    64,    50,     3,    51,    -1,
        4,    64,    50,     3,    51,    17,    19,    -1,    21,    23,
       50,     4,    51,    -1,    24,    50,    67,    51,    -1,    22,
@@ -490,13 +491,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    32,    32,    33,    36,    40,    44,    51,    58,    65,
-      70,    78,    84,    90,    98,   105,   118,   131,   138,   145,
-     154,   157,   165,   168,   175,   179,   187,   192,   197,   202,
-     207,   215,   216,   217,   221,   225,   233,   234,   238,   242,
-     246,   253,   257,   261,   265,   272,   280,   291,   296,   301,
-     309,   313,   318,   326,   331,   336,   341,   346,   352,   356,
-     363,   367
+       0,    33,    33,    34,    37,    41,    45,    54,    63,    72,
+      79,    91,   100,   109,   121,   132,   151,   170,   181,   192,
+     201,   204,   212,   215,   222,   226,   234,   239,   244,   249,
+     254,   262,   263,   264,   268,   272,   280,   281,   285,   289,
+     293,   300,   304,   308,   312,   319,   327,   338,   343,   348,
+     356,   360,   365,   373,   378,   383,   388,   393,   399,   403,
+     410,   414
 };
 #endif
 
@@ -597,27 +598,27 @@ static const yytype_int16 yypact[] =
       72,    79,    51,    81,     8,   -85,   -85,   -85,    82,    83,
       84,    85,    86,    87,    43,    44,    45,    68,    92,    66,
       42,    50,    52,    53,    54,   -85,   -26,   -85,   -85,    57,
-      55,    58,    63,    64,    65,    93,    95,   101,    67,    89,
-     110,   112,   115,   115,   115,   115,   116,    12,   117,     1,
-     118,   119,   120,   123,   -85,   -85,   -85,    39,    56,    75,
-      69,   -85,    77,    78,    80,    88,   -85,   -27,   -85,   -85,
-      25,   107,   109,    90,   -45,   -85,    91,   -85,   -85,    94,
+      55,    58,    63,    64,    65,    93,    95,   101,    67,    90,
+     110,   112,   116,   116,   116,   116,   117,    12,   118,     1,
+     119,   120,   121,   124,   -85,   -85,   -85,    39,    56,    73,
+      77,   -85,    74,    80,    88,    89,   -85,   -27,   -85,   -85,
+      25,   107,   109,    91,   -45,   -85,    94,   -85,   -85,    96,
      -85,   -85,    26,   -85,   -85,   -85,    35,   -85,    11,     0,
-     127,    39,   -85,   -85,   -85,   -85,   130,    96,   -85,   -85,
-     -85,    97,    98,    99,    56,   102,     1,   103,   104,   105,
-      39,    56,    56,    56,    56,    56,   122,   100,   131,   -85,
-      89,   -85,   134,   106,   132,   139,   140,    21,   150,   -85,
-     151,   152,   153,   -85,   -85,   -85,   -85,   -85,   -85,   -85,
-     -85,    39,   -85,   111,   -85,   155,   113,   114,   121,   -85,
-     -85,   -85,   -85,   -85,    27,   156,   -85,   129,   -85,   138,
-     -85,   -85,   147,   163,   -85,   124,   164,   125,   -85
+     127,    39,   -85,   -85,   -85,   -85,   130,    97,   -85,   -85,
+     -85,    98,    99,   100,    56,   102,     1,   103,   104,   105,
+      39,    56,    56,    56,    56,    56,   123,   106,   131,   -85,
+      90,   -85,   116,   108,   132,   133,   139,    21,   138,   -85,
+     140,   149,   152,   -85,   -85,   -85,   -85,   -85,   -85,   -85,
+     -85,    39,   -85,   111,   -85,   153,   113,   114,   115,   -85,
+     -85,   -85,   -85,   -85,    27,   155,   -85,   145,   -85,   142,
+     -85,   -85,   144,   164,   -85,   122,   165,   125,   -85
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
      -85,   -85,   -85,   -76,   -85,   -85,    59,   -85,    19,   -84,
-      70,   -40,   -50,   -85,   126,   -14,   -85
+      60,   -40,   -50,   -85,   126,   -14,   -85
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -637,14 +638,14 @@ static const yytype_uint8 yytable[] =
      120,   144,   145,    27,    28,    29,    39,    40,    41,    42,
       43,    44,    45,    46,    47,    48,    49,    50,    51,    64,
       52,    65,    53,    54,    55,    59,    58,    66,    60,   147,
-     147,   147,    61,    62,    70,    63,    71,    67,    68,    30,
-      76,   101,    86,    79,   100,    87,    88,    89,   102,   103,
-     112,   104,   113,   129,   131,   156,   152,   132,   154,   105,
-     114,   150,   117,   157,   158,   118,   172,   134,   135,   136,
-     151,   138,   140,   141,   142,   155,   160,   161,   162,   163,
-     165,   166,   171,   173,   167,   168,   174,   175,   177,     0,
-     164,     0,   169,     0,   176,   139,   178,     0,     0,     0,
-       0,     0,     0,    78,   137
+     147,   147,    61,    62,    70,    63,    71,    67,   154,    68,
+      30,    76,   100,    86,    79,   102,    87,    88,    89,   101,
+     112,   103,   113,   129,   131,   156,   152,   157,   132,   104,
+     105,   114,   150,   158,   160,   117,   161,   118,   134,   135,
+     136,   138,   140,   141,   142,   162,   151,   155,   163,   166,
+     165,   171,   172,   174,   167,   168,   169,   173,   175,   177,
+     164,     0,   176,     0,   137,   139,   178,     0,     0,     0,
+       0,     0,     0,    78
 };
 
 #define yypact_value_is_default(yystate) \
@@ -666,14 +667,14 @@ static const yytype_int16 yycheck[] =
       53,   121,   122,     4,    33,     4,     4,     4,     4,     4,
        4,     4,    49,    49,    49,    27,     4,    31,    56,     6,
       50,     6,    50,    50,    50,    50,    49,     6,    50,   123,
-     124,   125,    49,    49,     4,    50,     4,    50,    29,     4,
-       4,    52,     4,     6,    49,     6,     6,     4,    51,    51,
-      23,    51,    23,     6,     4,     3,     5,    41,     4,    51,
-      50,    19,    51,     4,     4,    51,    17,    50,    50,    50,
-      50,    49,    49,    49,    49,    49,     6,     6,     6,     6,
-      49,     6,     6,    25,    51,    51,    19,     4,     4,    -1,
-     151,    -1,    51,    -1,    50,   116,    51,    -1,    -1,    -1,
-      -1,    -1,    -1,    57,   114
+     124,   125,    49,    49,     4,    50,     4,    50,   132,    29,
+       4,     4,    49,     4,     6,    51,     6,     6,     4,    52,
+      23,    51,    23,     6,     4,     3,     5,     4,    41,    51,
+      51,    50,    19,     4,     6,    51,     6,    51,    50,    50,
+      50,    49,    49,    49,    49,     6,    50,    49,     6,     6,
+      49,     6,    17,    19,    51,    51,    51,    25,     4,     4,
+     151,    -1,    50,    -1,   114,   116,    51,    -1,    -1,    -1,
+      -1,    -1,    -1,    57
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -695,7 +696,7 @@ static const yytype_uint8 yystos[] =
       53,    35,    36,    52,    54,    55,    18,    20,    34,     6,
       66,     4,    41,    61,    50,    50,    50,    67,    49,    63,
       49,    49,    49,    66,    68,    68,    69,    72,    69,    69,
-      19,    50,     5,    60,     4,    49,     3,     4,     4,    51,
+      19,    50,     5,    60,    72,    49,     3,     4,     4,    51,
        6,     6,     6,     6,    65,    49,     6,    51,    51,    51,
       51,     6,    17,    25,    19,     4,    50,     4,    51
 };
@@ -1534,7 +1535,7 @@ yyreduce:
         case 4:
 
 /* Line 1806 of yacc.c  */
-#line 37 "./Parser.y"
+#line 38 "Parser.y"
     {
 				prompt();
 		   }
@@ -1543,7 +1544,7 @@ yyreduce:
   case 5:
 
 /* Line 1806 of yacc.c  */
-#line 41 "./Parser.y"
+#line 42 "Parser.y"
     {
 				exit(0);
            }
@@ -1552,11 +1553,13 @@ yyreduce:
   case 6:
 
 /* Line 1806 of yacc.c  */
-#line 45 "./Parser.y"
+#line 46 "Parser.y"
     {
-				std::string dbname = (yyvsp[(3) - (5)]).id;
-				std::cout << "create db ";
-				std::cout << dbname << std::endl;
+				OrderPack pack(OrderPack::CREATE_DB);
+				pack.dbname = (yyvsp[(3) - (5)]).id;
+				pack.process();
+				/* std::cout << "create db "; */
+				/* std::cout << $3.id << std::endl; */
 				prompt();
 		   }
     break;
@@ -1564,11 +1567,13 @@ yyreduce:
   case 7:
 
 /* Line 1806 of yacc.c  */
-#line 52 "./Parser.y"
+#line 55 "Parser.y"
     {
-				std::string dbname = (yyvsp[(3) - (5)]).id;
-				std::cout << "drop db ";
-				std::cout << dbname << std::endl;
+				OrderPack pack(OrderPack::DROP_DB);
+				pack.dbname = (yyvsp[(3) - (5)]).id;
+				pack.process();
+				/* std::cout << "drop db "; */
+				/* std::cout << $3.id << std::endl; */
 				prompt();
 		   }
     break;
@@ -1576,11 +1581,13 @@ yyreduce:
   case 8:
 
 /* Line 1806 of yacc.c  */
-#line 59 "./Parser.y"
+#line 64 "Parser.y"
     {
-				std::string dbname = (yyvsp[(2) - (4)]).id;
-				std::cout << "use db ";
-				std::cout << dbname << std::endl;
+				OrderPack pack(OrderPack::USE);
+				pack.dbname = (yyvsp[(2) - (4)]).id;
+				pack.process();
+				/* std::cout << "use db "; */
+				/* std::cout << $2.id << std::endl; */
 				prompt();
 		   }
     break;
@@ -1588,9 +1595,11 @@ yyreduce:
   case 9:
 
 /* Line 1806 of yacc.c  */
-#line 66 "./Parser.y"
+#line 73 "Parser.y"
     {
-				std::cout << "show tables" << std::endl;
+				OrderPack pack(OrderPack::SHOW);
+				pack.process();
+				/* std::cout << "show tables" << std::endl; */
 				prompt();
 		   }
     break;
@@ -1598,12 +1607,16 @@ yyreduce:
   case 10:
 
 /* Line 1806 of yacc.c  */
-#line 71 "./Parser.y"
+#line 80 "Parser.y"
     {
-				std::cout << "create tb ";
-				std::cout << (yyvsp[(3) - (8)]).id << std::endl;
-				std::cout << "Schema :" << std::endl;
-				(yyvsp[(5) - (8)]).schema.print();
+				OrderPack pack(OrderPack::CREATE_TB);
+				pack.tbname = (yyvsp[(3) - (8)]).id;
+				pack.schema = (yyvsp[(5) - (8)]).schema;
+				pack.process();
+				/* std::cout << "create tb "; */
+				/* std::cout << $3.id << std::endl; */
+				/* std::cout << "Schema :" << std::endl; */
+				/* $5.schema.print(); */
 				prompt();
 		   }
     break;
@@ -1611,10 +1624,13 @@ yyreduce:
   case 11:
 
 /* Line 1806 of yacc.c  */
-#line 79 "./Parser.y"
+#line 92 "Parser.y"
     {
-				std::cout << "drop tb ";
-				std::cout << (yyvsp[(3) - (5)]).id << std::endl;
+				OrderPack pack(OrderPack::DROP_TB);
+				pack.tbname = (yyvsp[(3) - (5)]).id;
+				pack.process();
+				/* std::cout << "drop tb "; */
+				/* std::cout << $3.id << std::endl; */
 				prompt();
 		   }
     break;
@@ -1622,10 +1638,13 @@ yyreduce:
   case 12:
 
 /* Line 1806 of yacc.c  */
-#line 85 "./Parser.y"
+#line 101 "Parser.y"
     {
-				cout << "describe table ";
-				cout << (yyvsp[(2) - (4)]).id << endl;
+				OrderPack pack(OrderPack::DESC);
+				pack.tbname = (yyvsp[(2) - (4)]).id;
+				pack.process();
+				/* cout << "describe table "; */
+				/* cout << $2.id << endl; */
 				prompt();
 		   }
     break;
@@ -1633,12 +1652,16 @@ yyreduce:
   case 13:
 
 /* Line 1806 of yacc.c  */
-#line 91 "./Parser.y"
-    {		
-		   		cout << "insert into table ";
-				cout << (yyvsp[(2) - (8)]).id << endl;
-				cout << "values : " << endl;
-				(yyvsp[(5) - (8)]).printValues();
+#line 110 "Parser.y"
+    {
+				OrderPack pack(OrderPack::INSERT);
+				pack.tbname = (yyvsp[(2) - (8)]).id;
+				pack.values = (yyvsp[(5) - (8)]).values;
+				pack.process();
+		   		/* cout << "insert into table "; */
+				/* cout << $2.id << endl; */
+				/* cout << "values : " << endl; */
+				/* $5.printValues(); */
 				prompt();
 		   }
     break;
@@ -1646,11 +1669,15 @@ yyreduce:
   case 14:
 
 /* Line 1806 of yacc.c  */
-#line 99 "./Parser.y"
+#line 122 "Parser.y"
     {
-				cout << "delete from table ";
-				cout << (yyvsp[(3) - (6)]).id << endl;
-				(yyvsp[(4) - (6)]).condition.print();
+				OrderPack pack(OrderPack::DELETE);
+				pack.tbname = (yyvsp[(3) - (6)]).id;
+				pack.condition = (yyvsp[(4) - (6)]).condition;
+				pack.process();
+				/* cout << "delete from table "; */
+				/* cout << $3.id << endl; */
+				/* $4.condition.print(); */
 				prompt();
 		   }
     break;
@@ -1658,17 +1685,23 @@ yyreduce:
   case 15:
 
 /* Line 1806 of yacc.c  */
-#line 106 "./Parser.y"
+#line 133 "Parser.y"
     {
-				cout << "select from table " << endl;
-				cout << "ATTR : ";
-				(yyvsp[(2) - (8)]).printAttrs();
-				cout << "TB : ";
-				(yyvsp[(4) - (8)]).printTables();
-				cout << "Cond : ";
-				(yyvsp[(5) - (8)]).condition.print();
-				if (!(yyvsp[(6) - (8)]).id.empty())
-				   cout << "GRP_BY : " << (yyvsp[(6) - (8)]).id << endl;
+				OrderPack pack(OrderPack::SELECT);
+				pack.allAttrs = (yyvsp[(2) - (8)]).allAttrs;
+				pack.attrs = (yyvsp[(2) - (8)]).attrList;
+				pack.tables = (yyvsp[(4) - (8)]).tableList;
+				pack.condition = (yyvsp[(5) - (8)]).condition;
+				pack.groupbyAttr = (yyvsp[(6) - (8)]).attr;
+				pack.process();
+				/* cout << "select from table " << endl; */
+				/* cout << "ATTR : "; */
+				/* $2.printAttrs(); */
+				/* cout << "TB : "; */
+				/* $4.printTables(); */
+				/* cout << "Cond : "; */
+				/* $5.condition.print(); */
+				/* cout << "GRP_BY : " << $6.attr.toString() << endl; */
 				prompt();
 		   }
     break;
@@ -1676,17 +1709,23 @@ yyreduce:
   case 16:
 
 /* Line 1806 of yacc.c  */
-#line 119 "./Parser.y"
+#line 152 "Parser.y"
     {
-				cout << "update table " <<  endl;
-				cout << "TB : " << (yyvsp[(2) - (9)]).id << endl;
-				cout << "ATTR : " << (yyvsp[(4) - (9)]).id << endl;
-				cout << "VAL : ";
-				if ((yyvsp[(6) - (9)]).value.type == 0)
-				   cout << (yyvsp[(6) - (9)]).value.integer << endl;
-				else
-				   cout << (yyvsp[(6) - (9)]).value.literal << endl;
-				(yyvsp[(7) - (9)]).condition.print();
+				OrderPack pack(OrderPack::UPDATE);
+				pack.tbname = (yyvsp[(2) - (9)]).id;
+				pack.updateAttr = (yyvsp[(4) - (9)]).id;
+				pack.updateValue = (yyvsp[(6) - (9)]).value;
+				pack.condition = (yyvsp[(7) - (9)]).condition;
+				pack.process();
+				/* cout << "update table " <<  endl; */
+				/* cout << "TB : " << $2.id << endl; */
+				/* cout << "ATTR : " << $4.id << endl; */
+				/* cout << "VAL : "; */
+				/* if ($6.value.type == 0) */
+				/*    cout << $6.value.integer << endl; */
+				/* else */
+				/*    cout << $6.value.literal << endl; */
+				/* $7.condition.print(); */
 				prompt();
 		   }
     break;
@@ -1694,11 +1733,15 @@ yyreduce:
   case 17:
 
 /* Line 1806 of yacc.c  */
-#line 132 "./Parser.y"
+#line 171 "Parser.y"
     {
-				cout << "create index " << endl;
-				cout << "TB : " << (yyvsp[(3) - (8)]).id << endl;
-				cout << "ATTR : " << (yyvsp[(5) - (8)]).id << endl;
+				OrderPack pack(OrderPack::CREATE_INDEX);
+				pack.tbname = (yyvsp[(3) - (8)]).id;
+				pack.indexAttr = (yyvsp[(5) - (8)]).id;
+				pack.process();
+				/* cout << "create index " << endl; */
+				/* cout << "TB : " << $3.id << endl; */
+				/* cout << "ATTR : " << $5.id << endl; */
 				prompt();
 		   }
     break;
@@ -1706,11 +1749,15 @@ yyreduce:
   case 18:
 
 /* Line 1806 of yacc.c  */
-#line 139 "./Parser.y"
+#line 182 "Parser.y"
     {
-				cout << "drop index " << endl;
-				cout << "TB : " << (yyvsp[(3) - (8)]).id << endl;
-				cout << "ATTR : " << (yyvsp[(5) - (8)]).id << endl;
+				OrderPack pack(OrderPack::DROP_INDEX);
+				pack.tbname = (yyvsp[(3) - (8)]).id;
+				pack.indexAttr = (yyvsp[(5) - (8)]).id;
+				pack.process();
+				/* cout << "drop index " << endl; */
+				/* cout << "TB : " << $3.id << endl; */
+				/* cout << "ATTR : " << $5.id << endl; */
 				prompt();
 		   }
     break;
@@ -1718,7 +1765,7 @@ yyreduce:
   case 19:
 
 /* Line 1806 of yacc.c  */
-#line 146 "./Parser.y"
+#line 193 "Parser.y"
     {
 				std::cout << "Syntax Error" << std::endl;
 				prompt();
@@ -1728,7 +1775,7 @@ yyreduce:
   case 20:
 
 /* Line 1806 of yacc.c  */
-#line 154 "./Parser.y"
+#line 201 "Parser.y"
     {
 				(yyval).condition.clear();
 		   }
@@ -1737,7 +1784,7 @@ yyreduce:
   case 21:
 
 /* Line 1806 of yacc.c  */
-#line 158 "./Parser.y"
+#line 205 "Parser.y"
     {	 
 		   		 (yyval).condition = (yyvsp[(2) - (2)]).condition;
 		   }
@@ -1746,25 +1793,25 @@ yyreduce:
   case 22:
 
 /* Line 1806 of yacc.c  */
-#line 165 "./Parser.y"
+#line 212 "Parser.y"
     {
-				(yyval).id = "";
+				(yyval).attr.clear();
 		   }
     break;
 
   case 23:
 
 /* Line 1806 of yacc.c  */
-#line 169 "./Parser.y"
+#line 216 "Parser.y"
     {
-				(yyval).id = (yyvsp[(2) - (2)]).id;
+				(yyval).attr = (yyvsp[(2) - (2)]).attr;
 		   }
     break;
 
   case 24:
 
 /* Line 1806 of yacc.c  */
-#line 176 "./Parser.y"
+#line 223 "Parser.y"
     {
 				(yyval).schema.process((yyvsp[(3) - (3)]).schemaEntry);
 		   }
@@ -1773,7 +1820,7 @@ yyreduce:
   case 25:
 
 /* Line 1806 of yacc.c  */
-#line 180 "./Parser.y"
+#line 227 "Parser.y"
     {
 				(yyval).schema = Schema();
 				(yyval).schema.process((yyvsp[(1) - (1)]).schemaEntry);
@@ -1783,7 +1830,7 @@ yyreduce:
   case 26:
 
 /* Line 1806 of yacc.c  */
-#line 188 "./Parser.y"
+#line 235 "Parser.y"
     {
 				(yyval).schemaEntry = SchemaEntry((yyvsp[(1) - (5)]).id, (yyvsp[(2) - (5)]).datatype, (yyvsp[(4) - (5)]).length, 0);
 				(yyval).schemaEntry.entrykind = SchemaEntry::NORMAL;
@@ -1793,7 +1840,7 @@ yyreduce:
   case 27:
 
 /* Line 1806 of yacc.c  */
-#line 193 "./Parser.y"
+#line 240 "Parser.y"
     {
 				(yyval).schemaEntry = SchemaEntry((yyvsp[(1) - (7)]).id, (yyvsp[(2) - (7)]).datatype, (yyvsp[(4) - (7)]).length, 1);
 				(yyval).schemaEntry.entrykind = SchemaEntry::NORMAL;
@@ -1803,7 +1850,7 @@ yyreduce:
   case 28:
 
 /* Line 1806 of yacc.c  */
-#line 198 "./Parser.y"
+#line 245 "Parser.y"
     {
 				(yyval).schemaEntry.primaryKey = (yyvsp[(4) - (5)]).id;
 				(yyval).schemaEntry.entrykind = SchemaEntry::PRIMARY;
@@ -1813,7 +1860,7 @@ yyreduce:
   case 29:
 
 /* Line 1806 of yacc.c  */
-#line 203 "./Parser.y"
+#line 250 "Parser.y"
     {
 				(yyval).schemaEntry.constrain = (yyvsp[(3) - (4)]).condition;
 				(yyval).schemaEntry.entrykind = SchemaEntry::CHECK;
@@ -1823,7 +1870,7 @@ yyreduce:
   case 30:
 
 /* Line 1806 of yacc.c  */
-#line 208 "./Parser.y"
+#line 255 "Parser.y"
     {
 				(yyval).schemaEntry.foreignKey = (yyvsp[(4) - (10)]).id;
 				(yyval).schemaEntry.foreignAttr = Attr((yyvsp[(7) - (10)]).id, (yyvsp[(9) - (10)]).id);
@@ -1834,28 +1881,28 @@ yyreduce:
   case 31:
 
 /* Line 1806 of yacc.c  */
-#line 215 "./Parser.y"
+#line 262 "Parser.y"
     { (yyval).datatype = "int"; }
     break;
 
   case 32:
 
 /* Line 1806 of yacc.c  */
-#line 216 "./Parser.y"
+#line 263 "Parser.y"
     { (yyval).datatype = "char"; }
     break;
 
   case 33:
 
 /* Line 1806 of yacc.c  */
-#line 217 "./Parser.y"
+#line 264 "Parser.y"
     { (yyval).datatype = "varchar"; }
     break;
 
   case 34:
 
 /* Line 1806 of yacc.c  */
-#line 222 "./Parser.y"
+#line 269 "Parser.y"
     {
 				(yyval).values.push_back((yyvsp[(3) - (3)]).value);
 		   }
@@ -1864,7 +1911,7 @@ yyreduce:
   case 35:
 
 /* Line 1806 of yacc.c  */
-#line 226 "./Parser.y"
+#line 273 "Parser.y"
     {
 				(yyval).values.clear();
 				(yyval).values.push_back((yyvsp[(1) - (1)]).value);
@@ -1874,21 +1921,21 @@ yyreduce:
   case 36:
 
 /* Line 1806 of yacc.c  */
-#line 233 "./Parser.y"
+#line 280 "Parser.y"
     { (yyval).value = Value(0, (yyvsp[(1) - (1)]).length, ""); }
     break;
 
   case 37:
 
 /* Line 1806 of yacc.c  */
-#line 234 "./Parser.y"
+#line 281 "Parser.y"
     { (yyval).value = Value(1, 0, (yyvsp[(1) - (1)]).literal); }
     break;
 
   case 38:
 
 /* Line 1806 of yacc.c  */
-#line 239 "./Parser.y"
+#line 286 "Parser.y"
     {
 				(yyval).condition.add(Condition::AND, (yyvsp[(3) - (3)]).condEntry);
 		   }
@@ -1897,7 +1944,7 @@ yyreduce:
   case 39:
 
 /* Line 1806 of yacc.c  */
-#line 243 "./Parser.y"
+#line 290 "Parser.y"
     {
 				(yyval).condition.add(Condition::OR, (yyvsp[(3) - (3)]).condEntry);
 		   }
@@ -1906,7 +1953,7 @@ yyreduce:
   case 40:
 
 /* Line 1806 of yacc.c  */
-#line 247 "./Parser.y"
+#line 294 "Parser.y"
     {
 				(yyval).condition = Condition((yyvsp[(1) - (1)]).condEntry);
 		   }
@@ -1915,7 +1962,7 @@ yyreduce:
   case 41:
 
 /* Line 1806 of yacc.c  */
-#line 254 "./Parser.y"
+#line 301 "Parser.y"
     {
 				(yyval).condEntry = CondEntry(CondEntry::EQUAL, (yyvsp[(1) - (3)]).expr, (yyvsp[(3) - (3)]).expr);
 		   }
@@ -1924,7 +1971,7 @@ yyreduce:
   case 42:
 
 /* Line 1806 of yacc.c  */
-#line 258 "./Parser.y"
+#line 305 "Parser.y"
     {
 				(yyval).condEntry = CondEntry(CondEntry::GREATER, (yyvsp[(1) - (3)]).expr, (yyvsp[(3) - (3)]).expr);
 		   }
@@ -1933,7 +1980,7 @@ yyreduce:
   case 43:
 
 /* Line 1806 of yacc.c  */
-#line 262 "./Parser.y"
+#line 309 "Parser.y"
     {
 				(yyval).condEntry = CondEntry(CondEntry::LESS, (yyvsp[(1) - (3)]).expr, (yyvsp[(3) - (3)]).expr);
 		   }
@@ -1942,7 +1989,7 @@ yyreduce:
   case 44:
 
 /* Line 1806 of yacc.c  */
-#line 266 "./Parser.y"
+#line 313 "Parser.y"
     {
 				(yyval).condEntry = CondEntry();
 				(yyval).condEntry.op = CondEntry::IS;
@@ -1954,7 +2001,7 @@ yyreduce:
   case 45:
 
 /* Line 1806 of yacc.c  */
-#line 273 "./Parser.y"
+#line 320 "Parser.y"
     {
 				(yyval).condEntry = CondEntry();
 				(yyval).condEntry.op = CondEntry::LIKE;
@@ -1967,7 +2014,7 @@ yyreduce:
   case 46:
 
 /* Line 1806 of yacc.c  */
-#line 281 "./Parser.y"
+#line 328 "Parser.y"
     {
 				(yyval).condEntry = CondEntry();
 				(yyval).condEntry.op = CondEntry::IN;
@@ -1980,7 +2027,7 @@ yyreduce:
   case 47:
 
 /* Line 1806 of yacc.c  */
-#line 292 "./Parser.y"
+#line 339 "Parser.y"
     {
 				(yyval).expr = Expr(Expr::ATTR);
 				(yyval).expr.attr = (yyvsp[(1) - (1)]).attr;
@@ -1990,7 +2037,7 @@ yyreduce:
   case 48:
 
 /* Line 1806 of yacc.c  */
-#line 297 "./Parser.y"
+#line 344 "Parser.y"
     {
 				(yyval).expr = Expr(Expr::INTEGER);
 				(yyval).expr.integer = (yyvsp[(1) - (1)]).length;
@@ -2000,7 +2047,7 @@ yyreduce:
   case 49:
 
 /* Line 1806 of yacc.c  */
-#line 302 "./Parser.y"
+#line 349 "Parser.y"
     {
 				(yyval).expr = Expr(Expr::LITERAL);
 				(yyval).expr.literal = (yyvsp[(1) - (1)]).literal;
@@ -2010,7 +2057,7 @@ yyreduce:
   case 50:
 
 /* Line 1806 of yacc.c  */
-#line 310 "./Parser.y"
+#line 357 "Parser.y"
     {
 				(yyval).allAttrs = true;
 		   }
@@ -2019,7 +2066,7 @@ yyreduce:
   case 51:
 
 /* Line 1806 of yacc.c  */
-#line 314 "./Parser.y"
+#line 361 "Parser.y"
     {
 				(yyval).allAttrs = false;
 				(yyval).attrList.push_back((yyvsp[(3) - (3)]).attr);
@@ -2029,7 +2076,7 @@ yyreduce:
   case 52:
 
 /* Line 1806 of yacc.c  */
-#line 319 "./Parser.y"
+#line 366 "Parser.y"
     {
 				(yyval).allAttrs = false;
 				(yyval).attrList.clear();
@@ -2040,7 +2087,7 @@ yyreduce:
   case 53:
 
 /* Line 1806 of yacc.c  */
-#line 327 "./Parser.y"
+#line 374 "Parser.y"
     {
 				(yyval).attr = (yyvsp[(1) - (1)]).attr;
 				(yyval).attr.aggr = Attr::NONE;
@@ -2050,7 +2097,7 @@ yyreduce:
   case 54:
 
 /* Line 1806 of yacc.c  */
-#line 332 "./Parser.y"
+#line 379 "Parser.y"
     {
 				(yyval).attr = (yyvsp[(3) - (4)]).attr;
 				(yyval).attr.aggr = Attr::SUM;
@@ -2060,7 +2107,7 @@ yyreduce:
   case 55:
 
 /* Line 1806 of yacc.c  */
-#line 337 "./Parser.y"
+#line 384 "Parser.y"
     {
 				(yyval).attr = (yyvsp[(3) - (4)]).attr;
 				(yyval).attr.aggr = Attr::AVG;
@@ -2070,7 +2117,7 @@ yyreduce:
   case 56:
 
 /* Line 1806 of yacc.c  */
-#line 342 "./Parser.y"
+#line 389 "Parser.y"
     {
 				(yyval).attr = (yyvsp[(3) - (4)]).attr;
 				(yyval).attr.aggr = Attr::MAX;
@@ -2080,7 +2127,7 @@ yyreduce:
   case 57:
 
 /* Line 1806 of yacc.c  */
-#line 347 "./Parser.y"
+#line 394 "Parser.y"
     {
 				(yyval).attr = (yyvsp[(3) - (4)]).attr;
 				(yyval).attr.aggr = Attr::MIN;
@@ -2090,7 +2137,7 @@ yyreduce:
   case 58:
 
 /* Line 1806 of yacc.c  */
-#line 353 "./Parser.y"
+#line 400 "Parser.y"
     {	
 		   		(yyval).attr = Attr("", (yyvsp[(1) - (1)]).id);
 		   }
@@ -2099,7 +2146,7 @@ yyreduce:
   case 59:
 
 /* Line 1806 of yacc.c  */
-#line 357 "./Parser.y"
+#line 404 "Parser.y"
     {
 				(yyval).attr = Attr((yyvsp[(1) - (3)]).id, (yyvsp[(3) - (3)]).id);
 		   }
@@ -2108,7 +2155,7 @@ yyreduce:
   case 60:
 
 /* Line 1806 of yacc.c  */
-#line 364 "./Parser.y"
+#line 411 "Parser.y"
     {
 				(yyval).tableList.push_back((yyvsp[(3) - (3)]).id);
 		   }
@@ -2117,7 +2164,7 @@ yyreduce:
   case 61:
 
 /* Line 1806 of yacc.c  */
-#line 368 "./Parser.y"
+#line 415 "Parser.y"
     {
 				(yyval).tableList.clear();
 				(yyval).tableList.push_back((yyvsp[(1) - (1)]).id);
@@ -2127,7 +2174,7 @@ yyreduce:
 
 
 /* Line 1806 of yacc.c  */
-#line 2131 "Parser.tab.c"
+#line 2178 "Parser.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2358,7 +2405,7 @@ yyreturn:
 
 
 /* Line 2067 of yacc.c  */
-#line 373 "./Parser.y"
+#line 420 "Parser.y"
 
 
 void prompt()

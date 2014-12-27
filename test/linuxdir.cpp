@@ -13,6 +13,7 @@ int main()
 	 string tbname = "User";
 	 for (dirent *pDir = readdir(dir); pDir != NULL; pDir = readdir(dir))
 	 {
+		  printf("%s\n", pDir->d_name);
 		  if (pDir->d_name[0] != '.' && tbname == pDir->d_name)
 		  {
 			   string tbpath = dbpath + tbname;

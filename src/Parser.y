@@ -5,6 +5,7 @@
 	#include "DBFileManager.h"
 	#include "DBBufManager.h"
 	#include "SemValue.h"
+	#include "OrderPack.h"
 	#define YYSTYPE SemValue
 	void yyerror(const char*);
 	void prompt();
@@ -43,103 +44,149 @@ Stmt :
            }
 	   	 | CREATE DB IDENTIFIER ';' ENDLINE
 		   {
-				std::string dbname = $3.id;
-				std::cout << "create db ";
-				std::cout << dbname << std::endl;
+				OrderPack pack(OrderPack::CREATE_DB);
+				pack.dbname = $3.id;
+				pack.process();
+				/* std::cout << "create db "; */
+				/* std::cout << $3.id << std::endl; */
 				prompt();
 		   }
 		 | DROP DB IDENTIFIER ';' ENDLINE
 		   {
-				std::string dbname = $3.id;
-				std::cout << "drop db ";
-				std::cout << dbname << std::endl;
+				OrderPack pack(OrderPack::DROP_DB);
+				pack.dbname = $3.id;
+				pack.process();
+				/* std::cout << "drop db "; */
+				/* std::cout << $3.id << std::endl; */
 				prompt();
 		   }
 		 | USE IDENTIFIER ';' ENDLINE
 		   {
-				std::string dbname = $2.id;
-				std::cout << "use db ";
-				std::cout << dbname << std::endl;
+				OrderPack pack(OrderPack::USE);
+				pack.dbname = $2.id;
+				pack.process();
+				/* std::cout << "use db "; */
+				/* std::cout << $2.id << std::endl; */
 				prompt();
 		   }
 		 | SHOW TBS ';' ENDLINE
 		   {
-				std::cout << "show tables" << std::endl;
+				OrderPack pack(OrderPack::SHOW);
+				pack.process();
+				/* std::cout << "show tables" << std::endl; */
 				prompt();
 		   }
 		 | CREATE TB IDENTIFIER '(' AttrDefList ')' ';' ENDLINE
 		   {
-				std::cout << "create tb ";
-				std::cout << $3.id << std::endl;
-				std::cout << "Schema :" << std::endl;
-				$5.schema.print();
+				OrderPack pack(OrderPack::CREATE_TB);
+				pack.tbname = $3.id;
+				pack.schema = $5.schema;
+				pack.process();
+				/* std::cout << "create tb "; */
+				/* std::cout << $3.id << std::endl; */
+				/* std::cout << "Schema :" << std::endl; */
+				/* $5.schema.print(); */
 				prompt();
 		   }
 		 | DROP TB IDENTIFIER ';' ENDLINE
   		   {
-				std::cout << "drop tb ";
-				std::cout << $3.id << std::endl;
+				OrderPack pack(OrderPack::DROP_TB);
+				pack.tbname = $3.id;
+				pack.process();
+				/* std::cout << "drop tb "; */
+				/* std::cout << $3.id << std::endl; */
 				prompt();
 		   }
 		 | DESC IDENTIFIER ';' ENDLINE
 		   {
-				cout << "describe table ";
-				cout << $2.id << endl;
+				OrderPack pack(OrderPack::DESC);
+				pack.tbname = $2.id;
+				pack.process();
+				/* cout << "describe table "; */
+				/* cout << $2.id << endl; */
 				prompt();
 		   }
 		 | INS_INTO IDENTIFIER VALUES '(' ValueList ')' ';' ENDLINE
-		   {		
-		   		cout << "insert into table ";
-				cout << $2.id << endl;
-				cout << "values : " << endl;
-				$5.printValues();
+		   {
+				OrderPack pack(OrderPack::INSERT);
+				pack.tbname = $2.id;
+				pack.values = $5.values;
+				pack.process();
+		   		/* cout << "insert into table "; */
+				/* cout << $2.id << endl; */
+				/* cout << "values : " << endl; */
+				/* $5.printValues(); */
 				prompt();
 		   }
 		 | DELETE FROM IDENTIFIER WhereClause ';' ENDLINE
 		   {
-				cout << "delete from table ";
-				cout << $3.id << endl;
-				$4.condition.print();
+				OrderPack pack(OrderPack::DELETE);
+				pack.tbname = $3.id;
+				pack.condition = $4.condition;
+				pack.process();
+				/* cout << "delete from table "; */
+				/* cout << $3.id << endl; */
+				/* $4.condition.print(); */
 				prompt();
 		   }
 		 | SELECT AttrList FROM TableList WhereClause GroupClause ';' ENDLINE
 		   {
-				cout << "select from table " << endl;
-				cout << "ATTR : ";
-				$2.printAttrs();
-				cout << "TB : ";
-				$4.printTables();
-				cout << "Cond : ";
-				$5.condition.print();
-				if (!$6.id.empty())
-				   cout << "GRP_BY : " << $6.id << endl;
+				OrderPack pack(OrderPack::SELECT);
+				pack.allAttrs = $2.allAttrs;
+				pack.attrs = $2.attrList;
+				pack.tables = $4.tableList;
+				pack.condition = $5.condition;
+				pack.groupbyAttr = $6.attr;
+				pack.process();
+				/* cout << "select from table " << endl; */
+				/* cout << "ATTR : "; */
+				/* $2.printAttrs(); */
+				/* cout << "TB : "; */
+				/* $4.printTables(); */
+				/* cout << "Cond : "; */
+				/* $5.condition.print(); */
+				/* cout << "GRP_BY : " << $6.attr.toString() << endl; */
 				prompt();
 		   }
 		 | UPDATE IDENTIFIER SET IDENTIFIER '=' ValueItem WhereClause ';' ENDLINE
 		   {
-				cout << "update table " <<  endl;
-				cout << "TB : " << $2.id << endl;
-				cout << "ATTR : " << $4.id << endl;
-				cout << "VAL : ";
-				if ($6.value.type == 0)
-				   cout << $6.value.integer << endl;
-				else
-				   cout << $6.value.literal << endl;
-				$7.condition.print();
+				OrderPack pack(OrderPack::UPDATE);
+				pack.tbname = $2.id;
+				pack.updateAttr = $4.id;
+				pack.updateValue = $6.value;
+				pack.condition = $7.condition;
+				pack.process();
+				/* cout << "update table " <<  endl; */
+				/* cout << "TB : " << $2.id << endl; */
+				/* cout << "ATTR : " << $4.id << endl; */
+				/* cout << "VAL : "; */
+				/* if ($6.value.type == 0) */
+				/*    cout << $6.value.integer << endl; */
+				/* else */
+				/*    cout << $6.value.literal << endl; */
+				/* $7.condition.print(); */
 				prompt();
 		   }
 		 | CREATE INDEX IDENTIFIER '(' IDENTIFIER ')' ';' ENDLINE
 		   {
-				cout << "create index " << endl;
-				cout << "TB : " << $3.id << endl;
-				cout << "ATTR : " << $5.id << endl;
+				OrderPack pack(OrderPack::CREATE_INDEX);
+				pack.tbname = $3.id;
+				pack.indexAttr = $5.id;
+				pack.process();
+				/* cout << "create index " << endl; */
+				/* cout << "TB : " << $3.id << endl; */
+				/* cout << "ATTR : " << $5.id << endl; */
 				prompt();
 		   }
 		 | DROP INDEX IDENTIFIER '(' IDENTIFIER ')' ';' ENDLINE
 		   {
-				cout << "drop index " << endl;
-				cout << "TB : " << $3.id << endl;
-				cout << "ATTR : " << $5.id << endl;
+				OrderPack pack(OrderPack::DROP_INDEX);
+				pack.tbname = $3.id;
+				pack.indexAttr = $5.id;
+				pack.process();
+				/* cout << "drop index " << endl; */
+				/* cout << "TB : " << $3.id << endl; */
+				/* cout << "ATTR : " << $5.id << endl; */
 				prompt();
 		   }
 	   	 | error ENDLINE
@@ -163,11 +210,11 @@ WhereClause :
 GroupClause :
 		   /* empty */
 		   {
-				$$.id = "";
+				$$.attr.clear();
 		   }
-		 | GRP_BY IDENTIFIER
+		 | GRP_BY Attr
 		   {
-				$$.id = $2.id;
+				$$.attr = $2.attr;
 		   }
 		 ;
 

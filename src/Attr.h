@@ -34,6 +34,12 @@ public:
 		  }
 		  return str;
 	 }
+	 void clear()
+	 {
+		  tbname.clear();
+		  attrname.clear();
+		  aggr = NONE;
+	 }
 	 string tbname;
 	 string attrname;
 	 Aggr aggr;
