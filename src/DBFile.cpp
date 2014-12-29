@@ -5,9 +5,10 @@
 #include "DBFileInfo.h"
 #include "DBPageInfo.h"
 #include "DBRecord.h"
+#include <cstring>
 #include <iostream>
 #include <fstream>
-#include <io.h>
+
 using namespace std;
 
 
@@ -80,7 +81,7 @@ char* DBFile::getRecord(int page, int rid)
 }
 
 //oper = 0为与操作， oper = 1为或操作
-int DBFile::SearchRecord(char** keyattr, int* oper, char** keyword, int paranum, vector< pair<int, int>>& re)
+int DBFile::SearchRecord(char** keyattr, int* oper, char** keyword, int paranum, vector< pair<int, int> >& re)
 {
 	//第一步：获取属性偏移量
 	DBAttribute* key = new DBAttribute[paranum];
