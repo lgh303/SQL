@@ -85,7 +85,8 @@ BNode* BTree::splitStem(BNode *oldstem)
 	 int newnumber = ptrs.size();
 	 BNode *newstem = new BNode(BNode::STEM, newnumber);
 	 newstem->parent = oldstem->parent;
-	 int lsize = (BNode::MaxSize + 1) >> 1;
+	 int rsize = (BNode::MaxSize + 1) >> 1;
+	 int lsize = (BNode::MaxSize + 1) - rsize;
 	 newstem->values.assign(oldstem->values.begin() + lsize, oldstem->values.end());
 	 oldstem->values.erase(oldstem->values.begin() + lsize, oldstem->values.end());
 	 newstem->pFirstNode = oldstem->values.back().second;
