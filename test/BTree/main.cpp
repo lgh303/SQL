@@ -11,7 +11,7 @@ int main()
 {
 	 BTree *tree = new BTree();
 	 srand(time(NULL));
-	 int times = 20;
+	 int times = 30;
 	 for (int i = 0; i < times; ++i)
 		  data[i] = make_pair(i * 2, i * 3);
 	 for (int t = 0; t < times / 2; ++t)
