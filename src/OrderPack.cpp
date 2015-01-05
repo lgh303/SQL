@@ -13,6 +13,10 @@
 #include "DBError.h"
 #include "DBUtility.h"
 #include "Global.h"
+#include "Condition.h"
+#include "CondEntry.h"
+#include "Attr.h"
+#include "Expr.h"
 #include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -299,7 +303,75 @@ void OrderPack::process()
              int fileid = mybufmanager->SearchBuf(strtochar(tbname));
              DBFileInfo* fileinfo = new DBFileInfo();
              fileinfo = myfilemanager->getFileHeader(strtochar(tbname));
-             break;
+             char** keyattr = new char* [condition.operands.size()];
+             int* style = new int[condition.operands.size() ];
+             int* oper;
+             if(condition.opcodes.size() != 0)
+                oper = new int[condition.opcodes.size()];
+            else
+                oper = NULL;
+             char** keyword = new char* [condition.operands.size()];
+             int paranum = condition.operands.size();
+             vector< pair<int, int> > result;
+             for(int i = 0;i<condition.opcodes.size();i++)
+             {
+                 if(condition.opcodes[i] == Condition::AND)
+                    oper[i] = 0;
+                 else if(condition.opcodes[i] == Condition::OR)
+                    oper[i] = 1;
+             }
+            for(int i = 0;i<condition.operands.size();i++)
+            {
+                if(condition.operands[i].left.type == Expr::ATTR)
+                {
+                     if(condition.operands[i].op == CondEntry::EQUAL)
+                        style[i] = 0;
+                    else if(condition.operands[i].op == CondEntry::GREATER)
+                        style[i] = 1;
+                    else if(condition.operands[i].op == CondEntry::LESS)
+                        style[i] = 2;
+                    keyattr[i] = new char[ATTRLENGTHMAX];
+                    memcpy(keyattr[i], strtochar(condition.operands[i].left.attr.attrname),  condition.operands[i].left.attr.attrname.length() + 1);
+                    if(condition.operands[i].right.type == Expr::INTEGER)
+                    {
+                        keyword[i] = new char[5];
+                        memcpy(keyword[i], (char*)(&(condition.operands[i].right.integer)), 4);
+                        memcpy(keyword[i] + 4, "\0", 1);
+                    }
+                    else if(condition.operands[i].right.type == Expr::LITERAL)
+                    {
+                        keyword[i] = new char[condition.operands[i].right.literal.length() + 1];
+                        memcpy(keyword[i], strtochar(condition.operands[i].right.literal), condition.operands[i].right.literal.length() + 1);
+                    }
+                }
+                else
+                {
+                    if(condition.operands[i].op == CondEntry::EQUAL)
+                        style[i] = 0;
+                    else if(condition.operands[i].op == CondEntry::GREATER)
+                        style[i] = 2;
+                    else if(condition.operands[i].op == CondEntry::LESS)
+                        style[i] = 1;
+                    keyattr[i] = new char[ATTRLENGTHMAX];
+                    memcpy(keyattr[i], strtochar(condition.operands[i].right.attr.attrname),  condition.operands[i].right.attr.attrname.length() + 1);
+                    if(condition.operands[i].left.type == Expr::INTEGER)
+                    {
+                        keyword[i] = new char[5];
+                        memcpy(keyword[i], (char*)(&(condition.operands[i].left.integer)), 4);
+                        memcpy(keyword[i] + 4, "\0", 1);
+                    }
+                    else if(condition.operands[i].left.type == Expr::LITERAL)
+                    {
+                        keyword[i] = new char[condition.operands[i].left.literal.length() + 1];
+                        memcpy(keyword[i], strtochar(condition.operands[i].left.literal), condition.operands[i].left.literal.length() + 1);
+                    }
+                }
+            }
+            bufFile[fileid]->SearchRecord(keyattr, style, oper, keyword, paranum, result);
+            vector< pair<int, int> >::iterator iter = result.begin();
+            for(;iter != result.end();iter++)
+                bufFile[fileid]->DeleteRecord(iter->first, iter->second);
+            break;
 	     }
 	 case UPDATE:
 		 break;

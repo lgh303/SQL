@@ -92,7 +92,7 @@ int DBFileManager::OpenFile(char* filename)
 		 if (pDir->d_name[0] != '.' && tbname == pDir->d_name)
 		 {
 			  result = 0;
-			  string tbpath = (string)curpath + tbname;
+			  string tbpath = tbname;
 			  struct stat filestat;
 			  stat(tbpath.c_str(), &filestat);
 			  filesize = filestat.st_size;

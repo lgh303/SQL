@@ -197,7 +197,9 @@ int DBFile::AddRecord(char* record, int length)
 		attrname[0] = fileinfo->attr[primary].name;
 		char** priword = new char*[1];
 		priword[0] = primaryword;
-		int res = SearchRecord(attrname, NULL,  priword, 1, searchResult);
+		int* style = new int[1];
+		style[0] = 0;
+		int res = SearchRecord(attrname, style, NULL,  priword, 1, searchResult);
 		if(res < 0)
 			return res;
 		if(searchResult.size() > 0)
@@ -320,7 +322,9 @@ int DBFile::UpdateRecord(char* keyattr, char* keyword, int pageid, int rid)
 			attrname[0] = keyattr;
 			char** priword = new char*[1];
 			priword[0] = keyword;
-			int re = SearchRecord(attrname, NULL, priword, 1, result);
+			int* style = new int[1];
+            style[0] = 0;
+			int re = SearchRecord(attrname, style, NULL, priword, 1, result);
 			if(re < 0)
 				return re;
 			if(result.size() > 0)
