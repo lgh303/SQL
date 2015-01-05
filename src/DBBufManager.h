@@ -4,13 +4,14 @@
 #include <vector>
 #include <map>
 #include <ctime>
+#include "Global.h"
 using namespace std;
 
 class DBBufManager
 {
 public:
 	int bufnum;
-	map<char*, int> bufmap;
+	map<char*, int, ptrCmp> bufmap;
 	map<int, char*> bufinvmap;
 	vector<time_t> visittime;
 	vector<bool> isnull;

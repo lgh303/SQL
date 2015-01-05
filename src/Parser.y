@@ -2,6 +2,7 @@
 	#include <cstdio>
 	#include <cstdlib>
 	#include <iostream>
+	#include <unistd.h>
 	#include "DBFileManager.h"
 	#include "DBBufManager.h"
 	#include "SemValue.h"
@@ -33,7 +34,7 @@ Program :
 		  Program Stmt
 		| /* empty */
 		;
-Stmt : 
+Stmt :
 		   ENDLINE
 		   {
 				prompt();
@@ -202,7 +203,7 @@ WhereClause :
 				$$.condition.clear();
 		   }
 		 | WHERE CondList
-		   {	 
+		   {
 		   		 $$.condition = $2.condition;
 		   }
 		 ;
@@ -231,7 +232,7 @@ AttrDefList :
 		   ;
 
 AttrDefItem :
-		   IDENTIFIER Type '(' INTEGER ')' 
+		   IDENTIFIER Type '(' INTEGER ')'
 		   {
 				$$.schemaEntry = SchemaEntry($1.id, $2.datatype, $4.length, 0);
 				$$.schemaEntry.entrykind = SchemaEntry::NORMAL;
@@ -322,7 +323,7 @@ Cond :
 				$$.condEntry.op = CondEntry::LIKE;
 				$$.condEntry.left = Expr(Expr::ATTR);
 				$$.condEntry.left.attr = $1.attr;
-				$$.condEntry.mode = $3.literal;		   
+				$$.condEntry.mode = $3.literal;
 		   }
 		 | Attr IN '(' ValueList ')'
 		   {
@@ -397,7 +398,7 @@ AttrAggr :
 		   }
 Attr :
 		   IDENTIFIER
-		   {	
+		   {
 		   		$$.attr = Attr("", $1.id);
 		   }
 		 | IDENTIFIER '.' IDENTIFIER
@@ -446,7 +447,8 @@ int main(int argc, char** argv)
 		std::cout << "Too many arguments" << std::endl;
 		return -1;
 	}
-	
+	chdir("../db");
+
 	myfilemanager = new DBFileManager();
 	mybufmanager = new DBBufManager();
 
