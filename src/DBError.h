@@ -23,7 +23,9 @@ static const char* DB_ERROR[] = {
 		"Database has already existed.",
 		"Database is not existing.",
 		"Cannot create a database in another database",
-		"Cannot create a file at the top level. Please create database first."
+		"Cannot create a file at the top level. Please create database first.",
+		"Create record failed. The amount of the inputting attributes is not equal to the file's request.",
+		"You don't choose which database to enter. Cannot show tables."
 	};
 
 extern void DBPrintError(int error);

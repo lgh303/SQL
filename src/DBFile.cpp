@@ -30,7 +30,7 @@ int DBFile::CreatePage()
 	if(orglength > 0)
 	{
 		char* tmp = new char[orglength];
-		memcpy(tmp, content, orglength); 
+		memcpy(tmp, content, orglength);
 		content = new char[orglength + DBPAGE];
 		memset(content, 0, orglength + DBPAGE);
 		memcpy(content, tmp, orglength);
@@ -80,7 +80,8 @@ char* DBFile::getRecord(int page, int rid)
 }
 
 //oper = 0为与操作， oper = 1为或操作
-int DBFile::SearchRecord(char** keyattr, int* oper, char** keyword, int paranum, vector< pair<int, int> >& re)
+//style = 0为等于，style = 1为大于， style = 2为小于
+int DBFile::SearchRecord(char** keyattr, int* style, int* oper, char** keyword, int paranum, vector< pair<int, int> >& re)
 {
 	//第一步：获取属性偏移量
 	DBAttribute* key = new DBAttribute[paranum];
@@ -119,10 +120,27 @@ int DBFile::SearchRecord(char** keyattr, int* oper, char** keyword, int paranum,
 					for(int k = 0;k<paranum;k++)
 					{
 						char* target = getRecord(i, j) + DBRECORDHEADER + key[k].offset;
-						if( strcmp(target, keyword[k]) == 0)
-							judgement[k] = true;
-						else
-							judgement[k] = false;
+						if(style[k] == 0)
+                        {
+                            if( strcmp(target, keyword[k]) == 0)
+                                judgement[k] = true;
+                            else
+                                judgement[k] = false;
+                        }
+                        else if(style[k] == 1)
+                        {
+                             if( strcmp(target, keyword[k]) > 0)
+                                judgement[k] = true;
+                            else
+                                judgement[k] = false;
+                        }
+                        else if(style[k] == 2)
+                        {
+                             if( strcmp(target, keyword[k]) < 0)
+                                judgement[k] = true;
+                            else
+                                judgement[k] = false;
+                        }
 					}
 					if(paranum == 1)
 					{
@@ -252,7 +270,7 @@ int DBFile::DeleteRecord(int pageid, int rid)
 	recordheader->isNull = true;
 	recordheader->nextEmptySlot = pageinfo->firstEmptySlot;
 	pageinfo->firstEmptySlot = rid;
-	
+
 	return DBOK;
 }
 
@@ -332,6 +350,45 @@ int DBFile::UpdateRecord(char* keyattr, char* keyword, int pageid, int rid)
 	}
 	memcpy(recordinfo + DBRECORDHEADER + fileinfo->attr[target].offset, keyword, fileinfo->attr[target].length);
 	return DBOK;
+}
+
+int DBFile::show(vector< pair<int, int> >rlist, vector<int>attrindex)
+{
+    DBFileInfo* fileinfo = (DBFileInfo*)(fileheader.header);
+    int* space = new int[attrindex.size()];
+    for(int i = 0;i<attrindex.size();i++)
+        space[i] = (fileinfo->attr[attrindex[i]].length > ATTRLENGTHMAX ? fileinfo->attr[attrindex[i]].length : ATTRLENGTHMAX);
+    for(int i = 0;i<attrindex.size();i++)
+    {
+        cout<<fileinfo->attr[attrindex[i]].name;
+        for(int j = 0;j<space[i] - strlen(fileinfo->attr[attrindex[i]].name);j++)
+            cout<<" ";
+        cout<<"|";
+    }
+    cout<<endl;
+    vector< pair<int, int> >::iterator iter = rlist.begin();
+    for(;iter != rlist.end();iter++)
+    {
+        char* pos = getRecord(iter->first, iter->second);
+        if(((DBRecordHeader*)pos)->isNull)
+            cout<<"-----Invalid Search-----";
+        else
+        {
+            for(int i = 0;i<attrindex.size();i++)
+            {
+                char* wordpos = pos + DBRECORDHEADER + fileinfo->attr[attrindex[i]].offset;
+                if(fileinfo->attr[attrindex[i]].type == 0)
+                    cout<<wordpos;
+                else
+                    cout<<*((int*)wordpos);
+                for(int j = 0;j<space[i] - strlen(wordpos);j++)
+                    cout<<" ";
+                cout<<"|";
+            }
+        }
+        cout<<endl;
+    }
+    return DBOK;
 }
 
 

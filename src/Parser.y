@@ -18,7 +18,7 @@
 
 %token INTEGER IDENTIFIER LITERAL
 %token ENDLINE QUIT
-%token CREATE DB DROP USE SHOW TB TBS INDEX DESC
+%token CREATE DB DBS DROP USE SHOW TB TBS INDEX DESC
 %token NOT IS NUL IN PRIMARY FOREIGN KEY CHECK REFER
 %token INS_INTO VALUES DELETE
 %token WHERE UPDATE SET SELECT FROM LIKE
@@ -41,6 +41,7 @@ Stmt :
 		   }
 	     | QUIT ENDLINE
 	   	   {
+                mybufmanager->AllWriteback();
 				exit(0);
            }
 	   	 | CREATE DB IDENTIFIER ';' ENDLINE
@@ -70,9 +71,16 @@ Stmt :
 				/* std::cout << $2.id << std::endl; */
 				prompt();
 		   }
+        | SHOW DBS ';' ENDLINE
+        {
+                OrderPack pack(OrderPack::SHOWDBS);
+				pack.process();
+				/* std::cout << "show tables" << std::endl; */
+				prompt();
+        }
 		 | SHOW TBS ';' ENDLINE
 		   {
-				OrderPack pack(OrderPack::SHOW);
+				OrderPack pack(OrderPack::SHOWTBS);
 				pack.process();
 				/* std::cout << "show tables" << std::endl; */
 				prompt();

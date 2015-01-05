@@ -1,9 +1,14 @@
 #include <cstring>
 #include <iostream>
+#include <vector>
 #include "OrderPack.h"
+#include "DBFile.h"
 #include "DBFileManager.h"
 #include "DBBufManager.h"
+#include "DBPage.h"
+#include "DBPageInfo.h"
 #include "DBFileInfo.h"
+#include "DBRecord.h"
 #include "SchemaEntry.h"
 #include "DBError.h"
 #include "DBUtility.h"
@@ -33,6 +38,7 @@ void OrderPack::process()
         {
              if(enterDatabaseFlag != 0)
              {
+                 mybufmanager->AllWriteback();
                  chdir("..");
                  enterDatabaseFlag = 0;
              }
@@ -61,6 +67,7 @@ void OrderPack::process()
 	     {
 	         if(enterDatabaseFlag == 1)
              {
+                 mybufmanager->AllWriteback();
                  chdir("..");
                  enterDatabaseFlag = 0;
              }
@@ -104,6 +111,7 @@ void OrderPack::process()
 	     {
               if(enterDatabaseFlag != 0)
               {
+                  mybufmanager->AllWriteback();
                   chdir("..");
                   enterDatabaseFlag = 0;
               }
@@ -149,7 +157,6 @@ void OrderPack::process()
                  fileinfo->attr[i].isNull = ~schema.entries[i].notNull;
                  fileinfo->attr[i].isPrimary = schema.entries[i].isPrimary;
                  fileinfo->attr[i].length = ((schema.entries[i].type == "int") ? 5 : schema.entries[i].length + 1);
-                 recordlength += fileinfo->attr[i].length;
                  if(schema.entries[i].field.length() >= 32)
                  {
                      DBPrintErrorPos("Create Table Resolution");
@@ -158,6 +165,7 @@ void OrderPack::process()
                  }
                  strcpy(fileinfo->attr[i].name, strtochar(schema.entries[i].field));
                  fileinfo->attr[i].offset = recordlength;
+                 recordlength += fileinfo->attr[i].length;
                  if(schema.entries[i].type == "int")
                      fileinfo->attr[i].type = 1;//int
                  else
@@ -193,14 +201,106 @@ void OrderPack::process()
 	         myfilemanager->DestroyFile(strtochar(tbname));
              break;
 	     }
-	 case SHOW:
-		 break;
+     case SHOWDBS:
+        {
+             if(enterDatabaseFlag == 1)
+             {
+                 mybufmanager->AllWriteback();
+                 chdir("..");
+                 enterDatabaseFlag = 0;
+             }
+              char* curpath = new char[100];
+             getcwd(curpath, 100);
+             DIR *dir = opendir(curpath);
+             // need to make sure dir != NULL
+             cout<<endl;
+             for (dirent *pDir = readdir(dir); pDir != NULL; pDir = readdir(dir))
+                 if (pDir->d_type != 8 && pDir->d_name[0] != '.')
+                  {
+                      cout<<" "<<pDir->d_name<<endl;
+                  }
+             cout<<endl;
+             closedir(dir);
+             break;
+        }
+	 case SHOWTBS:
+	     {
+	         if(enterDatabaseFlag == 0)
+             {
+                 DBPrintErrorPos("Show Tables Resolution");
+                 DBPrintError(DBNOTCHOOSE);
+                 return;
+             }
+             char* curpath = new char[100];
+             getcwd(curpath, 100);
+             DIR *dir = opendir(curpath);
+             // need to make sure dir != NULL
+             cout<<endl;
+             for (dirent *pDir = readdir(dir); pDir != NULL; pDir = readdir(dir))
+                 if (pDir->d_type == 8)
+                  {
+                      cout<<" "<<pDir->d_name<<endl;
+                  }
+             cout<<endl;
+             closedir(dir);
+	         break;
+	     }
 	 case DESC:
-		 break;
+	     {
+	         int err = myfilemanager->OpenFile(strtochar(tbname));
+	         if(err < 0)
+                return;
+             int fileid = mybufmanager->SearchBuf(strtochar(tbname));
+             DBFileInfo* fileinfo = new DBFileInfo();
+             fileinfo = myfilemanager->getFileHeader(strtochar(tbname));
+             vector< pair<int, int> > searchid;
+             vector<int> searchattr;
+             for(int i = 0;i<fileinfo->attrNum;i++)
+                searchattr.push_back(i);
+             for(int i = 0;i<fileinfo->pageNum;i++)
+                for(int j = 0;j<((DBPageInfo*)(bufFile[fileid]->getPage(i)))->slotNum;j++)
+                    if(!((DBRecordHeader*)(bufFile[fileid]->getRecord(i, j)))->isNull)
+                        searchid.push_back(make_pair(i, j));
+             cout<<endl;
+             bufFile[fileid]->show(searchid, searchattr);
+             cout<<endl;
+            break;
+	     }
 	 case INSERT:
-		 break;
+	     {
+             int err = myfilemanager->OpenFile(strtochar(tbname));
+             if(err < 0)
+                return;
+             int fileid = mybufmanager->SearchBuf(strtochar(tbname));
+             DBFileInfo* fileinfo = new DBFileInfo();
+             fileinfo = myfilemanager->getFileHeader(strtochar(tbname));
+             char* record = new char[fileinfo->recordLength];
+             if(values.size() != fileinfo->attrNum)
+             {
+                 DBPrintErrorPos("Insert Record Resolution");
+                 DBPrintError(ATTRNUMNOTEQUAL);
+                 return;
+             }
+             for(int i = 0;i<fileinfo->attrNum;i++)
+             {
+                 if(values[i].type == 0)
+                    memcpy(record + fileinfo->attr[i].offset, (char*)(&values[i].integer), 4);
+                 else
+                    memcpy(record + fileinfo->attr[i].offset, strtochar(values[i].literal), values[i].literal.length() + 1);
+             }
+             bufFile[fileid]->AddRecord(record, fileinfo->recordLength);
+             break;
+	     }
 	 case DELETE:
-		 break;
+	     {
+	         int err = myfilemanager->OpenFile(strtochar(tbname));
+             if(err < 0)
+                return;
+             int fileid = mybufmanager->SearchBuf(strtochar(tbname));
+             DBFileInfo* fileinfo = new DBFileInfo();
+             fileinfo = myfilemanager->getFileHeader(strtochar(tbname));
+             break;
+	     }
 	 case UPDATE:
 		 break;
 	 case SELECT:
