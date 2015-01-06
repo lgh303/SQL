@@ -20,7 +20,7 @@ pair<int, int> BTree::search(int keyword)
 	 int leafnumber = searchleaf(keyword, root);
 	 BNode *pLeaf = ptrs[leafnumber];
 	 for (int i = 0; i < pLeaf->values.size(); ++i)
-		  if (keyword == pLeaf->values[i].first)
+		  if (keyword == pLeaf->values[i].first && pLeaf->values[i].second != -1)
 			   return BNode::toPRPair(pLeaf->values[i].second);
 	 return make_pair(-1, -1);
 }
@@ -41,9 +41,20 @@ int BTree::insert(int keyword, pair<int, int> valuepair)
 	 int leafnumber = searchleaf(keyword, root);
 	 BNode *pLeaf = ptrs[leafnumber];
 	 for (int i = 0; i < pLeaf->values.size(); ++i)
-		  if (keyword == pLeaf->values[i].first)
+		  if (keyword == pLeaf->values[i].first && pLeaf->values[i].second != -1)
 			   return -1;
-	 pLeaf->values.push_back(make_pair(keyword, value));
+
+	 bool found_removed_key = false;
+	 for (int i = 0; i < pLeaf->values.size(); ++i)
+		  if (pLeaf->values[i].second == -1)
+		  {
+			   found_removed_key = true;
+			   pLeaf->values[i].first = keyword;
+			   pLeaf->values[i].second = value;
+			   break;
+		  }
+	 if (!found_removed_key)
+		  pLeaf->values.push_back(make_pair(keyword, value));
 	 pLeaf->sortValues();
 	 if (pLeaf->values.size() > BNode::MaxSize)
 	 {
@@ -51,6 +62,7 @@ int BTree::insert(int keyword, pair<int, int> valuepair)
 		  int upwards = newleaf->values.front().first;
 		  insertStem(pLeaf, newleaf, upwards);
 	 }
+	 return 0;
 }
 
 int BTree::searchleaf(int keyword, int number)
@@ -142,7 +154,7 @@ void BTree::print(int index)
 	 {
 		  cout << pNode->number << " | ";
 		  for (int i = 0; i < pNode->values.size(); ++i)
-			   cout << pNode->values[i].first << " ";
+			   cout << "(" << pNode->values[i].first << "," << pNode->values[i].second << ") ";
 		  cout << " | " << pNode->pNextLeaf;
 		  cout << endl;
 	 }
@@ -159,4 +171,19 @@ void BTree::print(int index)
 		  for (int i = 0; i < pNode->values.size(); ++i)
 			   print(pNode->values[i].second);
 	 }
+}
+
+int BTree::remove(int keyword)
+{
+	 if (ptrs.empty())
+		  return -1;
+	 int leafnumber = searchleaf(keyword, root);
+	 BNode *pLeaf = ptrs[leafnumber];
+	 for (int i = 0; i < pLeaf->values.size(); ++i)
+		  if (keyword == pLeaf->values[i].first && pLeaf->values[i].second != -1)
+		  {
+			   pLeaf->values[i].second = -1;
+			   return 0;
+		  }
+	 return -1;
 }

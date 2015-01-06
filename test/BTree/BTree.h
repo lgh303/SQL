@@ -11,8 +11,12 @@ class BTree
 {
 public:
 	 int root;
+	 // return -1 if not found else 0.
 	 pair<int, int> search(int);
+	 // return -1 if key is duplicate else 0
 	 int insert(int, pair<int, int>);
+	 // return -1 if not found else 0
+	 int remove(int);
 	 void print(int);
 	 ~BTree();
 private:

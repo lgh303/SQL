@@ -13,6 +13,7 @@ public:
 	 BNode(NodeType, int);
 	 NodeType type;
 	 int number;
+	 // pair.second == -1 means it has been removed.
 	 std::vector< pair<int, int> > values;
 	 int pNextLeaf;
 	 int pFirstNode;
