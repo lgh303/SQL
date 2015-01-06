@@ -44,12 +44,21 @@ int main()
 
 	 for (int i = 0; i < times; ++i)
 	 {
-		  char buf[32];
-		  sprintf(buf, "%c%c~", 'a' + i, 'a' + i + 1);
-		  pair<int, int> ret = tree->search(buf);
-		  printf("%c : %d %d\n", i + 'a', ret.first, ret.second);
+	 	  char buf[32];
+	 	  sprintf(buf, "%c%c~", 'a' + i, 'a' + i + 1);
+	 	  pair<int, int> ret = tree->search(buf);
+	 	  printf("%c : %d %d\n", i + 'a', ret.first, ret.second);
 	 }
+
+	 char buf[32];
+	 sprintf(buf, "%c%c~", 'a' + 12, 'a' + 12 + 1);
+	 printf("Start from : %s\n", buf);
+	 vector< pair<int, int> > ret = tree->search_zone(buf, 2);
+	 for (int i = 0; i < ret.size(); ++i)
+	 {
+		  printf("%d %d\n", ret[i].first, ret[i].second);
+	 }
+
 	 tree->print(tree->root);
 	 delete tree;
 }
-

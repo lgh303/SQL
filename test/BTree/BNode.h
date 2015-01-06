@@ -17,6 +17,7 @@ public:
 	 // pair.second == -1 means it has been removed.
 	 std::vector< pair<std::string, int> > values;
 	 int pNextLeaf;
+	 int pPreLeaf;
 	 int pFirstNode;
 	 int parent;
 	 void sortValues();

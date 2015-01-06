@@ -20,19 +20,22 @@ public:
 	 ~BTree();
 
 	 /*
-	  * return -1 if not found else 0.
+	  * return -1 if not found, else 0.
 	  */
 	 pair<int, int> search(int);
 	 pair<int, int> search(const string&);
+	 std::vector< pair<int, int> > search_zone(int, int);
+	 std::vector< pair<int, int> > search_zone(const string&, int);
+	 
 
 	 /*
-	  * return -1 if key is duplicate else 0
+	  * return -1 if key is duplicate, else 0
 	  */
 	 int insert(int, pair<int, int>);
 	 int insert(const string&, pair<int, int>);
 
 	 /*
-	  * return -1 if not found else 0
+	  * return -1 if not found, else 0
 	  */
 	 int remove(int);
 	 int remove(const string&);
@@ -43,9 +46,12 @@ private:
 	 std::vector<BNode*> ptrs;
 	 
 	 pair<int, int> _search(const string&);
+	 std::vector< pair<int, int> > _search_zone(const string&, int);
 	 int _insert(const string&, pair<int, int>);
 	 int _remove(const string&);
-	 
+
+	 std::vector< pair<int, int> > _search_greater(const string&);
+	 std::vector< pair<int, int> > _search_less(const string&);
 	 int searchleaf(const string&, int);
 	 BNode* splitLeaf(BNode*);
 	 BNode* splitStem(BNode*);
