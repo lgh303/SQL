@@ -1,11 +1,18 @@
 #include "BTree.h"
 #include "BNode.h"
+#include <cstdio>
 #include <vector>
 #include <utility>
+#include <cassert>
 
 #include <iostream>
 
 using namespace std;
+
+BTree::BTree(KeyType _type)
+	 : type(_type)
+{
+}
 
 BTree::~BTree()
 {
@@ -13,7 +20,78 @@ BTree::~BTree()
 		  delete ptrs[i];
 }
 
+pair<int, int> BTree::search(const string& keyword)
+{
+	 assert(type == STRING);
+	 return _search(keyword);
+}
+
+int BTree::insert(const string& keyword, pair<int, int> valuepair)
+{
+	 assert(type == STRING);
+	 return _insert(keyword, valuepair);
+}
+
+int BTree::remove(const string& keyword)
+{
+	 assert(type == STRING);
+	 return _remove(keyword);
+}
+
 pair<int, int> BTree::search(int keyword)
+{
+	 assert(type == DIGIT);
+	 char buf[32];
+	 sprintf(buf, "%d", keyword);
+	 string keyword_str(buf);
+	 return _search(keyword_str);
+}
+
+int BTree::insert(int keyword, pair<int, int> valuepair)
+{
+	 assert(type == DIGIT);
+	 char buf[32];
+	 sprintf(buf, "%d", keyword);
+	 string keyword_str(buf);
+	 return _insert(keyword_str, valuepair);
+}
+
+int BTree::remove(int keyword)
+{
+	 assert(type == DIGIT);
+	 char buf[32];
+	 sprintf(buf, "%d", keyword);
+	 string keyword_str(buf);
+	 return _remove(keyword_str);
+}
+
+void BTree::print(int index)
+{
+	 BNode *pNode = ptrs[index];
+	 if (pNode->type == BNode::LEAF)
+	 {
+		  cout << pNode->number << " | ";
+		  for (int i = 0; i < pNode->values.size(); ++i)
+			   cout << "(" << pNode->values[i].first << "," << pNode->values[i].second << ") ";
+		  cout << " | " << pNode->pNextLeaf;
+		  cout << endl;
+	 }
+	 else
+	 {
+		  cout << pNode->number << " >> ";
+		  cout << pNode->pFirstNode << ' ';
+		  for (int i = 0; i < pNode->values.size(); ++i)
+		  {
+			   cout << '(' << pNode->values[i].first << ',' << pNode->values[i].second << ')' << ' ';
+		  }
+		  cout << endl;
+		  print(pNode->pFirstNode);
+		  for (int i = 0; i < pNode->values.size(); ++i)
+			   print(pNode->values[i].second);
+	 }
+}
+
+pair<int, int> BTree::_search(const string& keyword)
 {
 	 if (ptrs.empty())
 		  return make_pair(-1, -1);
@@ -25,7 +103,7 @@ pair<int, int> BTree::search(int keyword)
 	 return make_pair(-1, -1);
 }
 
-int BTree::insert(int keyword, pair<int, int> valuepair)
+int BTree::_insert(const string& keyword, pair<int, int> valuepair)
 {
 	 int value = BNode::toBTreeValue(valuepair);
 	 if (ptrs.empty())
@@ -59,13 +137,13 @@ int BTree::insert(int keyword, pair<int, int> valuepair)
 	 if (pLeaf->values.size() > BNode::MaxSize)
 	 {
 		  BNode* newleaf = splitLeaf(pLeaf);
-		  int upwards = newleaf->values.front().first;
+		  string upwards = newleaf->values.front().first;
 		  insertStem(pLeaf, newleaf, upwards);
 	 }
 	 return 0;
 }
 
-int BTree::searchleaf(int keyword, int number)
+int BTree::searchleaf(const string& keyword, int number)
 {
 	 BNode* pNode = ptrs[number];
 	 if (pNode->type == BNode::LEAF)
@@ -106,7 +184,7 @@ BNode* BTree::splitStem(BNode *oldstem)
 	 return newstem;
 }
 
-void BTree::insertStem(BNode *oldleaf, BNode* newleaf, int upwards)
+void BTree::insertStem(BNode *oldleaf, BNode* newleaf, const string& upwards)
 {
 	 int parentIndex = oldleaf->parent;
 	 if (parentIndex == -1)
@@ -147,33 +225,7 @@ void BTree::tracedown(BNode *pParent)
 	 }
 }
 
-void BTree::print(int index)
-{
-	 BNode *pNode = ptrs[index];
-	 if (pNode->type == BNode::LEAF)
-	 {
-		  cout << pNode->number << " | ";
-		  for (int i = 0; i < pNode->values.size(); ++i)
-			   cout << "(" << pNode->values[i].first << "," << pNode->values[i].second << ") ";
-		  cout << " | " << pNode->pNextLeaf;
-		  cout << endl;
-	 }
-	 else
-	 {
-		  cout << pNode->number << " >> ";
-		  cout << pNode->pFirstNode << ' ';
-		  for (int i = 0; i < pNode->values.size(); ++i)
-		  {
-			   cout << '(' << pNode->values[i].first << ',' << pNode->values[i].second << ')' << ' ';
-		  }
-		  cout << endl;
-		  print(pNode->pFirstNode);
-		  for (int i = 0; i < pNode->values.size(); ++i)
-			   print(pNode->values[i].second);
-	 }
-}
-
-int BTree::remove(int keyword)
+int BTree::_remove(const string& keyword)
 {
 	 if (ptrs.empty())
 		  return -1;
@@ -187,3 +239,4 @@ int BTree::remove(int keyword)
 		  }
 	 return -1;
 }
+

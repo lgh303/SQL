@@ -1,6 +1,7 @@
 #ifndef __B_NODE__
 #define __B_NODE__
 
+#include <string>
 #include <vector>
 #include <utility>
 
@@ -14,7 +15,7 @@ public:
 	 NodeType type;
 	 int number;
 	 // pair.second == -1 means it has been removed.
-	 std::vector< pair<int, int> > values;
+	 std::vector< pair<std::string, int> > values;
 	 int pNextLeaf;
 	 int pFirstNode;
 	 int parent;

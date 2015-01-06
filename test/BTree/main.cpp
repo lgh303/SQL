@@ -9,11 +9,11 @@ using namespace std;
 pair<int, int> data[100];
 int main()
 {
-	 BTree *tree = new BTree();
+	 BTree *tree = new BTree(BTree::STRING);
 	 srand(time(NULL));
-	 int times = 30;
+	 int times = 23;
 	 for (int i = 0; i < times; ++i)
-		  data[i] = make_pair(i * 2, i * 3);
+		  data[i] = make_pair(i, i * 2);
 	 for (int t = 0; t < times / 2; ++t)
 	 {
 		  int x = rand() % times;
@@ -23,17 +23,31 @@ int main()
 		  data[y] = tmp;
 	 }
 	 for (int i = 0; i < times; ++i)
-		  tree->insert(data[i].first / 2, data[i]);
+	 {
+		  char buf[32];
+		  sprintf(buf, "%c%c~", 'a' + data[i].first, 'a' + data[i].first + 1);
+		  tree->insert(buf, data[i]);
+	 }
 
-	 for (int i = 5; i < 25; ++i)
-		  tree->remove(i);
-	 for (int i = 15; i < 20; ++i)
-		  tree->insert(i, make_pair(i + 1, i + 3));
+	 for (int i = 5; i < 20; ++i)
+	 {
+	 	  char buf[32];
+	 	  sprintf(buf, "%c%c~", 'a' + i, 'a' + i + 1);
+	 	  tree->remove(buf);
+	 }
+	 for (int i = 10; i < 15; ++i)
+	 {
+	 	  char buf[32];
+	 	  sprintf(buf, "%c%c~", 'a' + i, 'a' + i + 1);
+	 	  tree->insert(buf, make_pair(i + 1, i + 3));
+	 }
 
 	 for (int i = 0; i < times; ++i)
 	 {
-		  pair<int, int> ret = tree->search(i);
-		  printf("%d : %d %d\n", i, ret.first, ret.second);
+		  char buf[32];
+		  sprintf(buf, "%c%c~", 'a' + i, 'a' + i + 1);
+		  pair<int, int> ret = tree->search(buf);
+		  printf("%c : %d %d\n", i + 'a', ret.first, ret.second);
 	 }
 	 tree->print(tree->root);
 	 delete tree;
