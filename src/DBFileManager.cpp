@@ -15,6 +15,7 @@
 #else
 #include <dirent.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #endif
 
 using namespace std;
@@ -31,9 +32,9 @@ int DBFileManager::CreateFile(char* filename)
 	_finddata_t* newfile = new _finddata_t();
 	result = _findfirst(filename, newfile);
 #else
-	string dbname = "db/";
-	string dbpath = "../" + dbname;
-	DIR *dir = opendir(dbpath.c_str());
+    char* curpath = new char[100];
+    getcwd(curpath, 100);
+	DIR *dir = opendir(curpath);
 	// need to make sure dir != NULL
 	string tbname = filename;
 	for (dirent *pDir = readdir(dir); pDir != NULL; pDir = readdir(dir))
@@ -82,16 +83,16 @@ int DBFileManager::OpenFile(char* filename)
 	 result = _findfirst(filename, newfile);
 	 filesize = newfile->size;
 #else
-	string dbname = "db/";
-	string dbpath = "../" + dbname;
-	DIR *dir = opendir(dbpath.c_str());
+	char* curpath = new char[100];
+    getcwd(curpath, 100);
+	DIR *dir = opendir(curpath);
 	// need to make sure dir != NULL
 	string tbname = filename;
 	for (dirent *pDir = readdir(dir); pDir != NULL; pDir = readdir(dir))
 		 if (pDir->d_name[0] != '.' && tbname == pDir->d_name)
 		 {
 			  result = 0;
-			  string tbpath = dbpath + tbname;
+			  string tbpath = tbname;
 			  struct stat filestat;
 			  stat(tbpath.c_str(), &filestat);
 			  filesize = filestat.st_size;
@@ -145,9 +146,9 @@ int DBFileManager::CloseFile(char* filename)
 	_finddata_t* newfile = new _finddata_t();
 	result = _findfirst(filename, newfile);
 #else
-	string dbname = "db/";
-	string dbpath = "../" + dbname;
-	DIR *dir = opendir(dbpath.c_str());
+	char* curpath = new char[100];
+    getcwd(curpath, 100);
+	DIR *dir = opendir(curpath);
 	// need to make sure dir != NULL
 	string tbname = filename;
 	for (dirent *pDir = readdir(dir); pDir != NULL; pDir = readdir(dir))
@@ -188,9 +189,9 @@ int DBFileManager::DestroyFile(char* filename)
 	_finddata_t* newfile = new _finddata_t();
 	result = _findfirst(filename, newfile);
 #else
-	string dbname = "db/";
-	string dbpath = "../" + dbname;
-	DIR *dir = opendir(dbpath.c_str());
+	char* curpath = new char[100];
+    getcwd(curpath, 100);
+	DIR *dir = opendir(curpath);
 	// need to make sure dir != NULL
 	string tbname = filename;
 	for (dirent *pDir = readdir(dir); pDir != NULL; pDir = readdir(dir))

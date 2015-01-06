@@ -14,7 +14,7 @@ public:
 	 void print();
 	 void clear();
 	 bool empty();
-private:
+public:
 	 std::vector<CondEntry> operands;
 	 std::vector<CondLogicOp> opcodes;
 };

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <cstring>
 #include <climits>
 #include "DBBufManager.h"
 #include "DBUtility.h"
@@ -36,8 +37,12 @@ int DBBufManager::AddBuf(char* filename)
 					break;
 				}
 			}
-			bufmap[filename] = allocnum;
-			bufinvmap[allocnum] = filename;
+			char* fn = new char[50];
+			memcpy(fn, filename, sizeof(filename));
+			bufmap.insert(make_pair(fn, allocnum));
+			char* fn2 = new char[50];
+			memcpy(fn2, filename, sizeof(filename));
+			bufinvmap.insert(make_pair(allocnum, fn2));
 			isnull[allocnum] = false;
 			bufnum += 1;
 			return allocnum;
@@ -78,6 +83,8 @@ int DBBufManager::DeleteBuf()
 
 int DBBufManager::DeleteBufById(int id)
 {
+    if(id < 0 || id > BUFFILEMAX)
+        return -1;
 	if(!isnull[id])
 	{
 		bufnum -= 1;
@@ -90,7 +97,7 @@ int DBBufManager::DeleteBufById(int id)
 //搜索一个文件对应的Buf号。
 int DBBufManager::SearchBuf(char* filename)
 {
-	map<char*, int>::iterator iter = bufmap.find(filename);
+	map<char*, int, ptrCmp>::iterator iter = bufmap.find(filename);
 	if(iter == bufmap.end())
 		return -1;
 	else
@@ -100,7 +107,7 @@ int DBBufManager::SearchBuf(char* filename)
 			return -1;
 		else
 			return num;
-	} 
+	}
 }
 
 int DBBufManager::FixOperTime(int id, time_t opertime)

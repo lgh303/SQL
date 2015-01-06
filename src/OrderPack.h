@@ -13,7 +13,7 @@ using std::string;
 class OrderPack
 {
 public:
-	 enum OrderType {CREATE_DB, DROP_DB, USE, CREATE_TB, DROP_TB, SHOW, DESC, INSERT, DELETE, UPDATE, SELECT, CREATE_INDEX, DROP_INDEX};
+	 enum OrderType {CREATE_DB, DROP_DB, USE, CREATE_TB, DROP_TB, SHOWDBS, SHOWTBS, DESC, INSERT, DELETE, UPDATE, SELECT, CREATE_INDEX, DROP_INDEX};
 
 	 OrderType type;
 	 string dbname;

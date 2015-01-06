@@ -2,6 +2,7 @@
 	#include <cstdio>
 	#include <cstdlib>
 	#include <iostream>
+	#include <unistd.h>
 	#include "DBFileManager.h"
 	#include "DBBufManager.h"
 	#include "SemValue.h"
@@ -17,7 +18,7 @@
 
 %token INTEGER IDENTIFIER LITERAL
 %token ENDLINE QUIT
-%token CREATE DB DROP USE SHOW TB TBS INDEX DESC
+%token CREATE DB DBS DROP USE SHOW TB TBS INDEX DESC
 %token NOT IS NUL IN PRIMARY FOREIGN KEY CHECK REFER
 %token INS_INTO VALUES DELETE
 %token WHERE UPDATE SET SELECT FROM LIKE
@@ -33,13 +34,14 @@ Program :
 		  Program Stmt
 		| /* empty */
 		;
-Stmt : 
+Stmt :
 		   ENDLINE
 		   {
 				prompt();
 		   }
 	     | QUIT ENDLINE
 	   	   {
+                mybufmanager->AllWriteback();
 				exit(0);
            }
 	   	 | CREATE DB IDENTIFIER ';' ENDLINE
@@ -69,9 +71,16 @@ Stmt :
 				/* std::cout << $2.id << std::endl; */
 				prompt();
 		   }
+        | SHOW DBS ';' ENDLINE
+        {
+                OrderPack pack(OrderPack::SHOWDBS);
+				pack.process();
+				/* std::cout << "show tables" << std::endl; */
+				prompt();
+        }
 		 | SHOW TBS ';' ENDLINE
 		   {
-				OrderPack pack(OrderPack::SHOW);
+				OrderPack pack(OrderPack::SHOWTBS);
 				pack.process();
 				/* std::cout << "show tables" << std::endl; */
 				prompt();
@@ -202,7 +211,7 @@ WhereClause :
 				$$.condition.clear();
 		   }
 		 | WHERE CondList
-		   {	 
+		   {
 		   		 $$.condition = $2.condition;
 		   }
 		 ;
@@ -231,7 +240,7 @@ AttrDefList :
 		   ;
 
 AttrDefItem :
-		   IDENTIFIER Type '(' INTEGER ')' 
+		   IDENTIFIER Type '(' INTEGER ')'
 		   {
 				$$.schemaEntry = SchemaEntry($1.id, $2.datatype, $4.length, 0);
 				$$.schemaEntry.entrykind = SchemaEntry::NORMAL;
@@ -322,7 +331,7 @@ Cond :
 				$$.condEntry.op = CondEntry::LIKE;
 				$$.condEntry.left = Expr(Expr::ATTR);
 				$$.condEntry.left.attr = $1.attr;
-				$$.condEntry.mode = $3.literal;		   
+				$$.condEntry.mode = $3.literal;
 		   }
 		 | Attr IN '(' ValueList ')'
 		   {
@@ -397,7 +406,7 @@ AttrAggr :
 		   }
 Attr :
 		   IDENTIFIER
-		   {	
+		   {
 		   		$$.attr = Attr("", $1.id);
 		   }
 		 | IDENTIFIER '.' IDENTIFIER
@@ -446,7 +455,8 @@ int main(int argc, char** argv)
 		std::cout << "Too many arguments" << std::endl;
 		return -1;
 	}
-	
+	chdir("../db");
+
 	myfilemanager = new DBFileManager();
 	mybufmanager = new DBBufManager();
 

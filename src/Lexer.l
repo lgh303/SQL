@@ -18,13 +18,14 @@ QUIT 			 ("quit")
 
 CREATE			 ("CREATE"|"create")
 DB				 ("DATABASE"|"database")
+DBS             ("DATABASES"|"databases")
 DROP			 ("DROP"|"drop")
 USE				 ("USE"|"use")
 SHOW			 ("SHOW"|"show")
 TBS				 ("TABLES"|"tables")
 TB				 ("TABLE"|"table")
 INDEX			 ("INDEX"|"index")
-DESC			 ("DESC"|"desc")
+DESC			 ("DESCRIBE"|"describe")
 NOT				 ("NOT"|"not")
 IS				 ("IS"|"is")
 NUL 			 ("NULL"|"null")
@@ -69,6 +70,7 @@ VCHAR			 ("VARCHAR"|"varchar")
 
 {CREATE} 	   { return SemValue::keyword(CREATE); }
 {DB}		   { return SemValue::keyword(DB); }
+{DBS}		   { return SemValue::keyword(DBS); }
 {DROP}		   { return SemValue::keyword(DROP); }
 {USE} 		   { return SemValue::keyword(USE); }
 {SHOW}	   	   { return SemValue::keyword(SHOW); }
@@ -123,7 +125,7 @@ VCHAR			 ("VARCHAR"|"varchar")
 					yylval.code = INTEGER;
 					yylval.length = atoi(yytext);
 					return INTEGER;
-			   }	
+			   }
 
 <INITIAL>\"    {
 					str = std::string();
