@@ -34,5 +34,6 @@
 #define NOSUCHRECORD -22
 #define CALCULATETYPEERROR -23
 #define NORECORDMATCH -24
+#define KEYNULL -25
 
 #endif

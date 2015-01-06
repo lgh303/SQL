@@ -28,7 +28,8 @@ static const char* DB_ERROR[] = {
 		"You don't choose which database to enter. Cannot show tables.",
 		"Delete record failed. No record matched.",
 		"The variation of the calculation process must be integer.",
-		"No record matched."
+		"No record matched.",
+		"There is at least one NULL in your record, but the attributes don't support NULL."
 	};
 
 extern void DBPrintError(int error);

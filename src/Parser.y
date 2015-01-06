@@ -288,6 +288,7 @@ ValueList :
 ValueItem :
 		   INTEGER  { $$.value = Value(0, $1.length, ""); }
 		 | LITERAL  { $$.value = Value(1, 0, $1.literal); }
+		 | NUL {$$.value = Value(2, 0, "");}
 		 ;
 
 CondList :

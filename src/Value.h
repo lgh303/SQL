@@ -9,7 +9,7 @@ public:
 	 Value() {}
 	 Value(int t, int i, std::string s)
 		  : type(t), integer(i), literal(s) {}
-	 int type;//integer for 0, string for 1
+	 int type;//integer for 0, string for 1, null for 2
 	 int integer;
 	 std::string literal;
 };

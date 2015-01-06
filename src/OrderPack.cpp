@@ -224,7 +224,7 @@ void OrderPack::process()
              for(int i = 0;i<schema.size();i++)
              {
                  fileinfo->attr[i].isForeign = schema.entries[i].isForeign;
-                 fileinfo->attr[i].isNull = ~schema.entries[i].notNull;
+                 fileinfo->attr[i].isNull = !schema.entries[i].notNull;
                  fileinfo->attr[i].isPrimary = schema.entries[i].isPrimary;
                  fileinfo->attr[i].length = ((schema.entries[i].type == "int") ? 5 : schema.entries[i].length + 1);
                  if(schema.entries[i].field.length() >= 32)
@@ -355,8 +355,22 @@ void OrderPack::process()
              {
                  if(values[i].type == 0)
                     memcpy(record + fileinfo->attr[i].offset, (char*)(&values[i].integer), 4);
-                 else
+                 else if(values[i].type == 1)
                     memcpy(record + fileinfo->attr[i].offset, strtochar(values[i].literal), values[i].literal.length() + 1);
+                //空值判断
+                 else
+                 {
+                     if(!fileinfo->attr[i].isNull)
+                     {
+                         DBPrintErrorPos("Insert Record");
+                         DBPrintError(KEYNULL);
+                         return;
+                     }
+                     char* zero = new char[fileinfo->attr[i].length];
+                     for(int j = 0;j<fileinfo->attr[i].length;j++)
+                        zero[j] = '\0';
+                     memcpy(record + fileinfo->attr[i].offset, zero, fileinfo->attr[i].length);
+                 }
              }
              bufFile[fileid]->AddRecord(record, fileinfo->recordLength);
              break;
@@ -413,10 +427,22 @@ void OrderPack::process()
                  memcpy(upword, (int*)(&(updateValue.integer)), 4);
                  memcpy(upword + 4, "\0", 1);
              }
-             else
+             else if(updateValue.type == 1)
              {
                  upword = new char[updateValue.literal.length() + 1];
                  memcpy(upword, strtochar(updateValue.literal), updateValue.literal.length() + 1);
+             }
+             else
+             {
+                 for(int i = 0;i<fileinfo->attrNum;i++)
+                    if(!fileinfo->attr[i].isNull && strcmp(fileinfo->attr[i].name, upattr) == 0)
+                    {
+                        DBPrintErrorPos("Update Record");
+                        DBPrintError(KEYNULL);
+                        return;
+                    }
+                 upword = new char[5];
+                 memcpy(upword, "\0\0\0\0\0", 5);
              }
              vector< pair<int, int> >::iterator iter = result.begin();
              for(;iter != result.end();iter++)
@@ -515,8 +541,86 @@ void OrderPack::process()
                 cout<<endl;
              }
             //单表分组聚集查询
+            if(tables.size() == 1 && attrs.size() == 2 && isGather)
+            {
+                int err = myfilemanager->OpenFile(strtochar(tables[0]));
+                if(err < 0)
+                    return;
+                int fileid = mybufmanager->SearchBuf(strtochar(tables[0]));
+                DBFileInfo* fileinfo = new DBFileInfo();
+                fileinfo = myfilemanager->getFileHeader(strtochar(tables[0]));
+                if(fileinfo->pageNum == 0)
+                {
+                    DBPrintErrorPos("Search Record");
+                    DBPrintError(NOSUCHRECORD);
+                    return;
+                }
+                int slotTotal = fileinfo->pageNum * ((DBPageInfo*)(bufFile[fileid]->getPage(0)))->slotNum;
+                int slotPerPage = ((DBPageInfo*)(bufFile[fileid]->getPage(0)))->slotNum;
+                bool* flag = new bool[slotTotal];
+                memset(flag, 0, slotTotal);
+                int attrpos = -1;
+                for(int i = 0;i<fileinfo->attrNum;i++)
+                    if(strcmp(fileinfo->attr[i].name, strtochar(groupbyAttr.attrname)) == 0)
+                    {
+                        attrpos = i;
+                        break;
+                    }
+                if(attrpos == -1)
+                {
+                    DBPrintErrorPos("Search Record");
+                    DBPrintError(NOSUCHATTR);
+                    return;
+                }
+                cout<<endl;
+                for(int i = 0;i<fileinfo->pageNum;i++)
+                     for(int j = 0;j<((DBPageInfo*)(bufFile[fileid]->getPage(i)))->slotNum;j++)
+                        if(!((DBRecordHeader*)(bufFile[fileid]->getRecord(i, j)))->isNull &&  !flag[i*slotPerPage+j])
+                        {
+                            char** keyattr = new char*[1];
+                            keyattr[0] = new char[groupbyAttr.attrname.length() + 1];
+                            int* style = new int[1];
+                            style[0] = 0;
+                            char** keyword = new char*[1];
+                            keyword[0] = new char[fileinfo->attr[attrpos].length];
+                            memcpy(keyword[0], bufFile[fileid]->getRecord(i, j) + DBRECORDHEADER + fileinfo->attr[attrpos].offset, fileinfo->attr[attrpos].length);
+                            memcpy(keyattr[0], strtochar(groupbyAttr.attrname), groupbyAttr.attrname.length() + 1);
+                            vector< pair<int, int> > result;
+                            bufFile[fileid]->SearchRecord(keyattr, style, NULL, keyword, 1, result);
+                            vector< pair<int, int> >::iterator iter = result.begin();
+                            for(;iter != result.end();iter++)
+                                flag[iter->first * slotPerPage + iter->second] = true;
+
+                            int mode;
+                            if(attrs[1].aggr == Attr::SUM)
+                                mode = 0;
+                            else if(attrs[1].aggr == Attr::AVG)
+                                mode = 1;
+                            else if(attrs[1].aggr == Attr::MAX)
+                                mode = 2;
+                            else if(attrs[1].aggr == Attr::MIN)
+                                mode = 3;
+                            int resultflag;
+                            int resultInteger;
+                            char* resultLiteral;
+                            int err = bufFile[fileid]->calculate(result, strtochar(attrs[1].attrname), mode, resultflag, resultInteger, resultLiteral);
+                            if(err < 0)
+                                return;
+                            if(resultflag == 0)
+                                if(fileinfo->attr[attrpos].type == 0)
+                                    cout<<" "<<keyword[0]<<"  :  "<<resultLiteral<<endl;
+                                else
+                                    cout<<" "<<*((int*)keyword[0])<<"  :  "<<resultLiteral<<endl;
+                            else
+                                if(fileinfo->attr[attrpos].type == 0)
+                                    cout<<" "<<keyword[0]<<"  :  "<<resultInteger<<endl;
+                                else
+                                    cout<<" "<<*((int*)keyword[0])<<"  :  "<<resultInteger<<endl;
+                        }
+                        cout<<endl;
+            }
+            break;
 	     }
-		 break;
 	 case CREATE_INDEX:
 		 break;
 	 case DROP_INDEX:
