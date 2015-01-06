@@ -25,7 +25,10 @@ static const char* DB_ERROR[] = {
 		"Cannot create a database in another database",
 		"Cannot create a file at the top level. Please create database first.",
 		"Create record failed. The amount of the inputting attributes is not equal to the file's request.",
-		"You don't choose which database to enter. Cannot show tables."
+		"You don't choose which database to enter. Cannot show tables.",
+		"Delete record failed. No record matched.",
+		"The variation of the calculation process must be integer.",
+		"No record matched."
 	};
 
 extern void DBPrintError(int error);

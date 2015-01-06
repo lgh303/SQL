@@ -395,4 +395,63 @@ int DBFile::show(vector< pair<int, int> >rlist, vector<int>attrindex)
     return DBOK;
 }
 
+//mode: 0 for sum, 1 for avg, 2 for max, 3 for min
+int DBFile::calculate(vector< pair<int, int> > rlist, char* attrname, int mode, int& resultInteger, char* &resultLiteral)
+{
+    DBFileInfo* fileinfo = (DBFileInfo*)(fileheader.header);
+    int attrpos = -1;
+    for(int i = 0;i<fileinfo->attrNum;i++)
+    {
+        if(strcmp(attrname, fileinfo->attr[i].name) == 0)
+        {
+            attrpos = i;
+            break;
+        }
+    }
+    if(attrpos == -1)
+    {
+        DBPrintErrorPos("Calculate");
+        DBPrintError(NOSUCHATTR);
+        return NOSUCHATTR;
+    }
+    if(fileinfo->attr[attrpos].type == 0 && (mode == 0 || mode == 1))
+    {
+        DBPrintErrorPos("Calculate");
+        DBPrintError(CALCULATETYPEERROR);
+        return CALCULATETYPEERROR;
+    }
+    if(rlist.size() == 0)
+    {
+        DBPrintErrorPos("Calculate");
+        DBPrintError(NORECORDMATCH);
+        return NORECORDMATCH;
+    }
+    vector< pair<int, int> >::iterator iter = rlist.begin();
+    resultInteger = 0;
+    resultLiteral = new char[fileinfo->attr[attrpos].length];
+    if(fileinfo->attr[attrpos].type == 0)
+        memcpy(resultLiteral, getRecord(iter->first, iter->second) + fileinfo->attr[attrpos].offset + DBRECORDHEADER, fileinfo->attr[attrpos].length);
+    else
+        resultInteger = *((int*)(getRecord(iter->first, iter->second) + fileinfo->attr[attrpos].offset + DBRECORDHEADER));
+    for(;iter != rlist.end();iter++)
+    {
+        char* wordpos = getRecord(iter->first, iter->second) + fileinfo->attr[attrpos].offset + DBRECORDHEADER;
+        if(mode == 0 || mode == 1)
+            resultInteger += (*((int*)wordpos));
+        else if(mode == 2)
+        {
+            resultInteger = max(resultInteger,  (*((int*)wordpos)));
+            if(strcmp(resultLiteral, wordpos) < 0)
+                memcpy(resultLiteral, wordpos, strlen(wordpos) + 1);
+        }
+        else if(mode == 3)
+        {
+            resultInteger = min(resultInteger,  (*((int*)wordpos)));
+            if(strcmp(resultLiteral, wordpos) > 0)
+                memcpy(resultLiteral, wordpos, strlen(wordpos) + 1);
+        }
+    }
+    return DBOK;
+}
+
 

@@ -32,6 +32,7 @@ public:
 	int DeleteRecord(int pageid, int rid);
 	int UpdateRecord(char* keyattr, char* keyword, int pageid, int rid);
 	int show(vector< pair<int, int> >rlist, vector<int>attrindex);
+	int calculate(vector< pair<int, int> >rlist, char* attrname, int mode, int &resultInteger, char* &resultLiteral);
 };
 
 extern DBFile* bufFile[BUFFILEMAX];
