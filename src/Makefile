@@ -45,4 +45,4 @@ lex.yy.c : Lexer.l
 
 clean : 
 	rm $(TARGET)
-	rm $(OBJ)
+	rm *.o
