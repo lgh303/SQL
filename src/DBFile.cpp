@@ -396,7 +396,8 @@ int DBFile::show(vector< pair<int, int> >rlist, vector<int>attrindex)
 }
 
 //mode: 0 for sum, 1 for avg, 2 for max, 3 for min
-int DBFile::calculate(vector< pair<int, int> > rlist, char* attrname, int mode, int& resultInteger, char* &resultLiteral)
+//resultflag: 0 for literal, 1 for integer
+int DBFile::calculate(vector< pair<int, int> > rlist, char* attrname, int mode, int& resultflag, int& resultInteger, char* &resultLiteral)
 {
     DBFileInfo* fileinfo = (DBFileInfo*)(fileheader.header);
     int attrpos = -1;
@@ -429,12 +430,15 @@ int DBFile::calculate(vector< pair<int, int> > rlist, char* attrname, int mode, 
     vector< pair<int, int> >::iterator iter = rlist.begin();
     resultInteger = 0;
     resultLiteral = new char[fileinfo->attr[attrpos].length];
+    resultflag = fileinfo->attr[attrpos].type;
     if(fileinfo->attr[attrpos].type == 0)
         memcpy(resultLiteral, getRecord(iter->first, iter->second) + fileinfo->attr[attrpos].offset + DBRECORDHEADER, fileinfo->attr[attrpos].length);
     else
         resultInteger = *((int*)(getRecord(iter->first, iter->second) + fileinfo->attr[attrpos].offset + DBRECORDHEADER));
     for(;iter != rlist.end();iter++)
     {
+        if(iter == rlist.begin())
+            continue;
         char* wordpos = getRecord(iter->first, iter->second) + fileinfo->attr[attrpos].offset + DBRECORDHEADER;
         if(mode == 0 || mode == 1)
             resultInteger += (*((int*)wordpos));
@@ -451,6 +455,8 @@ int DBFile::calculate(vector< pair<int, int> > rlist, char* attrname, int mode, 
                 memcpy(resultLiteral, wordpos, strlen(wordpos) + 1);
         }
     }
+    if(mode == 1)
+        resultInteger /= rlist.size();
     return DBOK;
 }
 

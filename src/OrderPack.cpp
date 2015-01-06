@@ -426,7 +426,14 @@ void OrderPack::process()
 	 case SELECT:
 	     {
 	         //单表非聚集处理
-             if(tables.size() == 1 && groupbyAttr.aggr == Attr::NONE)
+	         bool isGather = false;
+	         for(int i = 0;i<attrs.size();i++)
+                if(attrs[i].aggr == Attr::NONE)
+                 {
+                     isGather = true;
+                     break;
+                 }
+             if(tables.size() == 1 && !isGather && groupbyAttr.aggr == Attr::NONE)
              {
                  int err = myfilemanager->OpenFile(strtochar(tables[0]));
                  if(err < 0)
@@ -471,6 +478,43 @@ void OrderPack::process()
                  }
                  bufFile[fileid]->show(result, targetattrlist);
              }
+             //单表聚集查询
+             if(tables.size() == 1 && attrs.size() == 1 && isGather)
+             {
+                 int err = myfilemanager->OpenFile(strtochar(tables[0]));
+                 if(err < 0)
+                    return;
+                 int fileid = mybufmanager->SearchBuf(strtochar(tables[0]));
+                 DBFileInfo* fileinfo = new DBFileInfo();
+                 fileinfo = myfilemanager->getFileHeader(strtochar(tables[0]));
+                 vector< pair<int, int> > searchid;
+                 for(int i = 0;i<fileinfo->pageNum;i++)
+                     for(int j = 0;j<((DBPageInfo*)(bufFile[fileid]->getPage(i)))->slotNum;j++)
+                        if(!((DBRecordHeader*)(bufFile[fileid]->getRecord(i, j)))->isNull)
+                            searchid.push_back(make_pair(i, j));
+                int mode;
+                if(attrs[0].aggr == Attr::SUM)
+                    mode = 0;
+                else if(attrs[0].aggr == Attr::AVG)
+                    mode = 1;
+                else if(attrs[0].aggr == Attr::MAX)
+                    mode = 2;
+                else if(attrs[0].aggr == Attr::MIN)
+                    mode = 3;
+                int resultflag;
+                int resultInteger;
+                char* resultLiteral;
+                err = bufFile[fileid]->calculate(searchid, strtochar(attrs[0].attrname), mode, resultflag, resultInteger, resultLiteral);
+                if(err < 0)
+                    return;
+                cout<<endl;
+                if(resultflag == 0)
+                    cout<<" "<<resultLiteral<<endl;
+                else
+                    cout<<" "<<resultInteger<<endl;
+                cout<<endl;
+             }
+            //单表分组聚集查询
 	     }
 		 break;
 	 case CREATE_INDEX:
