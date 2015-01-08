@@ -365,8 +365,8 @@ int DBFile::show(vector< pair<int, int> >rlist, vector<int>attrindex)
     for(int i = 0;i<attrindex.size();i++)
     {
         cout<<fileinfo->attr[attrindex[i]].name;
-        for(int j = 0;j<space[i] - strlen(fileinfo->attr[attrindex[i]].name);j++)
-            cout<<" ";
+//        for(int j = 0;j<space[i] - strlen(fileinfo->attr[attrindex[i]].name);j++)
+            cout<<"\t";
         cout<<"|";
     }
     cout<<endl;
@@ -385,8 +385,8 @@ int DBFile::show(vector< pair<int, int> >rlist, vector<int>attrindex)
                     cout<<wordpos;
                 else
                     cout<<*((int*)wordpos);
-                for(int j = 0;j<space[i] - strlen(wordpos);j++)
-                    cout<<" ";
+//                for(int j = 0;j<space[i] - strlen(wordpos);j++)
+                    cout<<"\t";
                 cout<<"|";
             }
         }

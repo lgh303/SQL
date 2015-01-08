@@ -5,6 +5,7 @@
 	#include <unistd.h>
 	#include "DBFileManager.h"
 	#include "DBBufManager.h"
+	#include "IndexManager.h"
 	#include "SemValue.h"
 	#include "OrderPack.h"
 	#define YYSTYPE SemValue
@@ -14,6 +15,10 @@
 	extern FILE* yyin;
 	bool isInterp = true;
 	using namespace std;
+
+	DBFileManager* myfilemanager = NULL;
+	DBBufManager *mybufmanager = NULL;
+	IndexManager *indexManager = NULL;
 %}
 
 %token INTEGER IDENTIFIER LITERAL
@@ -42,6 +47,9 @@ Stmt :
 	     | QUIT ENDLINE
 	   	   {
                 mybufmanager->AllWriteback();
+				delete mybufmanager;
+				delete myfilemanager;
+				delete indexManager;
 				exit(0);
            }
 	   	 | CREATE DB IDENTIFIER ';' ENDLINE
@@ -446,9 +454,6 @@ void yyerror(const char *s)
 	/* Do Nothing */
 }
 
-DBFileManager* myfilemanager = NULL;
-DBBufManager *mybufmanager = NULL;
-
 int main(int argc, char** argv)
 {
 	if (argc > 2)
@@ -472,6 +477,7 @@ int main(int argc, char** argv)
 
 	myfilemanager = new DBFileManager();
 	mybufmanager = new DBBufManager();
+	indexManager = new IndexManager();
 
 	if (argc == 2)
 	{

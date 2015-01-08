@@ -17,6 +17,8 @@
 #include "CondEntry.h"
 #include "Attr.h"
 #include "Expr.h"
+#include "IndexManager.h"
+#include "BTree.h"
 #include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -24,6 +26,8 @@
 using namespace std;
 
 static int enterDatabaseFlag = 0;
+
+extern IndexManager* indexManager;
 
 inline char* strtochar(string s)
 {
@@ -649,8 +653,68 @@ void OrderPack::process()
             break;
 	     }
 	 case CREATE_INDEX:
-		 break;
+	 {
+		  int err = myfilemanager->OpenFile(strtochar(tbname));
+		  if(err < 0)
+			   return;
+		  int fileid = mybufmanager->SearchBuf(strtochar(tbname));
+		  if (fileid < 0)
+		  {
+			   DBPrintErrorPos("Table not Exist. Create Index Failed.\n");
+			   break;
+		  }
+		  DBFileInfo* fileinfo = myfilemanager->getFileHeader(strtochar(tbname));
+		  int type = -1;
+		  int offset = -1;
+		  for (int i = 0; i < fileinfo->attrNum; ++i)
+			   if (fileinfo->attr[i].name == indexAttr)
+			   {
+					type = fileinfo->attr[i].type;
+					offset = fileinfo->attr[i].offset;
+					break;
+			   }
+		  if (type == -1)
+		  {
+			   DBPrintErrorPos("Attribute not Exist. Create Index Failed.\n");
+			   break;
+		  }
+		  BTree *tree = NULL;
+		  if (type == 0)
+			   tree = new BTree(BTree::STRING);
+		  else
+			   tree = new BTree(BTree::DIGIT);
+		  for(int i = 0;i<fileinfo->pageNum;i++)
+			   for(int j = 0;j<((DBPageInfo*)(bufFile[fileid]->getPage(i)))->slotNum;j++)
+			   {
+					char* header = bufFile[fileid]->getRecord(i, j);
+					if (!((DBRecordHeader*)header)->isNull)
+					{
+						 char* pos = header + 8 + offset;
+						 if (type == 0)
+						 {
+							  string value(pos);
+							  tree->insert(value, make_pair(i, j));
+							  cout << "--" << value << endl;
+						 }
+						 else
+						 {
+							  int value = *(int*)pos;
+							  tree->insert(value, make_pair(i, j));
+							  cout << "--" << value << endl;
+						 }
+					}
+			   }
+		  string tree_name = tbname + "_" + indexAttr;
+		  indexManager->addBTree(tree_name, tree);
+		  indexManager->storeBTree(tree_name, tree);
+		  break;
+	 }
 	 case DROP_INDEX:
-		 break;
+	 {
+		  int ret = unlink(("index_" + tbname + "_" + indexAttr).c_str());
+		  if (ret < 0)
+			   DBPrintErrorPos("Index Not Exist. Drop Index Failed.\n");
+		  break;
+	 }
 	 }
 }
