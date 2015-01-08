@@ -359,8 +359,7 @@ void OrderPack::process()
              if(err < 0)
                 return;
              int fileid = mybufmanager->SearchBuf(strtochar(tbname));
-             DBFileInfo* fileinfo = new DBFileInfo();
-             fileinfo = myfilemanager->getFileHeader(strtochar(tbname));
+             DBFileInfo* fileinfo = myfilemanager->getFileHeader(strtochar(tbname));
              char* record = new char[fileinfo->recordLength];
              if(values.size() != fileinfo->attrNum)
              {
@@ -412,8 +411,7 @@ void OrderPack::process()
              if(err < 0)
                 return;
              int fileid = mybufmanager->SearchBuf(strtochar(tbname));
-             DBFileInfo* fileinfo = new DBFileInfo();
-             fileinfo = myfilemanager->getFileHeader(strtochar(tbname));
+             DBFileInfo* fileinfo = myfilemanager->getFileHeader(strtochar(tbname));
              char** keyattr;
              int* style;
              int* oper;
@@ -439,8 +437,7 @@ void OrderPack::process()
              if(err < 0)
                 return;
              int fileid = mybufmanager->SearchBuf(strtochar(tbname));
-             DBFileInfo* fileinfo = new DBFileInfo();
-             fileinfo = myfilemanager->getFileHeader(strtochar(tbname));
+             DBFileInfo* fileinfo = myfilemanager->getFileHeader(strtochar(tbname));
              char** keyattr;
              int* style;
              int* oper;
@@ -504,8 +501,7 @@ void OrderPack::process()
                  if(err < 0)
                     return;
                  int fileid = mybufmanager->SearchBuf(strtochar(tables[0]));
-                 DBFileInfo* fileinfo = new DBFileInfo();
-                 fileinfo = myfilemanager->getFileHeader(strtochar(tables[0]));
+                 DBFileInfo* fileinfo = myfilemanager->getFileHeader(strtochar(tables[0]));
                  char** keyattr = NULL;
                  int* style = NULL;
                  int* oper = NULL;
@@ -558,8 +554,7 @@ void OrderPack::process()
                  if(err < 0)
                     return;
                  int fileid = mybufmanager->SearchBuf(strtochar(tables[0]));
-                 DBFileInfo* fileinfo = new DBFileInfo();
-                 fileinfo = myfilemanager->getFileHeader(strtochar(tables[0]));
+                 DBFileInfo* fileinfo = myfilemanager->getFileHeader(strtochar(tables[0]));
                  vector< pair<int, int> > searchid;
                  for(int i = 0;i<fileinfo->pageNum;i++)
                      for(int j = 0;j<((DBPageInfo*)(bufFile[fileid]->getPage(i)))->slotNum;j++)
@@ -594,8 +589,7 @@ void OrderPack::process()
                 if(err < 0)
                     return;
                 int fileid = mybufmanager->SearchBuf(strtochar(tables[0]));
-                DBFileInfo* fileinfo = new DBFileInfo();
-                fileinfo = myfilemanager->getFileHeader(strtochar(tables[0]));
+                DBFileInfo* fileinfo = myfilemanager->getFileHeader(strtochar(tables[0]));
                 if(fileinfo->pageNum == 0)
                 {
                     DBPrintErrorPos("Search Record");
@@ -710,13 +704,11 @@ void OrderPack::process()
 						 {
 							  string value(pos);
 							  tree->insert(value, make_pair(i, j));
-							  cout << "--" << value << endl;
 						 }
 						 else
 						 {
 							  int value = *(int*)pos;
 							  tree->insert(value, make_pair(i, j));
-							  cout << "--" << value << endl;
 						 }
 					}
 			   }

@@ -5,11 +5,14 @@
 #include "DBFileInfo.h"
 #include "DBPageInfo.h"
 #include "DBRecord.h"
+#include "IndexManager.h"
+#include "BTree.h"
 #include <iostream>
 #include <fstream>
 #include <cstring>
 using namespace std;
 
+extern IndexManager* indexManager;
 
 DBFileHeader::DBFileHeader()
 {
@@ -24,7 +27,7 @@ DBFile::DBFile()
 
 int DBFile::CreatePage()
 {
-	//����content����
+	//¸üÐÂcontent³¤¶È
 	DBFileInfo* newfileinfo = (DBFileInfo*)(fileheader.header);
 	int orglength = newfileinfo->pageNum * DBPAGE;
 	if(orglength > 0)
@@ -51,7 +54,7 @@ int DBFile::CreatePage()
 		return NOTSETFILEHEADER;
 	}
 	newpageinfo->slotNum = (DBPAGE - DBPAGEHEADER) / (newfileinfo->recordLength + DBRECORDHEADER);
-	//���úÿղ�����
+	//ÉèÖÃºÃ¿Õ²ÛÁ´±í
 	for(int i = 0;i<newpageinfo->slotNum;i++)
 	{
 		DBRecordHeader* recordheader = (DBRecordHeader*)(newpage->pagecontent + i * (newfileinfo->recordLength + DBRECORDHEADER));
@@ -79,13 +82,14 @@ char* DBFile::getRecord(int page, int rid)
 	return content + DBPAGEHEADER + page * DBPAGE + rid * (DBRECORDHEADER + ((DBFileInfo*)(fileheader.header))->recordLength);
 }
 
-//oper = 0Ϊ������� oper = 1Ϊ�����
-//style = 0Ϊ���ڣ�style = 1Ϊ���ڣ� style = 2ΪС��
+//oper = 0ÎªÓë²Ù×÷£¬ oper = 1Îª»ò²Ù×÷
+//style = 0ÎªµÈÓÚ£¬style = 1Îª´óÓÚ£¬ style = 2ÎªÐ¡ÓÚ
 int DBFile::SearchRecord(char** keyattr, int* style, int* oper, char** keyword, int paranum, vector< pair<int, int> >& re)
 {
-	//��һ������ȡ����ƫ����
+	//µÚÒ»²½£º»ñÈ¡ÊôÐÔÆ«ÒÆÁ¿
 	DBAttribute* key = new DBAttribute[paranum];
 	DBFileInfo* fileinfo = (DBFileInfo*)(fileheader.header);
+
 	for(int j = 0;j<paranum;j++)
 	{
 		bool hit = false;
@@ -105,7 +109,41 @@ int DBFile::SearchRecord(char** keyattr, int* style, int* oper, char** keyword, 
 			return NOSUCHATTRIBUTE;
 		}
 	}
-	//�ڶ�����ȫ�ļ�ɨ�裨�˴�����B+�������䣩
+
+	if (paranum == 1)
+	{
+		 int attrpos = -1;
+		 for(int w = 0;w < fileinfo->attrNum;w++)
+			  if(strcmp(fileinfo->attr[w].name, keyattr[0]) == 0)
+			  {
+				   attrpos = w;
+				   break;
+			  }
+		 if(attrpos == -1)
+		 {
+			  DBPrintErrorPos("Search");
+			  DBPrintError(NOSUCHATTR);
+			  return NOSUCHATTR;
+		 }
+		 if (fileinfo->attr[attrpos].isPrimary)
+		 {
+			  string attr_name(fileinfo->attr[attrpos].name);
+//			  string tbname = ???
+			  string tbname = "book";
+			  BTree *tree = indexManager->getBTree(tbname + "_" + attr_name);
+			  if (tree)
+			  {
+				   cout << "BTree Searching " << tbname << '.' << attr_name << endl;
+				   if (fileinfo->attr[attrpos].type == 0) // String
+						re = tree->search_zone(string(keyword[0]), style[0]);
+				   else // Digit
+						re = tree->search_zone(*(int*)keyword[0], style[0]);
+				   return DBOK;
+			  }
+		 }
+	}
+
+	//µÚ¶þ²½£ºÈ«ÎÄ¼þÉ¨Ãè£¨´Ë´¦¿ÉÓÃB+Ê÷×öÀ©³ä£©
 	int pagecnt = ((DBFileInfo*)(fileheader.header))->pageNum;
 	int slotcnt = (DBPAGE - DBPAGEHEADER) / (((DBFileInfo*)(fileheader.header))->recordLength + DBRECORDHEADER);
 	for(int i = 0;i<pagecnt;i++)
@@ -144,6 +182,9 @@ int DBFile::SearchRecord(char** keyattr, int* style, int* oper, char** keyword, 
 					}
 					if(paranum == 1)
 					{
+						 //属性名称：fileinfo->attr[pos].name
+						 //文件在缓存管理系统的文件号: mybufmanager->SearchBuf(char* filename)
+						 //获取文件：bufFile[fileid],这是一个指针
 						if(judgement[0])
 							re.push_back(make_pair(i,j));
 					}
@@ -167,18 +208,18 @@ int DBFile::SearchRecord(char** keyattr, int* style, int* oper, char** keyword, 
 	return DBOK;
 }
 
-//���棺��AddRecord������δ������¼��ȷ�Լ��ĺ�������ˣ��ڲ���֮ǰϵͳ����ģ������ؼ���¼��ȷ�ԡ�
+//¾¯¸æ£º´ËAddRecordº¯ÊýÊÇÎ´¾­¹ý¼ÇÂ¼ÕýÈ·ÐÔ¼ì²éµÄº¯Êý£¬Òò´Ë£¬ÔÚ²åÈëÖ®Ç°ÏµÍ³¹ÜÀíÄ£¿éÇëÎñ±Ø¼ì²é¼ÇÂ¼ÕýÈ·ÐÔ¡£
 int DBFile::AddRecord(char* record, int length)
 {
 	DBFileInfo* fileinfo = (DBFileInfo*)(fileheader.header);
-	//��¼�����ж�
+	//¼ÇÂ¼³¤¶ÈÅÐ¶Ï
 	if(length != fileinfo->recordLength)
 	{
 		DBPrintErrorPos("Add record");
 		DBPrintError(RECORDLENGTHERROR);
 		return RECORDLENGTHERROR;
 	}
-	//�����ж�
+	//Ö÷¼üÅÐ¶Ï
 	int primary = -1;
 	for(int i = 0;i<fileinfo->attrNum;i++)
 	{
@@ -210,7 +251,7 @@ int DBFile::AddRecord(char* record, int length)
 			return PRIMARYKEYERROR;
 		}
 	}
-	//��¼����
+	//¼ÇÂ¼²åÈë
 	int pageid = fileinfo->firstNotFullPageId;
 	if(pageid == -1)
 	{
@@ -242,34 +283,34 @@ int DBFile::DeleteRecord(int pageid, int rid)
 	DBPageInfo* pageinfo = ((DBPageInfo*)getPage(pageid));
 	char* recordinfo = getRecord(pageid, rid);
 	DBRecordHeader* recordheader = (DBRecordHeader*)recordinfo;
-	//ҳԽ���ж�
+	//Ò³Ô½½çÅÐ¶Ï
 	if(pageid >= fileinfo->pageNum || pageid < 0)
 	{
 		DBPrintErrorPos("Delete Record");
 		DBPrintError(PAGEIDOVERFLOW);
 		return PAGEIDOVERFLOW;
 	}
-	//��¼Խ���ж�
+	//¼ÇÂ¼Ô½½çÅÐ¶Ï
 	if(rid >= pageinfo->slotNum || rid < 0)
 	{
 		DBPrintErrorPos("Delete Record");
 		DBPrintError(RIDOVERFLOW);
 		return RIDOVERFLOW;
 	}
-	//��¼Ϊ���ж�
+	//¼ÇÂ¼Îª¿ÕÅÐ¶Ï
 	if(recordheader->isNull)
 	{
 		DBPrintErrorPos("Delete Record");
 		DBPrintError(RECORDNOTEXIST);
 		return RECORDNOTEXIST;
 	}
-	//Case 1:��ҳ����ʱɾ��������±�ҳ�ղ�������ȫ�ļ�δ��ҳ����
+	//Case 1:±¾Ò³ÒÑÂúÊ±É¾³ý£¬Ðè¸üÐÂ±¾Ò³¿Õ²ÛÁ´±íºÍÈ«ÎÄ¼þÎ´ÂúÒ³Á´±í
 	if(pageinfo->firstEmptySlot == -1)
 	{
 		pageinfo->nextEmptyPage = fileinfo->firstNotFullPageId;
 		fileinfo->firstNotFullPageId = pageid;
 	}
-	//Case 2:��ҳδ��ʱɾ����ֻ����±�ҳ�Ŀղ�����
+	//Case 2:±¾Ò³Î´ÂúÊ±É¾³ý£¬Ö»Ðè¸üÐÂ±¾Ò³µÄ¿Õ²ÛÁ´±í
 	recordheader->isNull = true;
 	recordheader->nextEmptySlot = pageinfo->firstEmptySlot;
 	pageinfo->firstEmptySlot = rid;
@@ -283,28 +324,28 @@ int DBFile::UpdateRecord(char* keyattr, char* keyword, int pageid, int rid)
 	DBPageInfo* pageinfo = ((DBPageInfo*)getPage(pageid));
 	char* recordinfo = getRecord(pageid, rid);
 	DBRecordHeader* recordheader = (DBRecordHeader*)recordinfo;
-	//ҳԽ���ж�
+	//Ò³Ô½½çÅÐ¶Ï
 	if(pageid >= fileinfo->pageNum || pageid < 0)
 	{
 		DBPrintErrorPos("Update Record");
 		DBPrintError(PAGEIDOVERFLOW);
 		return PAGEIDOVERFLOW;
 	}
-	//��¼Խ���ж�
+	//¼ÇÂ¼Ô½½çÅÐ¶Ï
 	if(rid >= pageinfo->slotNum || rid < 0)
 	{
 		DBPrintErrorPos("Update Record");
 		DBPrintError(RIDOVERFLOW);
 		return RIDOVERFLOW;
 	}
-	//��¼Ϊ���ж�
+	//¼ÇÂ¼Îª¿ÕÅÐ¶Ï
 	if(recordheader->isNull)
 	{
 		DBPrintErrorPos("Update Record");
 		DBPrintError(RECORDNOTEXIST);
 		return RECORDNOTEXIST;
 	}
-	//�����ظ�����
+	//Ö÷¼üÖØ¸´²éÕÒ
 	int primary = -1;
 	for(int i = 0;i<fileinfo->attrNum;i++)
 	{
@@ -336,7 +377,7 @@ int DBFile::UpdateRecord(char* keyattr, char* keyword, int pageid, int rid)
 			}
 		}
 	}
-	//��������������㣬�����
+	//ÉÏÊöÇé¿ö¾ù²»Âú×ã£¬Ôò¸üÐÂ
 	int target = -1;
 	for(int i = 0;i<fileinfo->attrNum;i++)
 	{
@@ -346,7 +387,7 @@ int DBFile::UpdateRecord(char* keyattr, char* keyword, int pageid, int rid)
 			break;
 		}
 	}
-	//δ�ҵ�������
+	//Î´ÕÒµ½¸ÃÊôÐÔ
 	if(target == -1)
 	{
 		DBPrintErrorPos("Update record");

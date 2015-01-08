@@ -4,7 +4,7 @@
 
 using namespace std;
 
-int BNode::MaxSize = 4;
+int BNode::MaxSize = 50;
 
 BNode::BNode(NodeType _type, int _number)
 	 : type(_type), number(_number)

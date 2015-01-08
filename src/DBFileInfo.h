@@ -2,6 +2,7 @@
 #define __DBFILEINFO_H__
 
 #include "DBUtility.h"
+#include <string>
 
 class DBAttribute
 {
@@ -41,6 +42,7 @@ public:
 	int firstNotFullPageId;
 	int pageNum;
 	bool isEmpty;
+
 public:
 	DBFileInfo():recordLength(0),attrNum(0),firstNotFullPageId(-1),pageNum(0),isEmpty(true)
 	{
