@@ -328,7 +328,7 @@ void OrderPack::process()
                 return;
              int fileid = mybufmanager->SearchBuf(strtochar(tbname));
              DBFileInfo* fileinfo = myfilemanager->getFileHeader(strtochar(tbname));
-			 for (int i = 0; i < fileinfo->attrNum; ++i)
+			/* for (int i = 0; i < fileinfo->attrNum; ++i)
 			 {
 				  string type = "int";
 				  if (fileinfo->attr[i].type == 0)
@@ -339,18 +339,18 @@ void OrderPack::process()
 				  if (fileinfo->attr[i].isPrimary)
 					   cout << "PRIMARY  ";
 				  cout << endl;
-			 }
-             // vector< pair<int, int> > searchid;
-             // vector<int> searchattr;
-             // for(int i = 0;i<fileinfo->attrNum;i++)
-             //    searchattr.push_back(i);
-             // for(int i = 0;i<fileinfo->pageNum;i++)
-             //    for(int j = 0;j<((DBPageInfo*)(bufFile[fileid]->getPage(i)))->slotNum;j++)
-             //        if(!((DBRecordHeader*)(bufFile[fileid]->getRecord(i, j)))->isNull)
-             //            searchid.push_back(make_pair(i, j));
-             // cout<<endl;
-             // bufFile[fileid]->show(searchid, searchattr);
-             // cout<<endl;
+			 }*/
+              vector< pair<int, int> > searchid;
+              vector<int> searchattr;
+              for(int i = 0;i<fileinfo->attrNum;i++)
+                 searchattr.push_back(i);
+              for(int i = 0;i<fileinfo->pageNum;i++)
+                 for(int j = 0;j<((DBPageInfo*)(bufFile[fileid]->getPage(i)))->slotNum;j++)
+                     if(!((DBRecordHeader*)(bufFile[fileid]->getRecord(i, j)))->isNull)
+                         searchid.push_back(make_pair(i, j));
+              cout<<endl;
+              bufFile[fileid]->show(searchid, searchattr);
+              cout<<endl;
             break;
 	     }
 	 case INSERT:
@@ -448,7 +448,15 @@ void OrderPack::process()
              int paranum = condition.operands.size();
              vector< pair<int, int> > result;
              infoready(condition, keyattr, style, oper, keyword);
-             bufFile[fileid]->SearchRecord(keyattr, style, oper, keyword, paranum, result);
+             if(condition.operands.size() != 0)
+                bufFile[fileid]->SearchRecord(keyattr, style, oper, keyword, paranum, result);
+            else
+            {
+                for(int i = 0;i<fileinfo->pageNum;i++)
+                 for(int j = 0;j<((DBPageInfo*)(bufFile[fileid]->getPage(i)))->slotNum;j++)
+                     if(!((DBRecordHeader*)(bufFile[fileid]->getRecord(i, j)))->isNull)
+                         result.push_back(make_pair(i, j));
+            }
              char* upattr = new char[updateAttr.length() + 1];
              memcpy(upattr, strtochar(updateAttr), updateAttr.length() + 1);
              char* upword;
@@ -498,14 +506,22 @@ void OrderPack::process()
                  int fileid = mybufmanager->SearchBuf(strtochar(tables[0]));
                  DBFileInfo* fileinfo = new DBFileInfo();
                  fileinfo = myfilemanager->getFileHeader(strtochar(tables[0]));
-                 char** keyattr;
-                 int* style;
-                 int* oper;
-                 char** keyword;
+                 char** keyattr = NULL;
+                 int* style = NULL;
+                 int* oper = NULL;
+                 char** keyword = NULL;
                  int paranum = condition.operands.size();
                  vector< pair<int, int> > result;
                  infoready(condition, keyattr, style, oper, keyword);
-                 bufFile[fileid]->SearchRecord(keyattr, style, oper, keyword, paranum, result);
+                 if(condition.operands.size() != 0)
+                    bufFile[fileid]->SearchRecord(keyattr, style, oper, keyword, paranum, result);
+                else
+                {
+                     for(int i = 0;i<fileinfo->pageNum;i++)
+                        for(int j = 0;j<((DBPageInfo*)(bufFile[fileid]->getPage(i)))->slotNum;j++)
+                            if(!((DBRecordHeader*)(bufFile[fileid]->getRecord(i, j)))->isNull)
+                                result.push_back(make_pair(i, j));
+                }
                  vector<int> targetattrlist;
                  if(allAttrs)
                     for(int i = 0;i<fileinfo->attrNum;i++)

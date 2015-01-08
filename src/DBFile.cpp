@@ -122,21 +122,22 @@ int DBFile::SearchRecord(char** keyattr, int* style, int* oper, char** keyword, 
 						char* target = getRecord(i, j) + DBRECORDHEADER + key[k].offset;
 						if(style[k] == 0)
                         {
-                            if( strcmp(target, keyword[k]) == 0)
+                            if( memcmp(target, keyword[k], key[k].length) == 0)
                                 judgement[k] = true;
                             else
                                 judgement[k] = false;
                         }
                         else if(style[k] == 1)
                         {
-                             if( strcmp(target, keyword[k]) > 0)
+                            cout<<*(int*)target<<" "<<*(int*)keyword[k]<<endl;
+                             if( memcmp(target, keyword[k], key[k].length) > 0)
                                 judgement[k] = true;
                             else
                                 judgement[k] = false;
                         }
                         else if(style[k] == 2)
                         {
-                             if( strcmp(target, keyword[k]) < 0)
+                             if( memcmp(target, keyword[k], key[k].length) < 0)
                                 judgement[k] = true;
                             else
                                 judgement[k] = false;
@@ -196,7 +197,8 @@ int DBFile::AddRecord(char* record, int length)
 		char** attrname = new char*[1];
 		attrname[0] = fileinfo->attr[primary].name;
 		char** priword = new char*[1];
-		priword[0] = primaryword;
+		priword[0] = new char[fileinfo->attr[primary].length];
+		memcpy(priword[0], primaryword, fileinfo->attr[primary].length);
 		int* style = new int[1];
 		style[0] = 0;
 		int res = SearchRecord(attrname, style, NULL,  priword, 1, searchResult);
