@@ -499,3 +499,4 @@ insert into book values (200497,'The London Vampire Panic','Beverly Cleary',1009
 insert into book values (200498,'Windows NT 4 for Dummies','K. A. Applegate',102817,277);
 insert into book values (200499,'Death Crosses the Border','Jane Yolen',102732,1627);
 quit
+

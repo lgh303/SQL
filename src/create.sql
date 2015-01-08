@@ -5,3 +5,4 @@ CREATE TABLE book (  id int(10) NOT NULL,  title varchar(100) NOT NULL,  authors
 CREATE TABLE customer (  id int(10) NOT NULL,  name varchar(25) NOT NULL,  rank int(10) NOT NULL,  PRIMARY KEY  (id));
 CREATE TABLE orders (  customer_id int(10) NOT NULL,  book_id int(10) NOT NULL,  quantity int(10) NOT NULL);
 quit
+
