@@ -35,5 +35,6 @@
 #define CALCULATETYPEERROR -23
 #define NORECORDMATCH -24
 #define KEYNULL -25
+#define TYPEERROR -26
 
 #endif
