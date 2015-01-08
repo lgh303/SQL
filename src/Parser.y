@@ -437,7 +437,7 @@ void prompt()
 	}
 	else
 	{
-		cout << "--------------" << endl;
+//		cout << "--------------" << endl;
     }
 }
 

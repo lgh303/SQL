@@ -323,19 +323,30 @@ void OrderPack::process()
 	         if(err < 0)
                 return;
              int fileid = mybufmanager->SearchBuf(strtochar(tbname));
-             DBFileInfo* fileinfo = new DBFileInfo();
-             fileinfo = myfilemanager->getFileHeader(strtochar(tbname));
-             vector< pair<int, int> > searchid;
-             vector<int> searchattr;
-             for(int i = 0;i<fileinfo->attrNum;i++)
-                searchattr.push_back(i);
-             for(int i = 0;i<fileinfo->pageNum;i++)
-                for(int j = 0;j<((DBPageInfo*)(bufFile[fileid]->getPage(i)))->slotNum;j++)
-                    if(!((DBRecordHeader*)(bufFile[fileid]->getRecord(i, j)))->isNull)
-                        searchid.push_back(make_pair(i, j));
-             cout<<endl;
-             bufFile[fileid]->show(searchid, searchattr);
-             cout<<endl;
+             DBFileInfo* fileinfo = myfilemanager->getFileHeader(strtochar(tbname));
+			 for (int i = 0; i < fileinfo->attrNum; ++i)
+			 {
+				  string type = "int";
+				  if (fileinfo->attr[i].type == 0)
+					   type = "char";
+				  cout << fileinfo->attr[i].name << ": " << type << "(" << fileinfo->attr[i].length - 1 << ") ";
+				  if (!fileinfo->attr[i].isNull)
+					   cout << "Not Null ";
+				  if (fileinfo->attr[i].isPrimary)
+					   cout << "PRIMARY  ";
+				  cout << endl;
+			 }
+             // vector< pair<int, int> > searchid;
+             // vector<int> searchattr;
+             // for(int i = 0;i<fileinfo->attrNum;i++)
+             //    searchattr.push_back(i);
+             // for(int i = 0;i<fileinfo->pageNum;i++)
+             //    for(int j = 0;j<((DBPageInfo*)(bufFile[fileid]->getPage(i)))->slotNum;j++)
+             //        if(!((DBRecordHeader*)(bufFile[fileid]->getRecord(i, j)))->isNull)
+             //            searchid.push_back(make_pair(i, j));
+             // cout<<endl;
+             // bufFile[fileid]->show(searchid, searchattr);
+             // cout<<endl;
             break;
 	     }
 	 case INSERT:
