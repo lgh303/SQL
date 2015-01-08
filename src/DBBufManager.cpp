@@ -38,10 +38,12 @@ int DBBufManager::AddBuf(char* filename)
 				}
 			}
 			char* fn = new char[50];
-			memcpy(fn, filename, sizeof(filename));
+			memset(fn, 0, 50);
+			memcpy(fn, filename, strlen(filename));
 			bufmap.insert(make_pair(fn, allocnum));
 			char* fn2 = new char[50];
-			memcpy(fn2, filename, sizeof(filename));
+			memset(fn2, 0, 50);
+			memcpy(fn2, filename, strlen(filename));
 			bufinvmap.insert(make_pair(allocnum, fn2));
 			isnull[allocnum] = false;
 			bufnum += 1;

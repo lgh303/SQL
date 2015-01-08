@@ -261,7 +261,7 @@ void OrderPack::process()
                  }
              }
              fileinfo->recordLength = recordlength;
-             int err = myfilemanager->setFileHeader(fileinfo, strtochar(tbname));
+             err = myfilemanager->setFileHeader(fileinfo, strtochar(tbname));
              if(err < 0)
                 return;
              int fileid = mybufmanager->SearchBuf(strtochar(tbname));
