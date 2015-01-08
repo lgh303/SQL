@@ -456,6 +456,18 @@ int main(int argc, char** argv)
 		std::cout << "Too many arguments" << std::endl;
 		return -1;
 	}
+
+	FILE *pFile = NULL;
+	if (argc == 2)
+	{
+		pFile = fopen(argv[1], "r");
+		if (!pFile)
+		{
+			std::cout << "Input File not Exist!" << std::endl;
+			return -1;
+		}
+	}
+
 	chdir("../db");
 
 	myfilemanager = new DBFileManager();
@@ -463,12 +475,6 @@ int main(int argc, char** argv)
 
 	if (argc == 2)
 	{
-		FILE* pFile = fopen(argv[1], "r");
-		if (!pFile)
-		{
-			std::cout << "Input File not Exist!" << std::endl;
-			return -1;
-		}
 		isInterp = false;
 		yyin = pFile;
 		yyparse();

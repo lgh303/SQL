@@ -454,7 +454,7 @@ void OrderPack::process()
 	         //单表非聚集处理
 	         bool isGather = false;
 	         for(int i = 0;i<attrs.size();i++)
-                if(attrs[i].aggr == Attr::NONE)
+                if(attrs[i].aggr != Attr::NONE)
                  {
                      isGather = true;
                      break;

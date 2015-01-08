@@ -9,8 +9,11 @@
 using std::pair;
 using std::string;
 
+class IndexManager;
+
 class BTree
 {
+	 friend class IndexManager;
 public:
 	 enum KeyType { DIGIT, STRING };
 	 int root;
