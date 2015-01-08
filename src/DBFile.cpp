@@ -122,22 +122,21 @@ int DBFile::SearchRecord(char** keyattr, int* style, int* oper, char** keyword, 
 						char* target = getRecord(i, j) + DBRECORDHEADER + key[k].offset;
 						if(style[k] == 0)
                         {
-                            if( memcmp(target, keyword[k], key[k].length) == 0)
+                            if( (strcmp(target, keyword[k]) == 0 && key[k].type == 0) || (*(int*)target == *(int*)keyword[k] && key[k].type == 1))
                                 judgement[k] = true;
                             else
                                 judgement[k] = false;
                         }
                         else if(style[k] == 1)
                         {
-                            cout<<*(int*)target<<" "<<*(int*)keyword[k]<<endl;
-                             if( memcmp(target, keyword[k], key[k].length) > 0)
+                             if( (strcmp(target, keyword[k]) > 0 && key[k].type == 0) || (*(int*)target > *(int*)keyword[k] && key[k].type == 1))
                                 judgement[k] = true;
                             else
                                 judgement[k] = false;
                         }
                         else if(style[k] == 2)
                         {
-                             if( memcmp(target, keyword[k], key[k].length) < 0)
+                             if( (strcmp(target, keyword[k]) < 0 && key[k].type == 0) || (*(int*)target < *(int*)keyword[k] && key[k].type == 1))
                                 judgement[k] = true;
                             else
                                 judgement[k] = false;
