@@ -29,7 +29,8 @@ static const char* DB_ERROR[] = {
 		"Delete record failed. No record matched.",
 		"The variation of the calculation process must be integer.",
 		"No record matched.",
-		"There is at least one NULL in your record, but the attributes don't support NULL."
+		"There is at least one NULL in your record, but the attributes don't support NULL.",
+		"The data's type cannot match the attribute's type."
 	};
 
 extern void DBPrintError(int error);
