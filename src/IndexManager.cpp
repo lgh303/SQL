@@ -57,3 +57,10 @@ int IndexManager::storeBTree(const string& output, BTree* tree)
 	 }
 	 fclose(file);
 }
+
+BTree* IndexManager::getBTree(const string& key)
+{
+	 if (trees.count(key) <= 0)
+		  return NULL;
+	 return trees.at(key);
+}

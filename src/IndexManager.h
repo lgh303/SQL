@@ -16,7 +16,7 @@ public:
 	 int createIndex(const std::string&);
 	 int dropIndex(const std::string&);
 	 void addBTree(const std::string&, BTree*);
-	 BTree* getBTree(const std::string& key) { return trees.at(key); }
+	 BTree* getBTree(const std::string&);
 };
 
 #endif // __INDEX_MANAGER__
