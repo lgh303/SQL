@@ -44,7 +44,8 @@ public:
 	bool isEmpty;
 
 public:
-	DBFileInfo():recordLength(0),attrNum(0),firstNotFullPageId(-1),pageNum(0),isEmpty(true)
+	DBFileInfo()
+		 :recordLength(0),attrNum(0),firstNotFullPageId(-1),pageNum(0),isEmpty(true)
 	{
 		for(int i = 0;i<ATTRMAX;i++)
 			attr[i] = DBAttribute();

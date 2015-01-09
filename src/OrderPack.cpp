@@ -676,9 +676,11 @@ void OrderPack::process()
 		  DBFileInfo* fileinfo = myfilemanager->getFileHeader(strtochar(tbname));
 		  int type = -1;
 		  int offset = -1;
+		  int pos = -1;
 		  for (int i = 0; i < fileinfo->attrNum; ++i)
 			   if (fileinfo->attr[i].name == indexAttr)
 			   {
+					pos = i;
 					type = fileinfo->attr[i].type;
 					offset = fileinfo->attr[i].offset;
 					break;
@@ -686,6 +688,11 @@ void OrderPack::process()
 		  if (type == -1)
 		  {
 			   DBPrintErrorPos("Attribute not Exist. Create Index Failed.\n");
+			   break;
+		  }
+		  if (!fileinfo->attr[pos].isPrimary)
+		  {
+			   DBPrintErrorPos("Only Primary Key can create Index.\n");
 			   break;
 		  }
 		  BTree *tree = NULL;
@@ -713,7 +720,7 @@ void OrderPack::process()
 					}
 			   }
 		  string tree_name = tbname + "_" + indexAttr;
-		  indexManager->addBTree(tree_name, tree);
+		  indexManager->addBTree(indexAttr, tree);
 		  indexManager->storeBTree(tree_name, tree);
 		  break;
 	 }

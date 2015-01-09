@@ -129,11 +129,13 @@ int DBFile::SearchRecord(char** keyattr, int* style, int* oper, char** keyword, 
 		 {
 			  string attr_name(fileinfo->attr[attrpos].name);
 //			  string tbname = ???
-			  string tbname = "book";
-			  BTree *tree = indexManager->getBTree(tbname + "_" + attr_name);
+//			  string tbname = "book";
+//			  BTree *tree = indexManager->getBTree(tbname + "_" + attr_name);
+			  BTree *tree = indexManager->getBTree(attr_name);
 			  if (tree)
 			  {
-				   cout << "BTree Searching " << tbname << '.' << attr_name << endl;
+//				   cout << "BTree Searching " << tbname << '.' << attr_name << endl;
+				   cout << "BTree Searching..." << endl;
 				   if (fileinfo->attr[attrpos].type == 0) // String
 						re = tree->search_zone(string(keyword[0]), style[0]);
 				   else // Digit
