@@ -495,15 +495,40 @@ void OrderPack::process()
             }
              char* upattr = new char[updateAttr.length() + 1];
              memcpy(upattr, strtochar(updateAttr), updateAttr.length() + 1);
+             int attrpos = -1;
+             for(int i = 0;i<fileinfo->attrNum;i++)
+                if(strcmp(upattr, fileinfo->attr[i].name) == 0)
+                 {
+                     attrpos = i;
+                     break;
+                 }
+            if(attrpos == -1)
+            {
+                DBPrintErrorPos("Update Record");
+                DBPrintError(NOSUCHATTR);
+                return;
+            }
              char* upword;
              if(updateValue.type == 0)
              {
+                 if(fileinfo->attr[attrpos].type == 0)
+                 {
+                     DBPrintErrorPos("Update Record");
+                     DBPrintError(TYPEERROR);
+                     return;
+                 }
                  upword = new char[5];
                  memcpy(upword, (int*)(&(updateValue.integer)), 4);
                  memcpy(upword + 4, "\0", 1);
              }
              else if(updateValue.type == 1)
              {
+                 if(fileinfo->attr[attrpos].type == 1)
+                 {
+                     DBPrintErrorPos("Update Record");
+                     DBPrintError(TYPEERROR);
+                     return;
+                 }
                  upword = new char[updateValue.literal.length() + 1];
                  memcpy(upword, strtochar(updateValue.literal), updateValue.literal.length() + 1);
              }
