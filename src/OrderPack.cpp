@@ -226,6 +226,8 @@ void OrderPack::process()
              //更改文件头
              DBFileInfo* fileinfo = new DBFileInfo();
              fileinfo->attrNum = schema.size();
+             memcpy(fileinfo->fname, strtochar(tbname), tbname.length());
+             memcpy(fileinfo->fname + tbname.length(), "\0", 1);
              int recordlength = 0;
              for(int i = 0;i<schema.size();i++)
              {
@@ -403,7 +405,7 @@ void OrderPack::process()
                  }
              }
              bufFile[fileid]->AddRecord(record, fileinfo->recordLength);
-//			 indexManager.insert(fileinfo, 
+//			 indexManager.insert(fileinfo,
              break;
 	     }
 	 case DELETE:

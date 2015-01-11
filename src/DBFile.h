@@ -36,5 +36,6 @@ public:
 };
 
 extern DBFile* bufFile[BUFFILEMAX];
+extern DBFile* tmpbuf;
 
 #endif

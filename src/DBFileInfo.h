@@ -42,6 +42,7 @@ public:
 	int firstNotFullPageId;
 	int pageNum;
 	bool isEmpty;
+	char fname[ATTRLENGTHMAX];
 
 public:
 	DBFileInfo()

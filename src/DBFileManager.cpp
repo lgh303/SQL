@@ -242,3 +242,8 @@ int DBFileManager::setFileHeader(DBFileInfo* fi, char* filename)
 	mybufmanager->FixOperTime(fileid, ::GetCurrentTime());
 	return DBOK;
 }
+
+int DBFileManager::TwoBufConnected(char* filename1, char* attr1, char* filename2, char* attr2)
+{
+    return DBOK;
+}
