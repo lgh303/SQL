@@ -30,7 +30,8 @@ static const char* DB_ERROR[] = {
 		"The variation of the calculation process must be integer.",
 		"No record matched.",
 		"There is at least one NULL in your record, but the attributes don't support NULL.",
-		"The data's type cannot match the attribute's type."
+		"The data's type cannot match the attribute's type.",
+		"The attributes' type is not equal, cannot connect the two files."
 	};
 
 extern void DBPrintError(int error);

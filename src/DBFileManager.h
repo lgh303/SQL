@@ -16,7 +16,7 @@ public:
 	int CloseFile(char* filename);
 	DBFileInfo* getFileHeader(char* filename);
 	int setFileHeader(DBFileInfo* fi, char* filename);
-	int TwoBufConnected(char* filename1, char* attr1, char* filename2, char* attr2);
+	int TwoBufConnected(char* filename1, char* filename2);
 };
 
 extern DBFileManager* myfilemanager;

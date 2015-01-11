@@ -4,6 +4,8 @@
 #include "DBError.h"
 #include "DBFileManager.h"
 #include "DBFileInfo.h"
+#include "DBPageInfo.h"
+#include "DBRecord.h"
 #include "Global.h"
 #include <iostream>
 #include <fstream>
@@ -22,6 +24,7 @@ using namespace std;
 
 class DBFileInfo;
 DBFile* bufFile[BUFFILEMAX];
+DBFile* tmpbuf;
 
 int DBFileManager::CreateFile(char* filename)
 {
@@ -243,7 +246,67 @@ int DBFileManager::setFileHeader(DBFileInfo* fi, char* filename)
 	return DBOK;
 }
 
-int DBFileManager::TwoBufConnected(char* filename1, char* attr1, char* filename2, char* attr2)
+int DBFileManager::TwoBufConnected(char* filename1, char* filename2)
 {
+    int err = OpenFile(filename1);
+    if(err < 0)
+        return err;
+    int fileid1 = mybufmanager->SearchBuf(filename1);
+    DBFileInfo* fileinfo1 = myfilemanager->getFileHeader(filename1);
+    err = OpenFile(filename2);
+    if(err < 0)
+        return err;
+    int fileid2 = mybufmanager->SearchBuf(filename2);
+    DBFileInfo* fileinfo2 = myfilemanager->getFileHeader(filename2);
+    tmpbuf = new DBFile();
+    DBFileInfo* fileinfo = new DBFileInfo();
+    fileinfo->attrNum = fileinfo1->attrNum + fileinfo2->attrNum;
+    fileinfo->recordLength = fileinfo1->recordLength + fileinfo2->recordLength;
+    for(int i = 0;i<fileinfo1->attrNum;i++)
+    {
+        memcpy(fileinfo->attr[i].foreignKeyAttr, fileinfo1->attr[i].foreignKeyAttr, ATTRLENGTHMAX);
+        memcpy(fileinfo->attr[i].foreignKeyFileName, fileinfo1->attr[i].foreignKeyFileName, ATTRLENGTHMAX);
+        fileinfo->attr[i].isForeign = fileinfo1->attr[i].isForeign;
+        fileinfo->attr[i].isNull = fileinfo1->attr[i].isNull;
+        fileinfo->attr[i].isPrimary = false;
+        fileinfo->attr[i].length = fileinfo1->attr[i].length;
+        memcpy(fileinfo->attr[i].name, fileinfo1->fname, strlen(fileinfo1->fname));
+        memcpy(fileinfo->attr[i].name + strlen(fileinfo1->fname), ".", 1);
+        memcpy(fileinfo->attr[i].name + strlen(fileinfo1->fname) + 1, fileinfo1->attr[i].name, strlen(fileinfo1->attr[i].name));
+        memcpy(fileinfo->attr[i].name + strlen(fileinfo1->fname) + 1 + strlen(fileinfo1->attr[i].name), "\0", 1);
+        fileinfo->attr[i].offset = fileinfo1->attr[i].offset;
+        fileinfo->attr[i].type = fileinfo1->attr[i].type;
+    }
+    int A = fileinfo1->attrNum;
+     for(int i = 0;i<fileinfo2->attrNum;i++)
+    {
+        memcpy(fileinfo->attr[i + A].foreignKeyAttr, fileinfo2->attr[i].foreignKeyAttr, ATTRLENGTHMAX);
+        memcpy(fileinfo->attr[i + A].foreignKeyFileName, fileinfo2->attr[i].foreignKeyFileName, ATTRLENGTHMAX);
+        fileinfo->attr[i + A].isForeign = fileinfo2->attr[i].isForeign;
+        fileinfo->attr[i + A].isNull = fileinfo2->attr[i].isNull;
+        fileinfo->attr[i + A].isPrimary = false;
+        fileinfo->attr[i + A].length = fileinfo2->attr[i].length;
+        memcpy(fileinfo->attr[i + A].name, fileinfo2->fname, strlen(fileinfo2->fname));
+        memcpy(fileinfo->attr[i + A].name + strlen(fileinfo2->fname), ".", 1);
+        memcpy(fileinfo->attr[i + A].name + strlen(fileinfo2->fname) + 1, fileinfo2->attr[i].name, strlen(fileinfo2->attr[i].name));
+        memcpy(fileinfo->attr[i + A].name + strlen(fileinfo2->fname) + 1 + strlen(fileinfo2->attr[i].name), "\0", 1);
+        fileinfo->attr[i + A].offset = fileinfo2->attr[i].offset + fileinfo1->recordLength;
+        fileinfo->attr[i + A].type = fileinfo2->attr[i].type;
+    }
+    memcpy(tmpbuf->fileheader.header, (char*)fileinfo, sizeof(*fileinfo));
+    for(int i = 0;i<fileinfo1->pageNum;i++)
+        for(int j = 0;j<((DBPageInfo*)(bufFile[fileid1]->getPage(i)))->slotNum;j++)
+             if(!((DBRecordHeader*)(bufFile[fileid1]->getRecord(i, j)))->isNull)
+              {
+                  for(int x = 0;x<fileinfo2->pageNum;x++)
+                    for(int y= 0;y<((DBPageInfo*)(bufFile[fileid2]->getPage(x)))->slotNum;y++)
+                        if(!((DBRecordHeader*)(bufFile[fileid2]->getRecord(x, y)))->isNull)
+                        {
+                            char* newrecord = new char[fileinfo->recordLength];
+                            memcpy(newrecord, bufFile[fileid1]->getRecord(i,j) + DBRECORDHEADER, fileinfo1->recordLength);
+                            memcpy(newrecord + fileinfo1->recordLength, bufFile[fileid2]->getRecord(x,y) + DBRECORDHEADER, fileinfo2->recordLength);
+                            tmpbuf->AddRecord(newrecord, fileinfo->recordLength);
+                        }
+              }
     return DBOK;
 }

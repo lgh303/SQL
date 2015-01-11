@@ -36,5 +36,6 @@
 #define NORECORDMATCH -24
 #define KEYNULL -25
 #define TYPEERROR -26
+#define ATTRTYPENOTEQUAL -27
 
 #endif
