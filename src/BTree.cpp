@@ -1,6 +1,8 @@
 #include "BTree.h"
 #include "BNode.h"
 #include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <vector>
 #include <utility>
 #include <cassert>
@@ -149,7 +151,7 @@ int BTree::_insert(const string& keyword, pair<int, int> valuepair)
 		  }
 	 if (!found_removed_key)
 		  pLeaf->values.push_back(make_pair(keyword, value));
-	 pLeaf->sortValues();
+	 pLeaf->sortValues(type == STRING);
 	 if (pLeaf->values.size() > BNode::MaxSize)
 	 {
 		  BNode* newleaf = splitLeaf(pLeaf);
@@ -164,10 +166,10 @@ int BTree::searchleaf(const string& keyword, int number)
 	 BNode* pNode = ptrs[number];
 	 if (pNode->type == BNode::LEAF)
 		  return pNode->number;
-	 if (keyword < pNode->values.front().first)
+	 if (less(keyword, pNode->values.front().first))
 		  return searchleaf(keyword, pNode->pFirstNode);
 	 for (int i = 0; i < pNode->values.size() - 1; ++i)
-		  if (keyword >= pNode->values[i].first && keyword < pNode->values[i + 1].first)
+		  if (!less(keyword, pNode->values[i].first) && less(keyword, pNode->values[i + 1].first))
 			   return searchleaf(keyword, pNode->values[i].second);
 	 return searchleaf(keyword, pNode->values.back().second);
 }
@@ -217,7 +219,7 @@ void BTree::insertStem(BNode *oldleaf, BNode* newleaf, const string& upwards)
 	 }
 	 BNode *pParent = ptrs[parentIndex];
 	 pParent->values.push_back(make_pair(upwards, newleaf->number));
-	 pParent->sortValues();
+	 pParent->sortValues(type == STRING);
 	 if (pParent->values.size() > BNode::MaxSize)
 	 {
 		  BNode *newstem = splitStem(pParent);
@@ -284,7 +286,7 @@ vector< pair<int, int> > BTree::_search_greater(const string& keyword)
 	 {
 		  BNode *pLeaf = ptrs[leafnumber];
 		  for (int i = 0; i < pLeaf->values.size(); ++i)
-			   if (keyword < pLeaf->values[i].first && pLeaf->values[i].second != -1)
+			   if (less(keyword, pLeaf->values[i].first) && pLeaf->values[i].second != -1)
 					ret.push_back(BNode::toPRPair(pLeaf->values[i].second));
 		  leafnumber = pLeaf->pNextLeaf;
 	 }
@@ -301,9 +303,18 @@ vector< pair<int, int> > BTree::_search_less(const string& keyword)
 	 {
 		  BNode *pLeaf = ptrs[leafnumber];
 		  for (int i = 0; i < pLeaf->values.size(); ++i)
-			   if (keyword > pLeaf->values[i].first && pLeaf->values[i].second != -1)
+			   if (less(pLeaf->values[i].first, keyword) && pLeaf->values[i].second != -1)
 					ret.push_back(BNode::toPRPair(pLeaf->values[i].second));
 		  leafnumber = pLeaf->pPreLeaf;
 	 }
 	 return ret;
+}
+
+bool BTree::less(const string& sx, const string& sy)
+{
+	 if (type == STRING)
+		  return (sx < sy);
+	 int dx = atoi(sx.c_str());
+	 int dy = atoi(sy.c_str());
+	 return (dx < dy);
 }

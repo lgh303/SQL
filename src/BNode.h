@@ -20,7 +20,7 @@ public:
 	 int pPreLeaf;
 	 int pFirstNode;
 	 int parent;
-	 void sortValues();
+	 void sortValues(bool);
 	 static pair<int, int> toPRPair(int);
 	 static int toBTreeValue(pair<int, int>);
 	 static int MaxSize;

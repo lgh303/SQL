@@ -60,6 +60,7 @@ private:
 	 BNode* splitStem(BNode*);
 	 void insertStem(BNode*, BNode*, const string&);
 	 void tracedown(BNode*);
+	 bool less(const string&, const string&);
 };
 
 #endif // __B_TREE__

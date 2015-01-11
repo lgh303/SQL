@@ -405,7 +405,6 @@ void OrderPack::process()
                  }
              }
              bufFile[fileid]->AddRecord(record, fileinfo->recordLength);
-//			 indexManager.insert(fileinfo,
              break;
 	     }
 	 case DELETE:
@@ -667,7 +666,7 @@ void OrderPack::process()
 	     }
 	 case CREATE_INDEX:
 	 {
-		  BTree *tree = indexManager->getBTree(indexAttr);
+		  BTree *tree = indexManager->getBTree(tbname + "." + indexAttr);
 		  if (tree)
 		  {
 			   cout << "Index already created." << endl;
@@ -727,8 +726,7 @@ void OrderPack::process()
 						 }
 					}
 			   }
-//		  string tree_name = tbname + "_" + indexAttr;
-		  indexManager->addBTree(indexAttr, tree);
+		  indexManager->addBTree(tbname + "." + indexAttr, tree);
 //		  indexManager->storeIndex(tree_name, tree);
 		  break;
 	 }
@@ -740,7 +738,7 @@ void OrderPack::process()
 		  // 	   DBPrintErrorPos("Index Not Exist. Drop Index Failed.\n");
 		  // 	   break;
 		  // }
-		  int ret = indexManager->removeBTree(indexAttr);
+		  int ret = indexManager->removeBTree(tbname + "." + indexAttr);
 		  if (ret < 0)
 		  {
 		  	   cout << "Index Not Exist. Drop Index Failed." << endl;

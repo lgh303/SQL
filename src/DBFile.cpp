@@ -128,14 +128,11 @@ int DBFile::SearchRecord(char** keyattr, int* style, int* oper, char** keyword, 
 		 if (fileinfo->attr[attrpos].isPrimary)
 		 {
 			  string attr_name(fileinfo->attr[attrpos].name);
-//			  string tbname = ???
-//			  string tbname = "book";
-//			  BTree *tree = indexManager->getBTree(tbname + "_" + attr_name);
-			  BTree *tree = indexManager->getBTree(attr_name);
+			  string tbname = fileinfo->fname;
+			  BTree *tree = indexManager->getBTree(tbname + "." + attr_name);
 			  if (tree)
 			  {
-//				   cout << "BTree Searching " << tbname << '.' << attr_name << endl;
-				   cout << "BTree Searching..." << endl;
+				   cout << "BTree Searching " << tbname << '.' << attr_name << endl;
 				   if (fileinfo->attr[attrpos].type == 0) // String
 						re = tree->search_zone(string(keyword[0]), style[0]);
 				   else // Digit
@@ -276,6 +273,9 @@ int DBFile::AddRecord(char* record, int length)
 	{
 		fileinfo->firstNotFullPageId = pageinfo->nextEmptyPage;
 	}
+
+	indexManager->insertRecord(fileinfo, record, pageid, rid);
+
 	return DBOK;
 }
 
@@ -316,6 +316,8 @@ int DBFile::DeleteRecord(int pageid, int rid)
 	recordheader->isNull = true;
 	recordheader->nextEmptySlot = pageinfo->firstEmptySlot;
 	pageinfo->firstEmptySlot = rid;
+
+	indexManager->deleteRecord(fileinfo, getRecord(pageid, rid) + DBRECORDHEADER);
 
 	return DBOK;
 }
@@ -396,7 +398,12 @@ int DBFile::UpdateRecord(char* keyattr, char* keyword, int pageid, int rid)
 		DBPrintError(NOSUCHATTR);
 		return NOSUCHATTR;
 	}
+
+	char *old_val = recordinfo + DBRECORDHEADER + fileinfo->attr[target].offset;
+	indexManager->updateRecord(fileinfo, keyattr, old_val, keyword);
+	
 	memcpy(recordinfo + DBRECORDHEADER + fileinfo->attr[target].offset, keyword, fileinfo->attr[target].length);
+
 	return DBOK;
 }
 

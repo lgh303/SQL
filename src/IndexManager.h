@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include "BTree.h"
+#include "DBFileInfo.h"
 
 class IndexManager
 {
@@ -14,6 +15,9 @@ public:
 	 void addBTree(const std::string&, BTree*);
 	 int removeBTree(const std::string&);
 	 BTree* getBTree(const std::string&);
+	 int insertRecord(DBFileInfo*, char*, int, int);
+	 int deleteRecord(DBFileInfo*, char*);
+	 int updateRecord(DBFileInfo*, char*, char*, char*);
 };
 
 #endif // __INDEX_MANAGER__

@@ -23,8 +23,18 @@ int BNode::toBTreeValue(pair<int, int> valuepair)
 	 return (valuepair.first << 10) + valuepair.second;
 }
 
-void BNode::sortValues()
+bool digit_cmp(const pair<string, int>& px, const pair<string, int>& py)
 {
-	 sort(values.begin(), values.end());
+	 int dx = atoi(px.first.c_str());
+	 int dy = atoi(py.first.c_str());
+	 return (dx < dy);
 }
-		  
+
+void BNode::sortValues(bool is_string)
+{
+	 if (is_string)
+		  sort(values.begin(), values.end());
+	 else
+		  sort(values.begin(), values.end(), digit_cmp);
+}
+
