@@ -9,13 +9,10 @@ class IndexManager
 {
 	 std::map<std::string, BTree*> trees;
 public:
-	 IndexManager();
 	 ~IndexManager();
-	 BTree* loadBTree(const std::string&);
-	 int storeBTree(const std::string&, BTree*);
-	 int createIndex(const std::string&);
-	 int dropIndex(const std::string&);
+	 int storeIndex(const std::string&, BTree*);
 	 void addBTree(const std::string&, BTree*);
+	 int removeBTree(const std::string&);
 	 BTree* getBTree(const std::string&);
 };
 

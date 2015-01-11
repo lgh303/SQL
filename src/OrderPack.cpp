@@ -328,7 +328,7 @@ void OrderPack::process()
                 return;
              int fileid = mybufmanager->SearchBuf(strtochar(tbname));
              DBFileInfo* fileinfo = myfilemanager->getFileHeader(strtochar(tbname));
-			/* for (int i = 0; i < fileinfo->attrNum; ++i)
+			 for (int i = 0; i < fileinfo->attrNum; ++i)
 			 {
 				  string type = "int";
 				  if (fileinfo->attr[i].type == 0)
@@ -339,18 +339,18 @@ void OrderPack::process()
 				  if (fileinfo->attr[i].isPrimary)
 					   cout << "PRIMARY  ";
 				  cout << endl;
-			 }*/
-              vector< pair<int, int> > searchid;
-              vector<int> searchattr;
-              for(int i = 0;i<fileinfo->attrNum;i++)
-                 searchattr.push_back(i);
-              for(int i = 0;i<fileinfo->pageNum;i++)
-                 for(int j = 0;j<((DBPageInfo*)(bufFile[fileid]->getPage(i)))->slotNum;j++)
-                     if(!((DBRecordHeader*)(bufFile[fileid]->getRecord(i, j)))->isNull)
-                         searchid.push_back(make_pair(i, j));
-              cout<<endl;
-              bufFile[fileid]->show(searchid, searchattr);
-              cout<<endl;
+			 }
+              // vector< pair<int, int> > searchid;
+              // vector<int> searchattr;
+              // for(int i = 0;i<fileinfo->attrNum;i++)
+              //    searchattr.push_back(i);
+              // for(int i = 0;i<fileinfo->pageNum;i++)
+              //    for(int j = 0;j<((DBPageInfo*)(bufFile[fileid]->getPage(i)))->slotNum;j++)
+              //        if(!((DBRecordHeader*)(bufFile[fileid]->getRecord(i, j)))->isNull)
+              //            searchid.push_back(make_pair(i, j));
+              // cout<<endl;
+              // bufFile[fileid]->show(searchid, searchattr);
+              // cout<<endl;
             break;
 	     }
 	 case INSERT:
@@ -403,6 +403,7 @@ void OrderPack::process()
                  }
              }
              bufFile[fileid]->AddRecord(record, fileinfo->recordLength);
+//			 indexManager.insert(fileinfo, 
              break;
 	     }
 	 case DELETE:
@@ -664,13 +665,19 @@ void OrderPack::process()
 	     }
 	 case CREATE_INDEX:
 	 {
+		  BTree *tree = indexManager->getBTree(indexAttr);
+		  if (tree)
+		  {
+			   cout << "Index already created." << endl;
+			   break;
+		  }
 		  int err = myfilemanager->OpenFile(strtochar(tbname));
 		  if(err < 0)
 			   return;
 		  int fileid = mybufmanager->SearchBuf(strtochar(tbname));
 		  if (fileid < 0)
 		  {
-			   DBPrintErrorPos("Table not Exist. Create Index Failed.\n");
+			   cout << "Table not Exist. Create Index Failed." << endl;
 			   break;
 		  }
 		  DBFileInfo* fileinfo = myfilemanager->getFileHeader(strtochar(tbname));
@@ -687,15 +694,14 @@ void OrderPack::process()
 			   }
 		  if (type == -1)
 		  {
-			   DBPrintErrorPos("Attribute not Exist. Create Index Failed.\n");
+			   cout << "Attribute not Exist. Create Index Failed." << endl;
 			   break;
 		  }
 		  if (!fileinfo->attr[pos].isPrimary)
 		  {
-			   DBPrintErrorPos("Only Primary Key can create Index.\n");
+			   cout << "Only Primary Key can create Index." << endl;
 			   break;
 		  }
-		  BTree *tree = NULL;
 		  if (type == 0)
 			   tree = new BTree(BTree::STRING);
 		  else
@@ -719,16 +725,25 @@ void OrderPack::process()
 						 }
 					}
 			   }
-		  string tree_name = tbname + "_" + indexAttr;
+//		  string tree_name = tbname + "_" + indexAttr;
 		  indexManager->addBTree(indexAttr, tree);
-		  indexManager->storeBTree(tree_name, tree);
+//		  indexManager->storeIndex(tree_name, tree);
 		  break;
 	 }
 	 case DROP_INDEX:
 	 {
-		  int ret = unlink(("index_" + tbname + "_" + indexAttr).c_str());
+		  // int ret = unlink(("index_" + tbname + "_" + indexAttr).c_str());
+		  // if (ret < 0)
+		  // {
+		  // 	   DBPrintErrorPos("Index Not Exist. Drop Index Failed.\n");
+		  // 	   break;
+		  // }
+		  int ret = indexManager->removeBTree(indexAttr);
 		  if (ret < 0)
-			   DBPrintErrorPos("Index Not Exist. Drop Index Failed.\n");
+		  {
+		  	   cout << "Index Not Exist. Drop Index Failed." << endl;
+		  	   break;
+		  }
 		  break;
 	 }
 	 }

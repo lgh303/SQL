@@ -5,27 +5,10 @@
 
 using namespace std;
 
-IndexManager::IndexManager()
-{
-	 // for index_file
-	 // 	  loadBTree(...)
-	 // 	  trees.push_back
-}
-
 IndexManager::~IndexManager()
 {
 	 for (map<string, BTree*>::iterator it = trees.begin(); it != trees.end(); ++it)
 		  delete it->second;
-}
-
-int IndexManager::createIndex(const string&)
-{
-
-}
-
-int IndexManager::dropIndex(const string&)
-{
-
 }
 
 void IndexManager::addBTree(const string& attr, BTree* tree)
@@ -33,12 +16,19 @@ void IndexManager::addBTree(const string& attr, BTree* tree)
 	 trees.insert(make_pair(string(attr), tree));
 }
 
-BTree* IndexManager::loadBTree(const string&)
+int IndexManager::removeBTree(const string& attr)
 {
-
+	 BTree *tree = getBTree(attr);
+	 if (tree)
+	 {
+		  delete tree;
+		  trees.erase(attr);
+		  return 0;
+	 }
+	 return -1;
 }
 
-int IndexManager::storeBTree(const string& output, BTree* tree)
+int IndexManager::storeIndex(const string& output, BTree* tree)
 {
 	 FILE *file = fopen(("index_" + output).c_str(), "wb");
 	 if (!file) return -1;
@@ -50,11 +40,6 @@ int IndexManager::storeBTree(const string& output, BTree* tree)
 	 else 
 		  tree_data[2] = 1;
 	 fwrite(tree_data, sizeof(int), 3, file);
-	 for (int i = 0; i < (tree->ptrs).size(); ++i)
-	 {
-		  BNode *node = (tree->ptrs)[i];
-//		  if (node->type == NodeType::LEAF)
-	 }
 	 fclose(file);
 }
 
