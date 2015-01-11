@@ -442,6 +442,7 @@ void prompt()
 {
 	if (isInterp)
 	{
+		 std::cout << std::endl;
 		std::cout << " sql> ";
 	}
 	else

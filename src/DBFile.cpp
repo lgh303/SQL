@@ -8,6 +8,7 @@
 #include "IndexManager.h"
 #include "BTree.h"
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <cstring>
 using namespace std;
@@ -457,11 +458,20 @@ int DBFile::show(vector< pair<int, int> >rlist, vector<int>attrindex)
     int* space = new int[attrindex.size()];
     for(int i = 0;i<attrindex.size();i++)
         space[i] = (fileinfo->attr[attrindex[i]].length > ATTRLENGTHMAX ? fileinfo->attr[attrindex[i]].length : ATTRLENGTHMAX);
+	cout << endl;
+	int digit_width = 7;
+	int str_width = 25;
     for(int i = 0;i<attrindex.size();i++)
     {
-        cout<<fileinfo->attr[attrindex[i]].name;
+		 if (fileinfo->attr[attrindex[i]].type == 0)
+		 {
+			  cout << std::setw(str_width) << fileinfo->attr[attrindex[i]].name;
+		 }
+		 else
+		 {
+			  cout<< std::setw(digit_width) << fileinfo->attr[attrindex[i]].name;
+		 }			  
 //        for(int j = 0;j<space[i] - strlen(fileinfo->attr[attrindex[i]].name);j++)
-            cout<<"\t";
         cout<<"|";
     }
     cout<<endl;
@@ -477,11 +487,10 @@ int DBFile::show(vector< pair<int, int> >rlist, vector<int>attrindex)
             {
                 char* wordpos = pos + DBRECORDHEADER + fileinfo->attr[attrindex[i]].offset;
                 if(fileinfo->attr[attrindex[i]].type == 0)
-                    cout<<wordpos;
+					 cout<< std::setw(str_width) << wordpos;
                 else
-                    cout<<*((int*)wordpos);
+					 cout<< std::setw(digit_width) << *((int*)wordpos);
 //                for(int j = 0;j<space[i] - strlen(wordpos);j++)
-                    cout<<"\t";
                 cout<<"|";
             }
         }
