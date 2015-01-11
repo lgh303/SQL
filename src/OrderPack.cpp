@@ -28,6 +28,7 @@ using namespace std;
 static int enterDatabaseFlag = 0;
 
 extern IndexManager* indexManager;
+extern DBFile* tmpbuf;
 
 inline char* strtochar(string s)
 {
@@ -65,7 +66,15 @@ int infoready(Condition condition, char** &keyattr, int* &style, int* &oper, cha
             else if(condition.operands[i].op == CondEntry::LESS)
                 style[i] = 2;
             keyattr[i] = new char[ATTRLENGTHMAX];
-            memcpy(keyattr[i], strtochar(condition.operands[i].left.attr.attrname),  condition.operands[i].left.attr.attrname.length() + 1);
+            if(condition.operands[i].left.attr.tbname == "")
+                memcpy(keyattr[i], strtochar(condition.operands[i].left.attr.attrname),  condition.operands[i].left.attr.attrname.length() + 1);
+            else
+            {
+                memcpy(keyattr[i], strtochar(condition.operands[i].left.attr.tbname), condition.operands[i].left.attr.tbname.length());
+                memcpy(keyattr[i] + condition.operands[i].left.attr.tbname.length(), ".", 1);
+                memcpy(keyattr[i] + condition.operands[i].left.attr.tbname.length() + 1, strtochar(condition.operands[i].left.attr.attrname), condition.operands[i].left.attr.attrname.length());
+                memcpy(keyattr[i] + condition.operands[i].left.attr.tbname.length() + 1 +  condition.operands[i].left.attr.attrname.length(), "\0", 1);
+            }
             if(condition.operands[i].right.type == Expr::INTEGER)
             {
                 keyword[i] = new char[5];
@@ -77,6 +86,26 @@ int infoready(Condition condition, char** &keyattr, int* &style, int* &oper, cha
                 keyword[i] = new char[condition.operands[i].right.literal.length() + 1];
                 memcpy(keyword[i], strtochar(condition.operands[i].right.literal), condition.operands[i].right.literal.length() + 1);
             }
+            else if(condition.operands[i].right.type == Expr::ATTR)
+            {
+                if(condition.operands[i].op == CondEntry::EQUAL)
+                    style[i] = 3;
+                else if(condition.operands[i].op == CondEntry::GREATER)
+                    style[i] = 4;
+                else if(condition.operands[i].op == CondEntry::LESS)
+                    style[i] = 5;
+                keyword[i] = new char[ATTRLENGTHMAX];
+                memset(keyword[i], 0, ATTRLENGTHMAX);
+                if(condition.operands[i].right.attr.tbname == "")
+                    memcpy(keyword[i], strtochar(condition.operands[i].right.attr.attrname),  condition.operands[i].right.attr.attrname.length() + 1);
+                else
+                {
+                    memcpy(keyword[i], strtochar(condition.operands[i].right.attr.tbname), condition.operands[i].right.attr.tbname.length());
+                    memcpy(keyword[i] + condition.operands[i].right.attr.tbname.length(), ".", 1);
+                    memcpy(keyword[i] + condition.operands[i].right.attr.tbname.length() + 1, strtochar(condition.operands[i].right.attr.attrname), condition.operands[i].right.attr.attrname.length());
+                    memcpy(keyword[i] + condition.operands[i].right.attr.tbname.length() + 1 +  condition.operands[i].right.attr.attrname.length(), "\0", 1);
+                }
+            }
         }
         else
         {
@@ -87,7 +116,15 @@ int infoready(Condition condition, char** &keyattr, int* &style, int* &oper, cha
             else if(condition.operands[i].op == CondEntry::LESS)
                 style[i] = 1;
             keyattr[i] = new char[ATTRLENGTHMAX];
-            memcpy(keyattr[i], strtochar(condition.operands[i].right.attr.attrname),  condition.operands[i].right.attr.attrname.length() + 1);
+             if(condition.operands[i].right.attr.tbname == "")
+                memcpy(keyword[i], strtochar(condition.operands[i].right.attr.attrname),  condition.operands[i].right.attr.attrname.length() + 1);
+            else
+            {
+                memcpy(keyword[i], strtochar(condition.operands[i].right.attr.tbname), condition.operands[i].right.attr.tbname.length());
+                memcpy(keyword[i] + condition.operands[i].right.attr.tbname.length(), ".", 1);
+                memcpy(keyword[i] + condition.operands[i].right.attr.tbname.length() + 1, strtochar(condition.operands[i].right.attr.attrname), condition.operands[i].right.attr.attrname.length());
+                memcpy(keyword[i] + condition.operands[i].right.attr.tbname.length() + 1 +  condition.operands[i].right.attr.attrname.length(), "\0", 1);
+            }
             if(condition.operands[i].left.type == Expr::INTEGER)
             {
                 keyword[i] = new char[5];
@@ -490,7 +527,6 @@ void OrderPack::process()
 	     }
 	 case SELECT:
 	     {
-	         //单表非聚集处理
 	         bool isGather = false;
 	         for(int i = 0;i<attrs.size();i++)
                 if(attrs[i].aggr != Attr::NONE)
@@ -498,6 +534,7 @@ void OrderPack::process()
                      isGather = true;
                      break;
                  }
+            //单表非聚集处理
              if(tables.size() == 1 && !isGather && groupbyAttr.aggr == Attr::NONE)
              {
                  int err = myfilemanager->OpenFile(strtochar(tables[0]));
@@ -549,6 +586,67 @@ void OrderPack::process()
                      }
                  }
                  bufFile[fileid]->show(result, targetattrlist);
+             }
+             //两表连接查询
+             if(tables.size() == 2 && !isGather)
+             {
+                 myfilemanager->TwoBufConnected(strtochar(tables[0]),strtochar(tables[1]));
+                 DBFileInfo* fileinfo = (DBFileInfo*)(tmpbuf->fileheader.header);
+                 char** keyattr = NULL;
+                 int* style = NULL;
+                 int* oper = NULL;
+                 char** keyword = NULL;
+                 int paranum = condition.operands.size();
+                 vector< pair<int, int> > result;
+                 infoready(condition, keyattr, style, oper, keyword);
+                 if(condition.operands.size() != 0)
+                    tmpbuf->SearchRecord(keyattr, style, oper, keyword, paranum, result);
+                else
+                {
+                     for(int i = 0;i<fileinfo->pageNum;i++)
+                        for(int j = 0;j<((DBPageInfo*)(tmpbuf->getPage(i)))->slotNum;j++)
+                            if(!((DBRecordHeader*)(tmpbuf->getRecord(i, j)))->isNull)
+                                result.push_back(make_pair(i, j));
+                }
+                 vector<int> targetattrlist;
+                 if(allAttrs)
+                    for(int i = 0;i<fileinfo->attrNum;i++)
+                        targetattrlist.push_back(i);
+                 else
+                 {
+                     char* attrvalue = new char[ATTRLENGTHMAX];
+                     vector<Attr>::iterator iter = attrs.begin();
+                     for(;iter != attrs.end();iter++)
+                     {
+                         memset(attrvalue, 0, ATTRLENGTHMAX);
+                         int flag = 0;
+                         if(iter->attrname == "")
+                            memcpy(attrvalue, strtochar(iter->attrname),  iter->attrname.length() + 1);
+                        else
+                        {
+                            memcpy(attrvalue, strtochar(iter->tbname), iter->tbname.length());
+                            memcpy(attrvalue + iter->tbname.length(), ".", 1);
+                            memcpy(attrvalue + iter->tbname.length() + 1, strtochar(iter->attrname), iter->attrname.length());
+                            memcpy(attrvalue + iter->tbname.length() + 1 +  iter->attrname.length(), "\0", 1);
+                        }
+                         for(int i = 0;i<fileinfo->attrNum;i++)
+                         {
+                            if(strcmp(attrvalue, fileinfo->attr[i].name) == 0)
+                             {
+                                 flag = 1;
+                                 targetattrlist.push_back(i);
+                                 break;
+                             }
+                         }
+                         if(flag == 0)
+                         {
+                             DBPrintErrorPos("Search Record Resolution");
+                             DBPrintError(NOSUCHATTR);
+                             return;
+                         }
+                     }
+                 }
+                 tmpbuf->show(result, targetattrlist);
              }
              //单表聚集查询
              if(tables.size() == 1 && attrs.size() == 1 && isGather)

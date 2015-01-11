@@ -88,6 +88,7 @@ int DBFile::SearchRecord(char** keyattr, int* style, int* oper, char** keyword, 
 {
 	//µÚÒ»²½£º»ñÈ¡ÊôÐÔÆ«ÒÆÁ¿
 	DBAttribute* key = new DBAttribute[paranum];
+	DBAttribute* keyright = new DBAttribute[paranum];
 	DBFileInfo* fileinfo = (DBFileInfo*)(fileheader.header);
 
 	for(int j = 0;j<paranum;j++)
@@ -95,12 +96,12 @@ int DBFile::SearchRecord(char** keyattr, int* style, int* oper, char** keyword, 
 		bool hit = false;
 		for(int i = 0;i < fileinfo->attrNum;i++)
 		{
-			if(strcmp(fileinfo->attr[i].name, keyattr[j]) == 0)
-			{
-				hit = true;
-				key[j] = fileinfo->attr[i];
-				break;
-			}
+            if(strcmp(fileinfo->attr[i].name, keyattr[j]) == 0)
+            {
+                hit = true;
+                key[j] = fileinfo->attr[i];
+                break;
+            }
 		}
 		if(!hit)
 		{
@@ -108,9 +109,28 @@ int DBFile::SearchRecord(char** keyattr, int* style, int* oper, char** keyword, 
 			DBPrintError(NOSUCHATTRIBUTE);
 			return NOSUCHATTRIBUTE;
 		}
+		if(style[j] == 3 || style[j] == 4 || style[j] == 5)
+        {
+            bool hit = false;
+            for(int i = 0;i < fileinfo->attrNum;i++)
+            {
+                if(strcmp(fileinfo->attr[i].name, keyword[j]) == 0)
+                {
+                    hit = true;
+                    keyright[j] = fileinfo->attr[i];
+                    break;
+                }
+            }
+            if(!hit)
+            {
+                DBPrintErrorPos("Search Record");
+                DBPrintError(NOSUCHATTRIBUTE);
+                return NOSUCHATTRIBUTE;
+            }
+        }
 	}
 
-	if (paranum == 1)
+	if (paranum == 1 &&(style[0] == 0 || style[0] == 1 || style[0] == 2))
 	{
 		 int attrpos = -1;
 		 for(int w = 0;w < fileinfo->attrNum;w++)
@@ -160,6 +180,9 @@ int DBFile::SearchRecord(char** keyattr, int* style, int* oper, char** keyword, 
 					for(int k = 0;k<paranum;k++)
 					{
 						char* target = getRecord(i, j) + DBRECORDHEADER + key[k].offset;
+						char* targetright = NULL;
+						if(style[k]  > 2)
+                            targetright = getRecord(i,j) + DBRECORDHEADER + keyright[k].offset;
 						if(style[k] == 0)
                         {
                             if( (strcmp(target, keyword[k]) == 0 && key[k].type == 0) || (*(int*)target == *(int*)keyword[k] && key[k].type == 1))
@@ -177,6 +200,27 @@ int DBFile::SearchRecord(char** keyattr, int* style, int* oper, char** keyword, 
                         else if(style[k] == 2)
                         {
                              if( (strcmp(target, keyword[k]) < 0 && key[k].type == 0) || (*(int*)target < *(int*)keyword[k] && key[k].type == 1))
+                                judgement[k] = true;
+                            else
+                                judgement[k] = false;
+                        }
+                        else if(style[k] == 3)
+                        {
+                            if(strcmp(target, targetright) == 0)
+                                judgement[k] = true;
+                            else
+                                judgement[k] = false;
+                        }
+                        else if(style[k] == 4)
+                        {
+                            if(strcmp(target, targetright) > 0)
+                                judgement[k] = true;
+                            else
+                                judgement[k] = false;
+                        }
+                        else if(style[k] == 5)
+                        {
+                            if(strcmp(target, targetright) < 0)
                                 judgement[k] = true;
                             else
                                 judgement[k] = false;

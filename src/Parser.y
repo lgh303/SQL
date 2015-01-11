@@ -6,6 +6,7 @@
 	#include "DBFileManager.h"
 	#include "DBBufManager.h"
 	#include "IndexManager.h"
+	#include "DBFile.h"
 	#include "SemValue.h"
 	#include "OrderPack.h"
 	#define YYSTYPE SemValue
@@ -478,6 +479,7 @@ int main(int argc, char** argv)
 	myfilemanager = new DBFileManager();
 	mybufmanager = new DBBufManager();
 	indexManager = new IndexManager();
+	tmpbuf = new DBFile();
 
 	if (argc == 2)
 	{
